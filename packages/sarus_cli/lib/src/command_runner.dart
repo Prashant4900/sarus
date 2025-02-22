@@ -4,7 +4,6 @@ import 'package:cli_completion/cli_completion.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
 import 'package:sarus_cli/src/commands/commands.dart';
-import 'package:sarus_cli/src/commands/create_command.dart';
 import 'package:sarus_cli/src/version.dart';
 
 const executableName = 'sarus_cli';

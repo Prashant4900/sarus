@@ -1,6 +1,6 @@
 import 'package:dart_frog/dart_frog.dart';
-import 'package:src/pages/about.dart';
-import 'package:src/render.dart';
+import 'package:{{name}}/pages/about.dart';
+import 'package:{{name}}/render.dart';
 
 Future<Response> onRequest(RequestContext context) {
   return renderJasprComponent(context, const About());

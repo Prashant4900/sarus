@@ -1,5 +1,5 @@
 import 'package:dart_frog/dart_frog.dart';
-import 'package:src/render.dart';
+import 'package:{{name}}/render.dart';
 
 /// The jaspr middleware responsible for serving all additional assets
 /// from web/ needed by the rendered components, mainly the compiled .js files.
