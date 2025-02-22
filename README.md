@@ -1,4 +1,4 @@
-[![Powered by Mason](assets/full_logo_dark.png)](https://github.com/felangel/mason)
+  <img src="assets/full_logo_dark.png" alt="Powered by Mason" height="100">
 
 A fast, minimalistic backend framework for Dart 🎯
 
