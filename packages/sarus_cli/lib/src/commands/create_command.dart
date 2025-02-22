@@ -3,6 +3,11 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 
+// A valid Dart identifier that can be used for a package, i.e. no
+// capital letters.
+// https://dart.dev/guides/language/language-tour#important-concepts
+final RegExp _identifierRegExp = RegExp('[a-z_][a-z0-9_]*');
+
 /// {@template check_node_command}
 ///
 /// `sarus_cli check-node`
@@ -12,7 +17,14 @@ class CreateCommand extends Command<int> {
   /// {@macro check_node_command}
   CreateCommand({
     required Logger logger,
-  }) : _logger = logger;
+  }) : _logger = logger {
+    argParser.addOption(
+      'project-name',
+      valueHelp: 'example',
+      help: 'The project name for this new project. '
+          'This must be a valid dart package name.',
+    );
+  }
 
   @override
   String get description => 'Create a new sarus project.';
@@ -33,6 +45,14 @@ class CreateCommand extends Command<int> {
     return ExitCode.success.code;
   }
 
+  String get projectName {
+    final name = argResults?['project-name'] as String?;
+    if (name == null || !_identifierRegExp.hasMatch(name)) {
+      throw ArgumentError('Invalid project name: $name');
+    }
+    return name;
+  }
+
   /// Generates a new sarus project.
   ///
   /// This uses the [Mason] CLI to generate a new project from the
@@ -49,6 +69,8 @@ class CreateCommand extends Command<int> {
   /// stderr.
   Future<void> generateBrick() async {
     try {
+      _logger.info('Generating new project...');
+
       final bricks =
           Brick.path('/Users/prashantnigam/Desktop/sarus/bricks/sarus');
 
@@ -56,9 +78,9 @@ class CreateCommand extends Command<int> {
       final target = DirectoryGeneratorTarget(Directory.current);
       await generator.generate(
         target,
-        vars: {
-          'name': 'example',
-        },
+        logger: _logger,
+        fileConflictResolution: FileConflictResolution.overwrite,
+        vars: {'name': projectName},
       );
     } catch (e) {
       _logger.err('Error generating brick: $e');
