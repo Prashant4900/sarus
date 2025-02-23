@@ -1,0 +1,109 @@
+import 'dart:io';
+
+import 'package:args/command_runner.dart';
+import 'package:mason/mason.dart';
+import 'package:yaml/yaml.dart';
+import 'package:yaml_writer/yaml_writer.dart';
+
+// RegExp for a valid Dart identifier
+final RegExp _identifierRegExp = RegExp(r'^[a-z_][a-z0-9_]*$');
+
+/// {@template create_module_command}
+///
+/// `sarus_cli create-module`
+/// A [Command] to create a new module inside the Sarus project.
+/// {@endtemplate}
+class CreateModuleCommand extends Command<int> {
+  /// {@macro create_module_command}
+  CreateModuleCommand({required Logger logger}) : _logger = logger {
+    argParser.addOption(
+      'module-name',
+      valueHelp: 'example_module',
+      help: 'The name of the new module. This must be a valid Dart identifier.',
+    );
+  }
+
+  @override
+  String get description => 'Create a new module inside the Sarus project.';
+
+  @override
+  String get name => 'create-module';
+
+  final Logger _logger;
+
+  @override
+  Future<int> run() async {
+    // Validate module name
+    final module = moduleName;
+
+    // Generate the module
+    await generateModule(module);
+
+    // Update sarus.yml
+    await updateSarusConfig(module);
+
+    return ExitCode.success.code;
+  }
+
+  /// Retrieves and validates the module name.
+  String get moduleName {
+    final name = argResults?['module-name'] as String?;
+    if (name == null || !_identifierRegExp.hasMatch(name)) {
+      throw ArgumentError('Invalid module name: $name');
+    }
+    return name;
+  }
+
+  /// Generates a new module using Mason.
+  Future<void> generateModule(String module) async {
+    try {
+      _logger.info('Generating module: $module...');
+
+      final bricks =
+          Brick.path('/Users/prashantnigam/Desktop/sarus/bricks/module');
+
+      final generator = await MasonGenerator.fromBrick(bricks);
+      final target = DirectoryGeneratorTarget(Directory.current);
+      await generator.generate(
+        target,
+        vars: {'name': module},
+      );
+
+      _logger.info('Module "$module" created successfully.');
+    } catch (e) {
+      _logger.err('Error generating module: $e');
+    }
+  }
+
+  /// Updates the `sarus.yml` file by adding the new module.
+  Future<void> updateSarusConfig(String module) async {
+    final file = File('sarus.yml');
+
+    if (!file.existsSync()) {
+      _logger.err('Error: sarus.yml not found in the project root.');
+      exit(1);
+    }
+
+    try {
+      final content = file.readAsStringSync();
+      final yaml = loadYaml(content) as Map;
+
+      // Ensure modules list exists
+      final modules = (yaml['modules'] as List<dynamic>? ?? []).toList();
+
+      // Avoid duplicates
+      if (!modules.contains(module)) {
+        modules.add(module);
+      }
+
+      // Write back to YAML file
+      final updatedYaml = {'modules': modules};
+      final yamlWriter = YAMLWriter();
+      file.writeAsStringSync(yamlWriter.write(updatedYaml));
+
+      _logger.info('Added module "$module" to sarus.yml.');
+    } catch (e) {
+      _logger.err('Error updating sarus.yml: $e');
+    }
+  }
+}

@@ -40,6 +40,7 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
 
     // Add sub commands
     addCommand(CreateCommand(logger: _logger));
+    addCommand(CreateModuleCommand(logger: _logger));
     addCommand(UpdateCommand(logger: _logger, pubUpdater: _pubUpdater));
   }
 

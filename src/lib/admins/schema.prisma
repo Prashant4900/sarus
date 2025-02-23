@@ -1,0 +1,27 @@
+generator client {
+  provider = "dart run orm"
+  output   = "."
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgres://admin:admin@localhost:5432/jaspr"
+}
+
+model Admin {
+    id Int @id @default(autoincrement())
+    firstName String
+    lastName String
+    email String
+    password String
+
+    isActive Boolean
+    isSuperAdmin Boolean
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime
+
+    @@unique([email])
+
+    @@map("admins")
+}
