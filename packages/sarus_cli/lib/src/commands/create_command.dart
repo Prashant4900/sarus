@@ -72,8 +72,8 @@ class CreateCommand extends Command<int> {
       final target = DirectoryGeneratorTarget(Directory.current);
       await generator.generate(
         target,
-        // logger: _logger,
-        // fileConflictResolution: FileConflictResolution.overwrite,
+        logger: _logger,
+        fileConflictResolution: FileConflictResolution.overwrite,
         vars: {'name': projectName},
       );
     } catch (e) {
