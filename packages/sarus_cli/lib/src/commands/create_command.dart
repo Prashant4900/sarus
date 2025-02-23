@@ -17,14 +17,7 @@ class CreateCommand extends Command<int> {
   /// {@macro check_node_command}
   CreateCommand({
     required Logger logger,
-  }) : _logger = logger {
-    argParser.addFlag(
-      'help',
-      abbr: 'h',
-      negatable: false,
-      help: 'Print this usage information.',
-    );
-  }
+  }) : _logger = logger;
 
   @override
   String get description => 'Create a new sarus project.';

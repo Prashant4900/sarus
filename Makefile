@@ -1,4 +1,3 @@
 .PHONY: updateSarusCli
 updateSarusCli:
-	dart pub global deactivate sarus_cli
-	dart pub global activate --source path packages/sarus_cli
+	dart pub global activate --source git https://github.com/Prashant4900/sarus.git --git-path=packages/sarus_cli

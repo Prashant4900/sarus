@@ -15,14 +15,7 @@ final RegExp _identifierRegExp = RegExp(r'^[a-z_][a-z0-9_]*$');
 /// {@endtemplate}
 class CreateModuleCommand extends Command<int> {
   /// {@macro create_module_command}
-  CreateModuleCommand({required Logger logger}) : _logger = logger {
-    argParser.addFlag(
-      'help',
-      abbr: 'h',
-      negatable: false,
-      help: 'Print this usage information.',
-    );
-  }
+  CreateModuleCommand({required Logger logger}) : _logger = logger;
 
   @override
   String get description => 'Create a new module inside the Sarus project.';
