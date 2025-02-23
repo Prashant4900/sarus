@@ -8,20 +8,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-    id Int @id @default(autoincrement())
-    firstName String
-    lastName String
-    email String
-    password String
+model {{name}} {
+  id        Int    @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
 
-    isActive Boolean
-    isSuperAdmin Boolean
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime
-
-    @@unique([email])
-
-    @@map("users")
+  @@unique([id])
+  @@map("{{name}}")
 }

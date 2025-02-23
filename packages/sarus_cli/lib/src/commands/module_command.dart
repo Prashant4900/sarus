@@ -53,10 +53,11 @@ class CreateModuleCommand extends Command<int> {
     try {
       _logger.info('Generating module: $module...');
 
-      final bricks =
-          Brick.path('/Users/prashantnigam/Desktop/sarus/bricks/module');
+      final bundle = await MasonBundle.fromDartBundle(
+        '../../templates/module_bundle.dart',
+      );
 
-      final generator = await MasonGenerator.fromBrick(bricks);
+      final generator = await MasonGenerator.fromBundle(bundle);
       final target = DirectoryGeneratorTarget(Directory.current);
       await generator.generate(
         target,

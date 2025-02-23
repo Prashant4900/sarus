@@ -64,10 +64,11 @@ class CreateCommand extends Command<int> {
     try {
       _logger.info('Generating new project...');
 
-      final bricks =
-          Brick.path('/Users/prashantnigam/Desktop/sarus/bricks/sarus');
+      final bundle = await MasonBundle.fromDartBundle(
+        '../../templates/sarus_bundle.dart',
+      );
 
-      final generator = await MasonGenerator.fromBrick(bricks);
+      final generator = await MasonGenerator.fromBundle(bundle);
       final target = DirectoryGeneratorTarget(Directory.current);
       await generator.generate(
         target,
