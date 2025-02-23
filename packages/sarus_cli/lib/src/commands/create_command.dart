@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:sarus_cli/src/commands/commands.dart';
+import 'package:sarus_cli/templates/sarus_bundle.dart';
 
 // A valid Dart identifier that can be used for a package, i.e. no
 // capital letters.
@@ -17,7 +19,9 @@ class CreateCommand extends Command<int> {
   /// {@macro check_node_command}
   CreateCommand({
     required Logger logger,
-  }) : _logger = logger;
+    GeneratorBuilder? generator,
+  })  : _logger = logger,
+        _generator = generator ?? MasonGenerator.fromBundle;
 
   @override
   String get description => 'Create a new sarus project.';
@@ -26,6 +30,8 @@ class CreateCommand extends Command<int> {
   String get name => 'create';
 
   final Logger _logger;
+
+  final GeneratorBuilder _generator;
 
   @override
   Future<int> run() async {
@@ -64,11 +70,12 @@ class CreateCommand extends Command<int> {
     try {
       _logger.info('Generating new project...');
 
-      final bundle = await MasonBundle.fromDartBundle(
-        '../../templates/sarus_bundle.dart',
-      );
+      // final bundle = await MasonBundle.fromDartBundle(
+      //   '../../templates/sarus_bundle.dart',
+      // );
 
-      final generator = await MasonGenerator.fromBundle(bundle);
+      // final generator = await MasonGenerator.fromBundle(bundle);
+      final generator = await _generator(sarusBundle);
       final target = DirectoryGeneratorTarget(Directory.current);
       await generator.generate(
         target,
