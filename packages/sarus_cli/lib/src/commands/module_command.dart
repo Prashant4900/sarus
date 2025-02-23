@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:sarus_cli/src/commands/commands.dart';
+import 'package:sarus_cli/templates/module_bundle.dart';
 import 'package:yaml/yaml.dart';
 import 'package:yaml_writer/yaml_writer.dart';
 
@@ -15,7 +17,11 @@ final RegExp _identifierRegExp = RegExp(r'^[a-z_][a-z0-9_]*$');
 /// {@endtemplate}
 class CreateModuleCommand extends Command<int> {
   /// {@macro create_module_command}
-  CreateModuleCommand({required Logger logger}) : _logger = logger;
+  CreateModuleCommand({
+    required Logger logger,
+    GeneratorBuilder? generator,
+  })  : _logger = logger,
+        _generator = generator ?? MasonGenerator.fromBundle;
 
   @override
   String get description => 'Create a new module inside the Sarus project.';
@@ -24,6 +30,8 @@ class CreateModuleCommand extends Command<int> {
   String get name => 'create-module';
 
   final Logger _logger;
+
+  final GeneratorBuilder _generator;
 
   @override
   Future<int> run() async {
@@ -53,11 +61,7 @@ class CreateModuleCommand extends Command<int> {
     try {
       _logger.info('Generating module: $module...');
 
-      final bundle = await MasonBundle.fromDartBundle(
-        '../../templates/module_bundle.dart',
-      );
-
-      final generator = await MasonGenerator.fromBundle(bundle);
+      final generator = await _generator(moduleBundle);
       final target = DirectoryGeneratorTarget(Directory.current);
       await generator.generate(
         target,

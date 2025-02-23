@@ -70,11 +70,6 @@ class CreateCommand extends Command<int> {
     try {
       _logger.info('Generating new project...');
 
-      // final bundle = await MasonBundle.fromDartBundle(
-      //   '../../templates/sarus_bundle.dart',
-      // );
-
-      // final generator = await MasonGenerator.fromBundle(bundle);
       final generator = await _generator(sarusBundle);
       final target = DirectoryGeneratorTarget(Directory.current);
       await generator.generate(
