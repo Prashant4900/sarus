@@ -18,11 +18,11 @@ class CreateCommand extends Command<int> {
   CreateCommand({
     required Logger logger,
   }) : _logger = logger {
-    argParser.addOption(
-      'project-name',
-      valueHelp: 'example',
-      help: 'The project name for this new project. '
-          'This must be a valid dart package name.',
+    argParser.addFlag(
+      'help',
+      abbr: 'h',
+      negatable: false,
+      help: 'Print this usage information.',
     );
   }
 
@@ -46,8 +46,8 @@ class CreateCommand extends Command<int> {
   }
 
   String get projectName {
-    final name = argResults?['project-name'] as String?;
-    if (name == null || !_identifierRegExp.hasMatch(name)) {
+    final name = argResults!.rest.first;
+    if (!_identifierRegExp.hasMatch(name)) {
       throw ArgumentError('Invalid project name: $name');
     }
     return name;

@@ -16,10 +16,11 @@ final RegExp _identifierRegExp = RegExp(r'^[a-z_][a-z0-9_]*$');
 class CreateModuleCommand extends Command<int> {
   /// {@macro create_module_command}
   CreateModuleCommand({required Logger logger}) : _logger = logger {
-    argParser.addOption(
-      'module-name',
-      valueHelp: 'example_module',
-      help: 'The name of the new module. This must be a valid Dart identifier.',
+    argParser.addFlag(
+      'help',
+      abbr: 'h',
+      negatable: false,
+      help: 'Print this usage information.',
     );
   }
 
@@ -47,8 +48,8 @@ class CreateModuleCommand extends Command<int> {
 
   /// Retrieves and validates the module name.
   String get moduleName {
-    final name = argResults?['module-name'] as String?;
-    if (name == null || !_identifierRegExp.hasMatch(name)) {
+    final name = argResults!.rest.first;
+    if (!_identifierRegExp.hasMatch(name)) {
       throw ArgumentError('Invalid module name: $name');
     }
     return name;
