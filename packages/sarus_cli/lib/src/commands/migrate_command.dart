@@ -6,85 +6,193 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:yaml/yaml.dart';
 
-/// {@template generate_prisma_command}
+/// {@template migrate_command}
 ///
-/// `sarus_cli generate-prisma`
-/// A [Command] to generate Prisma clients for root and module schemas
+/// `sarus_cli migrate`
+/// A [Command] to handle Prisma migrations for root and module schemas
 /// {@endtemplate}
-class GeneratePrismaCommand extends Command<int> {
-  /// {@macro generate_prisma_command}
-  GeneratePrismaCommand({
+class MigrateCommand extends Command<int> {
+  /// {@macro migrate_command}
+  MigrateCommand({
     required Logger logger,
-  }) : _logger = logger;
+  }) : _logger = logger {
+    argParser
+      ..addOption(
+        'name',
+        abbr: 'n',
+        help: 'Name the migration',
+      )
+      ..addFlag(
+        'create-only',
+        help: 'Create a new migration but do not apply it',
+        negatable: false,
+      )
+      ..addFlag(
+        'skip-generate',
+        help: 'Skip triggering generators (e.g. Prisma Client)',
+        negatable: false,
+      )
+      ..addFlag(
+        'skip-seed',
+        help: 'Skip triggering seed',
+        negatable: false,
+      )
+      ..addOption(
+        'module',
+        help: 'Specify a module name to migrate only that module',
+      );
+  }
 
   @override
   String get description =>
-      'Generate Prisma clients for root and module schemas.';
+      'Run Prisma migrations for root and module schemas.';
 
   @override
-  String get name => 'generate-prisma';
+  String get name => 'migrate';
 
   final Logger _logger;
 
   @override
   Future<int> run() async {
-    // Check if running from project root (sarus.yml exists)
     if (!await _checkProjectRoot()) {
       _logger
           .err('Error: Must run this command from the project root directory.');
       return ExitCode.usage.code;
     }
 
-    // Generate Prisma client for root schema if it exists
-    await _generateRootPrisma();
+    final moduleName = argResults?['module'] as String?;
 
-    // Generate Prisma clients for all module schemas
-    await _generateModulePrisma();
-
-    return ExitCode.success.code;
+    if (moduleName != null) {
+      // Migrate specific module
+      return _migrateModule(moduleName);
+    } else {
+      // Migrate root and all modules
+      await _migrateRoot();
+      await _migrateAllModules();
+      return ExitCode.success.code;
+    }
   }
 
   /// Checks if the command is being run from the project root
-  /// by verifying the existence of sarus.yml
   Future<bool> _checkProjectRoot() async {
     final file = File('sarus.yml');
     return file.existsSync();
   }
 
-  /// Generates Prisma client for the root schema if it exists
-  Future<void> _generateRootPrisma() async {
+  /// Builds the command arguments based on provided flags
+  List<String> _buildCommandArgs() {
+    final args = ['prisma', 'migrate', 'dev'];
+
+    final migrationName = argResults?['name'] as String?;
+    if (migrationName != null) {
+      args.addAll(['--name', migrationName]);
+    }
+
+    if (argResults?['create-only'] as bool? ?? false) {
+      args.add('--create-only');
+    }
+
+    if (argResults?['skip-generate'] as bool? ?? false) {
+      args.add('--skip-generate');
+    }
+
+    if (argResults?['skip-seed'] as bool? ?? false) {
+      args.add('--skip-seed');
+    }
+
+    return args;
+  }
+
+  /// Executes migration for root schema
+  Future<void> _migrateRoot() async {
     final rootSchema = File('prisma/schema.prisma');
 
     if (rootSchema.existsSync()) {
-      _logger.info('Generating Prisma client for root schema...');
+      _logger.info('Running migration for root schema...');
 
       try {
+        final args = _buildCommandArgs();
+        args.addAll(['--schema', 'prisma/schema.prisma']);
+
         final result = await Process.run(
           'npx',
-          ['prisma', 'generate'],
+          args,
           runInShell: true,
         );
 
         if (result.exitCode != 0) {
-          _logger.err('Error generating root Prisma client:');
+          _logger.err('Error in root schema migration:');
           _logger.err(result.stderr as String);
         } else {
-          _logger.success('Root Prisma client generated successfully.');
+          _logger.success('Root schema migration completed successfully.');
         }
       } catch (e) {
-        _logger.err('Error executing prisma generate: $e');
+        _logger.err('Error executing migration for root schema: $e');
       }
     }
   }
 
-  /// Generates Prisma clients for all module schemas
-  Future<void> _generateModulePrisma() async {
+  /// Executes migration for a specific module
+  Future<int> _migrateModule(String moduleName) async {
     try {
       final file = File('sarus.yml');
       final content = file.readAsStringSync();
       final yaml = loadYaml(content) as Map;
 
-      // Get modules list from sarus.yml
+      final modules = (yaml['modules'] as List<dynamic>? ?? []).cast<String>();
+
+      if (!modules.contains(moduleName)) {
+        _logger.err('Error: Module "$moduleName" not found in sarus.yml');
+        return ExitCode.usage.code;
+      }
+
+      final schemaPath = 'lib/$moduleName/schema/schema.prisma';
+      final schemaFile = File(schemaPath);
+
+      if (!schemaFile.existsSync()) {
+        _logger.err('Error: Schema not found at $schemaPath');
+        return ExitCode.usage.code;
+      }
+
+      _logger.info('Running migration for module "$moduleName"...');
+
+      try {
+        final args = _buildCommandArgs();
+        args.addAll(['--schema', schemaPath]);
+
+        final result = await Process.run(
+          'npx',
+          args,
+          runInShell: true,
+        );
+
+        if (result.exitCode != 0) {
+          _logger.err('Error in module migration:');
+          _logger.err(result.stderr as String);
+          return ExitCode.software.code;
+        } else {
+          _logger.success(
+            'Module "$moduleName" migration completed successfully.',
+          );
+          return ExitCode.success.code;
+        }
+      } catch (e) {
+        _logger.err('Error executing migration for module "$moduleName": $e');
+        return ExitCode.software.code;
+      }
+    } catch (e) {
+      _logger.err('Error reading or parsing sarus.yml: $e');
+      return ExitCode.software.code;
+    }
+  }
+
+  /// Executes migration for all modules
+  Future<void> _migrateAllModules() async {
+    try {
+      final file = File('sarus.yml');
+      final content = file.readAsStringSync();
+      final yaml = loadYaml(content) as Map;
+
       final modules = (yaml['modules'] as List<dynamic>? ?? []).cast<String>();
 
       for (final module in modules) {
@@ -92,28 +200,28 @@ class GeneratePrismaCommand extends Command<int> {
         final schemaFile = File(schemaPath);
 
         if (schemaFile.existsSync()) {
-          _logger.info('Generating Prisma client for module "$module"...');
+          _logger.info('Running migration for module "$module"...');
 
           try {
+            final args = _buildCommandArgs();
+            args.addAll(['--schema', schemaPath]);
+
             final result = await Process.run(
               'npx',
-              ['prisma', 'generate', '--schema=$schemaPath'],
+              args,
               runInShell: true,
             );
 
             if (result.exitCode != 0) {
-              _logger
-                  .err('Error generating Prisma client for module "$module":');
+              _logger.err('Error in module migration:');
               _logger.err(result.stderr as String);
             } else {
               _logger.success(
-                'Prisma client for module "$module" generated successfully.',
+                'Module "$module" migration completed successfully.',
               );
             }
           } catch (e) {
-            _logger.err(
-              'Error executing prisma generate for module "$module": $e',
-            );
+            _logger.err('Error executing migration for module "$module": $e');
           }
         }
       }

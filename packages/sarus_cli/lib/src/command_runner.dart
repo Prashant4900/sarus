@@ -42,6 +42,7 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
     addCommand(CreateCommand(logger: _logger));
     addCommand(CreateModuleCommand(logger: _logger));
     addCommand(GeneratePrismaCommand(logger: _logger));
+    addCommand(MigrateCommand(logger: _logger));
     addCommand(UpdateCommand(logger: _logger, pubUpdater: _pubUpdater));
   }
 
