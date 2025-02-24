@@ -1,32 +1,12 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "dart run orm"
+  output   = "."
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = "postgres://admin:admin@localhost:5432/jaspr"
-}
-
-model User {
-    id Int @id @default(autoincrement())
-    firstName String
-    lastName String
-    email String
-    password String
-
-    isActive Boolean
-    isSuperAdmin Boolean
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime
-
-    @@unique([email])
-
-    @@map("users")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
