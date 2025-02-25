@@ -7,6 +7,7 @@
 generator client {
   provider = "dart run orm"
   output   = "."
+  previewFeatures = ["prismaSchemaFolder"]
 }
 
 datasource db {
