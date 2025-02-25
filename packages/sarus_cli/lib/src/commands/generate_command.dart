@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:path/path.dart' as path;
 import 'package:yaml/yaml.dart';
 
 /// {@template generate_prisma_command}
@@ -77,8 +78,8 @@ class GeneratePrismaCommand extends Command<int> {
       return _generateForSchema(specifiedSchema);
     } else {
       // Generate for root and all modules
-      await _generateRootPrisma();
-      await _generateModulePrisma();
+      await _generateRootPrismaSchemas();
+      await _generateModulePrismaSchemas();
       return ExitCode.success.code;
     }
   }
@@ -158,37 +159,72 @@ class GeneratePrismaCommand extends Command<int> {
     }
   }
 
-  /// Generates Prisma client for the root schema if it exists
-  Future<void> _generateRootPrisma() async {
-    final rootSchema = File('prisma/schema.prisma');
+  /// Find all Prisma schema files in a directory
+  List<File> _findPrismaSchemas(Directory directory) {
+    final prismaFiles = <File>[];
 
-    if (rootSchema.existsSync()) {
-      _logger.info('Generating Prisma client for root schema...');
+    try {
+      final entities = directory.listSync();
 
-      try {
-        final args = _buildCommandArgs();
-        args.addAll(['--schema', 'prisma/schema.prisma']);
+      for (final entity in entities) {
+        if (entity is File && path.extension(entity.path) == '.prisma') {
+          prismaFiles.add(entity);
+        }
+      }
+    } catch (e) {
+      _logger.warn('Error scanning directory ${directory.path}: $e');
+    }
 
-        final result = await Process.run(
-          'npx',
-          args,
-          runInShell: true,
+    return prismaFiles;
+  }
+
+  /// Generates Prisma client for all schemas in the root prisma directory
+  Future<void> _generateRootPrismaSchemas() async {
+    final prismaDir = Directory('prisma');
+
+    if (prismaDir.existsSync()) {
+      final schemaFiles = _findPrismaSchemas(prismaDir);
+
+      if (schemaFiles.isEmpty) {
+        _logger.info('No Prisma schema files found in root prisma directory.');
+        return;
+      }
+
+      for (final schemaFile in schemaFiles) {
+        _logger.info(
+          'Generating Prisma client for root schema: ${schemaFile.path}',
         );
 
-        if (result.exitCode != 0) {
-          _logger.err('Error generating root Prisma client:');
-          _logger.err(result.stderr as String);
-        } else {
-          _logger.success('Root Prisma client generated successfully.');
+        try {
+          final args = _buildCommandArgs();
+          args.addAll(['--schema', schemaFile.path]);
+
+          final result = await Process.run(
+            'npx',
+            args,
+            runInShell: true,
+          );
+
+          if (result.exitCode != 0) {
+            _logger
+                .err('Error generating Prisma client for ${schemaFile.path}:');
+            _logger.err(result.stderr as String);
+          } else {
+            _logger.success(
+              'Prisma client generated successfully for ${schemaFile.path}',
+            );
+          }
+        } catch (e) {
+          _logger.err(
+            'Error executing prisma generate for ${schemaFile.path}: $e',
+          );
         }
-      } catch (e) {
-        _logger.err('Error executing prisma generate: $e');
       }
     }
   }
 
-  /// Generates Prisma clients for all module schemas
-  Future<void> _generateModulePrisma() async {
+  /// Generates Prisma clients for all schema files in all module schema directories
+  Future<void> _generateModulePrismaSchemas() async {
     try {
       final file = File('sarus.yml');
       final content = file.readAsStringSync();
@@ -197,35 +233,46 @@ class GeneratePrismaCommand extends Command<int> {
       final modules = (yaml['modules'] as List<dynamic>? ?? []).cast<String>();
 
       for (final module in modules) {
-        final schemaPath = 'lib/$module/schema/schema.prisma';
-        final schemaFile = File(schemaPath);
+        final schemaDir = Directory('lib/$module/schema');
 
-        if (schemaFile.existsSync()) {
-          _logger.info('Generating Prisma client for module "$module"...');
+        if (schemaDir.existsSync()) {
+          final schemaFiles = _findPrismaSchemas(schemaDir);
 
-          try {
-            final args = _buildCommandArgs();
-            args.addAll(['--schema', schemaPath]);
+          if (schemaFiles.isEmpty) {
+            _logger.info('No Prisma schema files found for module "$module".');
+            continue;
+          }
 
-            final result = await Process.run(
-              'npx',
-              args,
-              runInShell: true,
+          for (final schemaFile in schemaFiles) {
+            _logger.info(
+              'Generating Prisma client for module "$module" schema: ${schemaFile.path}',
             );
 
-            if (result.exitCode != 0) {
-              _logger
-                  .err('Error generating Prisma client for module "$module":');
-              _logger.err(result.stderr as String);
-            } else {
-              _logger.success(
-                'Prisma client for module "$module" generated successfully.',
+            try {
+              final args = _buildCommandArgs();
+              args.addAll(['--schema', schemaFile.path]);
+
+              final result = await Process.run(
+                'npx',
+                args,
+                runInShell: true,
+              );
+
+              if (result.exitCode != 0) {
+                _logger.err(
+                  'Error generating Prisma client for ${schemaFile.path}:',
+                );
+                _logger.err(result.stderr as String);
+              } else {
+                _logger.success(
+                  'Prisma client generated successfully for ${schemaFile.path}',
+                );
+              }
+            } catch (e) {
+              _logger.err(
+                'Error executing prisma generate for ${schemaFile.path}: $e',
               );
             }
-          } catch (e) {
-            _logger.err(
-              'Error executing prisma generate for module "$module": $e',
-            );
           }
         }
       }
