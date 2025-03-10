@@ -1,6 +1,7 @@
 name: sarus
 description: A Very Good Project created by Very Good CLI.
 version: 0.1.0+1
+publish_to: none
 
 
 environment:
@@ -9,7 +10,9 @@ environment:
 dependencies:
   dart_frog: ^1.2.0
   jaspr: ^0.18.0
-  stormberry: ^0.15.0
+  stormberry:
+    git:
+      url: https://github.com/Prashant4900/stormberry.git
   
 dev_dependencies:
   mocktail: ^1.0.4
