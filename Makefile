@@ -6,8 +6,3 @@ sarus:
 bricks:
 	mason bundle -s path /Volumes/Personal/projects/sarus/bricks/module -o packages/sarus_cli/lib/templates/ -t dart
 	mason bundle -s path /Volumes/Personal/projects/sarus/bricks/sarus -o packages/sarus_cli/lib/templates/ -t dart
-
-.PHONY: github
-github:
-	make bricks
-	make sarus

@@ -81,7 +81,7 @@ class CreateCommand extends Command<int> {
 
       await generator.hooks.postGen(
         logger: _logger,
-        workingDirectory: Directory.current.path,
+        workingDirectory: '${Directory.current.path}/$projectName',
         vars: {'name': projectName},
       );
     } catch (e) {
