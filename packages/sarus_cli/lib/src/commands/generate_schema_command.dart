@@ -24,6 +24,7 @@ class GenerateSchemaCommand extends Command<int> {
   @override
   Future<int> run() async {
     await generateSchema();
+    await generateSQL();
 
     return ExitCode.success.code;
   }
@@ -38,6 +39,8 @@ class GenerateSchemaCommand extends Command<int> {
       );
       if (result.exitCode != 0) {
         _logger.warn('Error generating schema: ${result.stderr}');
+      } else {
+        _logger.info('Schema generated successfully.');
       }
     } catch (e) {
       _logger.err('Error generating schema: $e');
