@@ -11,6 +11,8 @@ abstract class AdminModel {
   String get firstName;
   String get lastName;
 
+  String get username;
+
   String get password;
   String get email;
 

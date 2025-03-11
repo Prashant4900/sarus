@@ -675,7 +675,7 @@ packages:
     source: hosted
     version: "1.12.1"
   stormberry:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "."
       ref: HEAD

@@ -15,6 +15,9 @@ dependencies:
     git:
       url: https://github.com/Prashant4900/sarus.git
       path: packages/sarus
+  stormberry:
+    git:
+      url: https://github.com/Prashant4900/stormberry.git
 
 dev_dependencies:
   build_runner: ^2.4.15

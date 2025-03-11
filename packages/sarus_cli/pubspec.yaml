@@ -10,6 +10,7 @@ environment:
 dependencies:
   args: ^2.6.0
   cli_completion: ^0.5.1
+  dotenv: ^4.2.0
   mason: ^0.1.1
   mason_logger: ^0.3.3
   path: ^1.9.1
