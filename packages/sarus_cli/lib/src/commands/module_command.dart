@@ -59,12 +59,18 @@ class CreateModuleCommand extends Command<int> {
   /// Generates a new module using Mason.
   Future<void> generateModule(String module) async {
     try {
-      _logger.info('Generating module: $module...');
+      _logger.info('Generating $module module...');
 
       final generator = await _generator(moduleBundle);
       final target = DirectoryGeneratorTarget(Directory.current);
       await generator.generate(
         target,
+        vars: {'name': module},
+      );
+
+      await generator.hooks.postGen(
+        logger: _logger,
+        workingDirectory: Directory.current.path,
         vars: {'name': module},
       );
 
