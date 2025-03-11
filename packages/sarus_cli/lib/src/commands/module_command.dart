@@ -27,7 +27,7 @@ class CreateModuleCommand extends Command<int> {
   String get description => 'Create a new module inside the Sarus project.';
 
   @override
-  String get name => 'create-module';
+  String get name => 'module';
 
   final Logger _logger;
 
@@ -97,7 +97,7 @@ class CreateModuleCommand extends Command<int> {
 
       // Write back to YAML file
       final updatedYaml = {'modules': modules};
-      final yamlWriter = YAMLWriter();
+      final yamlWriter = YamlWriter();
       file.writeAsStringSync(yamlWriter.write(updatedYaml));
 
       _logger.info('Added module "$module" to sarus.yml.');
