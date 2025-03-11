@@ -6,8 +6,8 @@ import 'package:pub_updater/pub_updater.dart';
 import 'package:sarus_cli/src/commands/commands.dart';
 import 'package:sarus_cli/src/version.dart';
 
-const executableName = 'sarus';
-const packageName = 'sarus';
+const executableName = 'sarus_cli';
+const packageName = 'sarus_cli';
 const description = 'A Very Good Project created by Very Good CLI.';
 
 /// {@template sarus_cli_command_runner}
