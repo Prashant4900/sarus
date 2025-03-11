@@ -8,5 +8,3 @@
 /// sarus_cli --help
 /// ```
 library;
-
-export 'package:stormberry/stormberry.dart';

@@ -10,9 +10,6 @@ environment:
 dependencies:
   dart_frog: ^1.2.0
   jaspr: ^0.18.0
-  stormberry:
-    git:
-      url: https://github.com/Prashant4900/stormberry.git
   
 dev_dependencies:
   mocktail: ^1.0.4
