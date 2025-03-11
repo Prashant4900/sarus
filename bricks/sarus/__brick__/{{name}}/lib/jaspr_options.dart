@@ -19,4 +19,4 @@ import 'package:jaspr/jaspr.dart';
 ///   runApp(...);
 /// }
 /// ```
-final defaultJasprOptions = JasprOptions();
+final defaultJasprOptions = JasprOptions(styles: () => []);

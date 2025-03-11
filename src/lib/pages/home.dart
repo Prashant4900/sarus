@@ -1,5 +1,7 @@
 import 'package:jaspr/jaspr.dart';
 
+import '../config/env.dart';
+
 class Home extends StatelessComponent {
   const Home({super.key});
 
@@ -7,9 +9,9 @@ class Home extends StatelessComponent {
   Iterable<Component> build(BuildContext context) sync* {
     yield section([
       img(src: 'images/logo.svg', width: 80),
-      h1([text('Welcome')]),
+      h1([text('Welcome to Jaspr: ${Env.get(EnvKey.DB_USER)}')]),
       p([text('You successfully create a new Jaspr site.')]),
-      div(styles: Styles.box(height: 100.px), []),
+      div(styles: Styles(height: 100.px), []),
     ]);
   }
 }

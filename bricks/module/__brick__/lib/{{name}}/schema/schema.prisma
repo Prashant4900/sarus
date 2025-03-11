@@ -1,9 +1,0 @@
-generator client {
-  provider = "dart run orm"
-  output   = "."
-}
-
-datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
-}

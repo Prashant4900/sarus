@@ -4,5 +4,5 @@ updateSarusCli:
 
 .PHONY: generateBrick
 generateBrick:
-	mason bundle -s path /Users/prashantnigam/Desktop/sarus/bricks/module -o packages/sarus_cli/lib/templates/ -t dart
-	mason bundle -s path /Users/prashantnigam/Desktop/sarus/bricks/sarus -o packages/sarus_cli/lib/templates/ -t dart
+	mason bundle -s path /Volumes/Personal/projects/sarus/bricks/module -o packages/sarus_cli/lib/templates/ -t dart
+	mason bundle -s path /Volumes/Personal/projects/sarus/bricks/sarus -o packages/sarus_cli/lib/templates/ -t dart

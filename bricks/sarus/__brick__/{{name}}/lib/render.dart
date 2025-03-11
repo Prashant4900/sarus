@@ -1,12 +1,14 @@
 import 'package:dart_frog/dart_frog.dart';
 import 'package:jaspr/server.dart' hide Response;
 
+import 'jaspr_options.dart';
+
 /// Wraps jasprs [serveApp] as a dart_frog middleware.
 ///
 /// This also keeps track of the base path in case this is
 /// mounted under a different path than '/'.
 Middleware serveJasprApp() {
-  Jaspr.initializeApp();
+  Jaspr.initializeApp(options: defaultJasprOptions);
 
   return fromShelfMiddleware((handler) {
     return serveApp((request, _) {
@@ -30,16 +32,14 @@ Future<Response> renderJasprComponent(
   RequestContext context,
   Component child,
 ) async {
-  final base = context.read<BasePath>();
+  var base = context.read<BasePath>();
+
+  var response = await renderComponent(Document(base: base.path, body: child));
 
   return Response(
-    body: await renderComponent(
-      Document(
-        base: base.path,
-        body: child,
-      ),
-    ),
-    headers: {'Content-Type': 'text/html'},
+    statusCode: response.statusCode,
+    body: response.body,
+    headers: {'content-type': 'text/html; charset=utf-8', ...response.headers},
   );
 }
 

@@ -23,6 +23,7 @@ analyzer:
 
   errors:
     always_use_package_imports: ignore
+    constant_identifier_names: ignore
 
 #   exclude:
 #     - path/to/excluded/files/**

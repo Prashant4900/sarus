@@ -10,10 +10,9 @@ class About extends StatelessComponent {
         li([
           h3([text('📖 Documentation')]),
           text("Jaspr's "),
-          a(
-            href: 'https://docs.page/schultek/jaspr',
-            [text('official documentation')],
-          ),
+          a(href: 'https://docs.page/schultek/jaspr', [
+            text('official documentation'),
+          ]),
           text(' provides you with all information you need to get started.'),
         ]),
         li([
@@ -41,7 +40,5 @@ class About extends StatelessComponent {
   }
 
   @css
-  static final styles = [
-    css('ol').box(maxWidth: 500.px),
-  ];
+  static final styles = [css('ol').box(maxWidth: 500.px)];
 }

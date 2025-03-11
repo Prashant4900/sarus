@@ -1,6 +1,6 @@
 import 'package:stormberry/stormberry.dart';
 
-part 'admin_model.schema.dart';
+part 'model.schema.dart';
 
 @Model(tableName: 'admins')
 abstract class AdminModel {
