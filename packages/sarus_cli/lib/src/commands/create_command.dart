@@ -78,6 +78,12 @@ class CreateCommand extends Command<int> {
         fileConflictResolution: FileConflictResolution.overwrite,
         vars: {'name': projectName},
       );
+
+      await generator.hooks.postGen(
+        logger: _logger,
+        workingDirectory: Directory.current.path,
+        vars: {'name': projectName},
+      );
     } catch (e) {
       _logger.err('Error generating brick: $e');
     }
