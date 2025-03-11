@@ -32,7 +32,7 @@ Future<Response> renderJasprComponent(
 ) async {
   final base = context.read<BasePath>();
 
-  return Response(
+  return Response.json(
     body: await renderComponent(
       Document(
         base: base.path,

@@ -30,4 +30,3 @@ dev_dependencies:
 
 executables:
   sarus_cli:
-publish_to: https://onepub.dev/api/kxvxxpsdav/
