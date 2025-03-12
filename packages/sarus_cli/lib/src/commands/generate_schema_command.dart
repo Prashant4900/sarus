@@ -72,34 +72,13 @@ class GenerateSchemaCommand extends Command<int> {
           '--password',
           '${Env().get(EnvKey.DB_PASSWORD)}',
           '-o',
-          '.',
+          './migration',
           '--apply-changes',
           'no',
         ],
         workingDirectory: currentDir.path,
       );
-      _logger.info(
-        [
-          'dart',
-          'run',
-          'stormberry',
-          'migrate',
-          '--db',
-          '${Env().get(EnvKey.DB_NAME)}',
-          '--host',
-          '${Env().get(EnvKey.DB_HOST)}',
-          '--port',
-          '${Env().get(EnvKey.DB_PORT)}',
-          '--username',
-          '${Env().get(EnvKey.DB_USER)}',
-          '--password',
-          '${Env().get(EnvKey.DB_PASSWORD)}',
-          '-o',
-          '.',
-          '--apply-changes',
-          'no',
-        ].join(' '),
-      );
+
       if (result.exitCode != 0) {
         _logger.warn('Error generating SQL: ${result.stderr}');
       } else {
