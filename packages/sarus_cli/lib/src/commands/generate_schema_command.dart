@@ -32,7 +32,7 @@ class GenerateSchemaCommand extends Command<int> {
   Future<void> generateSchema() async {
     try {
       final currentDir = Directory.current;
-      _logger.info('Generating schema... ${currentDir.path}');
+      _logger.info('Generating schema...');
 
       final result = await Process.run(
         'dart',
@@ -52,15 +52,61 @@ class GenerateSchemaCommand extends Command<int> {
 
   Future<void> generateSQL() async {
     try {
-      _logger.info('Generating SQL... ${Env().get(EnvKey.DB_NAME)}');
+      final currentDir = Directory.current;
+      _logger.info('Generating SQL...');
 
-      // final result = await Process.run(
-      //   'dart',
-      //   ['run', 'angel3_orm', 'generate', 'schema'],
-      // );
-      // if (result.exitCode != 0) {
-      //   _logger.warn('Error generating SQL: ${result.stderr}');
-      // }
+      final result = await Process.run(
+        'dart',
+        [
+          'run',
+          'angel3_orm',
+          'stormberry',
+          'migrate',
+          '--db',
+          '${Env().get(EnvKey.DB_NAME)}',
+          '--host',
+          '${Env().get(EnvKey.DB_HOST)}',
+          '--port',
+          '${Env().get(EnvKey.DB_PORT)}',
+          '--username',
+          '${Env().get(EnvKey.DB_USER)}',
+          '--password',
+          '${Env().get(EnvKey.DB_PASSWORD)}',
+          '-o',
+          '.',
+          '--apply-changes',
+          'no',
+        ],
+        workingDirectory: currentDir.path,
+      );
+      _logger.info(
+        [
+          'dart',
+          'run',
+          'angel3_orm',
+          'stormberry',
+          'migrate',
+          '--db',
+          '${Env().get(EnvKey.DB_NAME)}',
+          '--host',
+          '${Env().get(EnvKey.DB_HOST)}',
+          '--port',
+          '${Env().get(EnvKey.DB_PORT)}',
+          '--username',
+          '${Env().get(EnvKey.DB_USER)}',
+          '--password',
+          '${Env().get(EnvKey.DB_PASSWORD)}',
+          '-o',
+          '.',
+          '--apply-changes',
+          'no',
+        ].join(' '),
+      );
+      if (result.exitCode != 0) {
+        _logger.warn('Error generating SQL: ${result.stderr}');
+      } else {
+        _logger.info('SQL generated successfully.');
+      }
     } catch (e) {
       _logger.err('Error generating SQL: $e');
     }
