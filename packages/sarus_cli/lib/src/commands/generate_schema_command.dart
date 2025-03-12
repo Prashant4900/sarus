@@ -31,12 +31,15 @@ class GenerateSchemaCommand extends Command<int> {
 
   Future<void> generateSchema() async {
     try {
-      _logger.info('Generating schema...');
+      final currentDir = Directory.current;
+      _logger.info('Generating schema... ${currentDir.path}');
 
       final result = await Process.run(
         'dart',
         ['run', 'build_runner', 'build', '--delete-conflicting-outputs'],
+        workingDirectory: currentDir.path,
       );
+
       if (result.exitCode != 0) {
         _logger.warn('Error generating schema: ${result.stderr}');
       } else {

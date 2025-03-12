@@ -19,9 +19,9 @@ class Env {
   /// - Otherwise, uses system environment variables
   void init() {
     try {
-      final baseDir = File(Platform.script.toFilePath()).parent.parent;
-      _logger.info(baseDir.path);
-      final envFile = File('${baseDir.path}/.env');
+      final currentDir = Directory.current;
+      _logger.info(currentDir.path);
+      final envFile = File('${currentDir.path}/.env');
 
       if (envFile.existsSync()) {
         // .env file exists, use it
