@@ -33,6 +33,8 @@ class MigrateCommand extends Command<int> {
       final currentDir = Directory.current;
       _logger.info('Migrating database...');
 
+      final env = Env()..init();
+
       final result = await Process.run(
         'dart',
         [
@@ -40,15 +42,15 @@ class MigrateCommand extends Command<int> {
           'stormberry',
           'migrate',
           '--db',
-          '${Env().get(EnvKey.DB_NAME)}',
+          '${env.get(EnvKey.DB_NAME)}',
           '--host',
-          '${Env().get(EnvKey.DB_HOST)}',
+          '${env.get(EnvKey.DB_HOST)}',
           '--port',
-          '${Env().get(EnvKey.DB_PORT)}',
+          '${env.get(EnvKey.DB_PORT)}',
           '--username',
-          '${Env().get(EnvKey.DB_USER)}',
+          '${env.get(EnvKey.DB_USER)}',
           '--password',
-          '${Env().get(EnvKey.DB_PASSWORD)}',
+          '${env.get(EnvKey.DB_PASSWORD)}',
           '--apply-changes',
           'yes',
         ],

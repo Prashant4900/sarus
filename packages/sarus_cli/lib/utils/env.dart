@@ -20,14 +20,11 @@ class Env {
   void init() {
     try {
       final currentDir = Directory.current;
-      _logger.info(currentDir.path);
       final envFile = File('${currentDir.path}/.env');
 
       if (envFile.existsSync()) {
         // .env file exists, use it
         _dotEnv.load([envFile.path]);
-        _logger
-            .info('Found .env file, loading environment variables from file');
       } else {
         // No .env file, use system environment variables
         _logger.err('No .env file found');
