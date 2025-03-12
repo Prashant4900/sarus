@@ -59,7 +59,6 @@ class GenerateSchemaCommand extends Command<int> {
         'dart',
         [
           'run',
-          'angel3_orm',
           'stormberry',
           'migrate',
           '--db',
@@ -83,7 +82,6 @@ class GenerateSchemaCommand extends Command<int> {
         [
           'dart',
           'run',
-          'angel3_orm',
           'stormberry',
           'migrate',
           '--db',
