@@ -72,7 +72,7 @@ class GenerateSchemaCommand extends Command<int> {
           '--password',
           '${Env().get(EnvKey.DB_PASSWORD)}',
           '-o',
-          './migration',
+          'migration',
           '--apply-changes',
           'no',
         ],
