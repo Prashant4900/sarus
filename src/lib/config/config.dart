@@ -13,6 +13,6 @@ class Config {
     password: Env.get(EnvKey.DB_PASSWORD),
     username: Env.get(EnvKey.DB_USER),
     database: Env.get(EnvKey.DB_NAME),
-    port: int.parse(Env.get(EnvKey.DB_HOST) ?? '5432'),
+    port: int.parse(Env.get(EnvKey.DB_PORT) ?? '5432'),
   );
 }

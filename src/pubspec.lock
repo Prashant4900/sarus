@@ -558,7 +558,7 @@ packages:
     description:
       path: "packages/sarus"
       ref: HEAD
-      resolved-ref: "23236d2238f4bd80252b3335279467f3082e58f8"
+      resolved-ref: "78e2bb2e27bb43ae230c41ab12fd31305644021d"
       url: "https://github.com/Prashant4900/sarus.git"
     source: git
     version: "0.1.0+1"
