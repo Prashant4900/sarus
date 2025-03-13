@@ -6,17 +6,12 @@ import 'package:mason/mason.dart';
 void run(HookContext context) {
   context.logger.info('Generate model schema...');
 
-  final projectDir = path.join(Directory.current.path, '{{name}}');
-
-  context.logger.info('Directory.current.path: ${Directory.current.path}');
-  context.logger.info('projectDir: $projectDir');
-
   final result = Process.runSync('dart', [
     'run',
     'build_runner',
     'build',
     '--delete-conflicting-outputs',
-  ], workingDirectory: projectDir);
+  ], workingDirectory: Directory.current.path);
 
   if (result.exitCode == 0) {
     context.logger.info('Model schema generated successfully.');
@@ -28,7 +23,7 @@ void run(HookContext context) {
   final resultFix = Process.runSync('dart', [
     'fix',
     '--apply',
-  ], workingDirectory: projectDir);
+  ], workingDirectory: Directory.current.path);
 
   if (resultFix.exitCode == 0) {
     context.logger.info('dart fix --apply executed successfully.');
