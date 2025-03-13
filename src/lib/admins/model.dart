@@ -1,6 +1,6 @@
 import 'package:stormberry/stormberry.dart';
 
-part 'admin_model.schema.dart';
+part 'model.schema.dart';
 
 @Model(tableName: 'admins')
 abstract class AdminModel {
@@ -10,8 +10,6 @@ abstract class AdminModel {
 
   String get firstName;
   String get lastName;
-
-  String get username;
 
   String get password;
   String get email;

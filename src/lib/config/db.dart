@@ -5,7 +5,7 @@
 // class DB {
 //   late Database db;
 
-//   void init() {
+//   void init() async {
 //     db = Database(
 //       host: Env.get(EnvKey.DB_HOST),
 //       password: Env.get(EnvKey.DB_PASSWORD),

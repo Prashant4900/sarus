@@ -12,12 +12,14 @@ Middleware serveJasprApp() {
 
   return fromShelfMiddleware((handler) {
     return serveApp((request, _) {
-      return handler(request.change(
-        context: {
-          ...request.context,
-          '$BasePath': () => BasePath(request.handlerPath)
-        },
-      ));
+      return handler(
+        request.change(
+          context: {
+            ...request.context,
+            '$BasePath': () => BasePath(request.handlerPath),
+          },
+        ),
+      );
     });
   });
 }
@@ -27,7 +29,9 @@ Middleware serveJasprApp() {
 /// Renders the component wrapped in the default document and
 /// uses the base path provided by the middleware.
 Future<Response> renderJasprComponent(
-    RequestContext context, Component child) async {
+  RequestContext context,
+  Component child,
+) async {
   var base = context.read<BasePath>();
 
   var response = await renderComponent(Document(base: base.path, body: child));
@@ -35,10 +39,7 @@ Future<Response> renderJasprComponent(
   return Response(
     statusCode: response.statusCode,
     body: response.body,
-    headers: {
-      'content-type': 'text/html; charset=utf-8',
-      ...response.headers,
-    },
+    headers: {'content-type': 'text/html; charset=utf-8', ...response.headers},
   );
 }
 

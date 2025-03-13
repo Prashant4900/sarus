@@ -30,7 +30,6 @@ class Env {
         // .env file exists, use it
         _dotEnv.load([envFile.path]);
         _usingDotEnvFile = true;
-        print('Found .env file, loading environment variables from file');
       } else {
         // No .env file, use system environment variables
         _usingDotEnvFile = false;
@@ -48,7 +47,6 @@ class Env {
   /// Get environment variable - checks .env file first (if available),
   /// then falls back to system environment variables
   static String? get(String key) {
-    print("object");
     // Ensure environment is initialized
     if (!_initialized) init();
 

@@ -1,4 +1,4 @@
-name: Sarus
+name: src
 
 modules:
   - admins
