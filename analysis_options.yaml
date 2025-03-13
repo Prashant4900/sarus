@@ -1,4 +1,4 @@
 analyzer:
   exclude:
-    - bricks/**/__brick__/**
-    - bricks/
+    # - bricks/**/__brick__/**
+    # - bricks/
