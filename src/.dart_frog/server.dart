@@ -11,7 +11,6 @@ import '../routes/about.dart' as about;
 import '../routes/admin/index.dart' as admin_index;
 
 import '../routes/_middleware.dart' as middleware;
-import '../routes/admin/_middleware.dart' as admin_middleware;
 
 void main() async {
   final address = InternetAddress.tryParse('') ?? InternetAddress.anyIPv6;
@@ -33,7 +32,7 @@ Handler buildRootHandler() {
 }
 
 Handler buildAdminHandler() {
-  final pipeline = const Pipeline().addMiddleware(admin_middleware.middleware);
+  final pipeline = const Pipeline();
   final router = Router()
     ..all('/', (context) => admin_index.onRequest(context,));
   return pipeline.addHandler(router);
