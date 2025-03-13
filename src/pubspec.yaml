@@ -11,10 +11,12 @@ dependencies:
   dotenv: ^4.2.0
   jaspr: ^0.18.0
   path: ^1.9.1
+  # sarus:
+  #   git:
+  #     url: https://github.com/Prashant4900/sarus.git
+  #     path: packages/sarus/
   sarus:
-    git:
-      url: https://github.com/Prashant4900/sarus.git
-      path: packages/sarus
+    path: /Volumes/Personal/projects/sarus/packages/sarus
   stormberry:
     git:
       url: https://github.com/Prashant4900/stormberry.git

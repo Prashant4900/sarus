@@ -556,11 +556,9 @@ packages:
   sarus:
     dependency: "direct main"
     description:
-      path: "packages/sarus"
-      ref: HEAD
-      resolved-ref: "78e2bb2e27bb43ae230c41ab12fd31305644021d"
-      url: "https://github.com/Prashant4900/sarus.git"
-    source: git
+      path: "/Volumes/Personal/projects/sarus/packages/sarus"
+      relative: false
+    source: path
     version: "0.1.0+1"
   sasl_scram:
     dependency: transitive
