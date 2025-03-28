@@ -1,0 +1,62 @@
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css";
+@import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css";
+
+html,
+body {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-family: sans-serif;
+  background-color: #F6F6F9;
+}
+
+.sidebar {
+  height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.content {
+  display: flex;
+  align-items: start;
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+}
+
+.circle {
+  height: 45px;
+  width: 45px;
+  background-color: #4D55CC;
+  border-radius: 50%;
+  align-content: center;
+  text-align: center;
+  color: white;
+  font-weight: 500;
+}
+
+h3 {
+  height: 10px;
+}
+
+.main {
+  width: 100vw;
+}
+
+.profile-box {
+  width: 100%;
+  margin-top: 25px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 4px;
+}
+
+p.body-title {
+  font-weight: 600;
+}

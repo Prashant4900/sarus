@@ -1,5 +1,6 @@
 import 'package:dart_frog/dart_frog.dart';
 import 'package:jaspr/server.dart' hide Response;
+import 'package:shelf/shelf.dart' as shelf;
 
 import 'jaspr_options.dart';
 
@@ -34,7 +35,17 @@ Future<Response> renderJasprComponent(
 ) async {
   var base = context.read<BasePath>();
 
-  var response = await renderComponent(Document(base: base.path, body: child));
+  var response = await renderComponent(
+    Document(
+      base: base.path,
+      body: child,
+    ),
+    request: shelf.Request(
+      context.request.method.name,
+      context.request.uri,
+      headers: context.request.headers,
+    ),
+  );
 
   return Response(
     statusCode: response.statusCode,

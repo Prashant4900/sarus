@@ -1,7 +1,8 @@
+import 'package:sarus/sarus.dart';
+import 'package:stormberry/stormberry.dart';
+
 import '../config/config.dart';
 import 'model.dart';
-import 'package:stormberry/stormberry.dart';
-import 'package:sarus/sarus.dart';
 
 /// Controller for managing Admin entities
 class AdminController extends BaseController<AdminModelInsertRequest,

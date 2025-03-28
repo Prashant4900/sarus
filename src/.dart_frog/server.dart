@@ -8,9 +8,14 @@ import 'package:dart_frog/dart_frog.dart';
 
 import '../routes/index.dart' as index;
 import '../routes/about.dart' as about;
+import '../routes/admin/profile.dart' as admin_profile;
 import '../routes/admin/index.dart' as admin_index;
+import '../routes/admin/auth/register.dart' as admin_auth_register;
+import '../routes/admin/auth/login.dart' as admin_auth_login;
+import '../routes/admin/auth/forgot.dart' as admin_auth_forgot;
 
 import '../routes/_middleware.dart' as middleware;
+import '../routes/admin/_middleware.dart' as admin_middleware;
 
 void main() async {
   final address = InternetAddress.tryParse('') ?? InternetAddress.anyIPv6;
@@ -26,15 +31,23 @@ Future<HttpServer> createServer(InternetAddress address, int port) {
 Handler buildRootHandler() {
   final pipeline = const Pipeline().addMiddleware(middleware.middleware);
   final router = Router()
+    ..mount('/admin/auth', (context) => buildAdminAuthHandler()(context))
     ..mount('/admin', (context) => buildAdminHandler()(context))
     ..mount('/', (context) => buildHandler()(context));
   return pipeline.addHandler(router);
 }
 
-Handler buildAdminHandler() {
-  final pipeline = const Pipeline();
+Handler buildAdminAuthHandler() {
+  final pipeline = const Pipeline().addMiddleware(admin_middleware.middleware);
   final router = Router()
-    ..all('/', (context) => admin_index.onRequest(context,));
+    ..all('/register', (context) => admin_auth_register.onRequest(context,))..all('/login', (context) => admin_auth_login.onRequest(context,))..all('/forgot', (context) => admin_auth_forgot.onRequest(context,));
+  return pipeline.addHandler(router);
+}
+
+Handler buildAdminHandler() {
+  final pipeline = const Pipeline().addMiddleware(admin_middleware.middleware);
+  final router = Router()
+    ..all('/profile', (context) => admin_profile.onRequest(context,))..all('/', (context) => admin_index.onRequest(context,));
   return pipeline.addHandler(router);
 }
 
