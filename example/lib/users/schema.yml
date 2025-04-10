@@ -1,0 +1,53 @@
+schema:
+  - name: users
+    fields:
+      id:
+        type: integer
+        primaryKey: true
+        autoIncrement: true
+
+      email:
+        type: string
+        unique: true
+        maxLength: 255
+
+      password:
+        type: string
+        maxLength: 255
+
+      firstName:
+        type: string
+        maxLength: 100
+        defaultValue: "Guest"
+
+      lastName:
+        type: string
+        maxLength: 100
+        defaultValue: "User"
+
+      isActive:
+        type: boolean
+        default: true
+
+      age:
+        type: integer
+        nullable: true
+        default: 18
+
+      phone:
+        type: string
+        nullable: true
+        maxLength: 20
+
+      createdAt:
+        type: datetime
+        autoNowAdd: true
+
+      updatedAt:
+        type: datetime
+        nullable: true
+        autoNow: true
+
+      lastLoginAt:
+        type: datetime
+        nullable: true
