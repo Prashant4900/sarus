@@ -1,15 +1,14 @@
 import 'dart:developer';
 
 import 'package:sarus/sarus.dart';
-import 'package:shelf/shelf.dart';
 
 /// A [BaseRouter] that can register multiple APIRouters
 class BaseRouter {
   /// List of registered APIRouters
-  final List<APIRouter> _routers = [];
+  final List<RouterInterface> _routers = [];
 
   /// Register an APIRouter instance with the main router
-  void registerRouter(APIRouter router) {
+  void registerRouter(RouterInterface router) {
     _routers.add(router);
     log('Registered router with routes: ${router.routes}');
   }
