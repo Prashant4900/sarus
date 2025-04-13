@@ -1,21 +1,9 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:postgres/postgres.dart';
+import 'package:sarus/src/db/default_values.dart';
 
-import 'default_values.dart';
-
-/// {@category Introduction}
-/// {@category Database}
-/// {@category Repositories}
-/// {@category Migration}
 abstract class Database implements Session, SessionExecutor {
-  bool debugPrint;
-
-  Database._({
-    required this.debugPrint,
-  });
-
   factory Database({
     String? host,
     int? port,
@@ -48,22 +36,31 @@ abstract class Database implements Session, SessionExecutor {
   }
 
   factory Database.withOneConnection({
-    bool debugPrint,
     required Endpoint endpoint,
+    bool debugPrint,
     ConnectionSettings? connectionSettings,
   }) = _DatabaseWithOneConnection;
 
   factory Database.withPool({
+    required Pool<Connection> pool,
     bool debugPrint,
-    required Pool pool,
   }) = _DatabaseWithPool;
 
+  Database._({
+    required this.debugPrint,
+  });
+
   Future<void> open();
+
+  @override
+  Future<void> close({bool force = false});
+
+  bool debugPrint;
 
   void _printQuery(Object query) {
     if (query is! String) return;
     var offset = 0;
-    var q = query
+    final q = query
         .split('\n')
         .map((l) => l.trim())
         .where((l) => l.isNotEmpty)
@@ -78,15 +75,14 @@ abstract class Database implements Session, SessionExecutor {
 }
 
 class _DatabaseWithOneConnection extends Database {
+  _DatabaseWithOneConnection({
+    required this.endpoint,
+    super.debugPrint = false,
+    this.connectionSettings,
+  }) : super._();
   final Endpoint endpoint;
   final ConnectionSettings? connectionSettings;
   Future<Connection>? _connection;
-
-  _DatabaseWithOneConnection({
-    super.debugPrint = false,
-    required this.endpoint,
-    this.connectionSettings,
-  }) : super._();
 
   @override
   bool get isOpen => _connection != null;
@@ -104,7 +100,7 @@ class _DatabaseWithOneConnection extends Database {
     bool force = false,
   }) async {
     final connection = await _connection;
-    connection?.close(force: force);
+    await connection?.close(force: force);
     _connection = null;
   }
 
@@ -112,7 +108,7 @@ class _DatabaseWithOneConnection extends Database {
   Future<Statement> prepare(Object query) async {
     final connection = await open();
     if (debugPrint) _printQuery(query);
-    return await connection.prepare(query);
+    return connection.prepare(query);
   }
 
   @override
@@ -125,7 +121,7 @@ class _DatabaseWithOneConnection extends Database {
   }) async {
     final connection = await open();
     if (debugPrint) _printQuery(query);
-    return await connection.execute(
+    return connection.execute(
       query,
       parameters: parameters,
       ignoreRows: ignoreRows,
@@ -140,7 +136,7 @@ class _DatabaseWithOneConnection extends Database {
     SessionSettings? settings,
   }) async {
     final connection = await open();
-    return await connection.run(fn, settings: settings);
+    return connection.run(fn, settings: settings);
   }
 
   @override
@@ -149,7 +145,7 @@ class _DatabaseWithOneConnection extends Database {
     TransactionSettings? settings,
   }) async {
     final connection = await open();
-    return await connection.runTx(fn, settings: settings);
+    return connection.runTx(fn, settings: settings);
   }
 
   Future<Connection> _tryOpen() async {
@@ -163,12 +159,11 @@ class _DatabaseWithOneConnection extends Database {
 }
 
 class _DatabaseWithPool extends Database {
-  final Pool pool;
-
   _DatabaseWithPool({
-    super.debugPrint = false,
     required this.pool,
+    super.debugPrint = false,
   }) : super._();
+  final Pool<Connection> pool;
 
   @override
   bool get isOpen => pool.isOpen;
@@ -220,7 +215,7 @@ class _DatabaseWithPool extends Database {
   Future<void> close({
     bool force = false,
   }) async =>
-      await pool.close(force: force);
+      pool.close(force: force);
 
   @override
   Future<void> open() async {}

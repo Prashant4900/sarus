@@ -8,6 +8,5 @@ class AppRouter extends BaseRouter {
 
   void _registerRouter() {
     registerRouter(UserRouter());
-    registerRouter(ProductRouter());
   }
 }

@@ -10,6 +10,8 @@ dependencies:
   postgres: ^3.5.5
   shelf: ^1.4.2
   sqlite3: ^2.7.5
+  stormberry:
+    path: ../stormberry
 
 dev_dependencies:
   mocktail: ^1.0.4

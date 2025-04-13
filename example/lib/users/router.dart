@@ -18,14 +18,3 @@ class UserRouter extends FeatureRouter {
   Response _updateUser(Request request) => Response.ok('User updated');
   Response _deleteUser(Request request) => Response.ok('User deleted');
 }
-
-class ProductRouter extends FeatureRouter {
-  @override
-  void configureRoutes() {
-    addRoute(Method.get, '/products', _getAllProducts);
-    addRoute(Method.post, '/products', _createProduct);
-  }
-
-  Response _getAllProducts(Request request) => Response.ok('All products');
-  Response _createProduct(Request request) => Response.ok('Product created');
-}
