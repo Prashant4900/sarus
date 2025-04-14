@@ -40,8 +40,8 @@ class _UsersRepository extends BaseRepository
   @override
   Future<List<int>> insert(List<UsersInsertRequest> requests) async {
     if (requests.isEmpty) return [];
-    var values = QueryValues();
-    var rows = await db.execute(
+    final values = QueryValues();
+    final rows = await db.execute(
       Sql.named(
         'INSERT INTO "users" ( "first_name", "last_name", "email", "password", "phone", "created_at", "updated_at" )\n'
         'VALUES ${requests.map((r) => '( ${values.add(r.firstName)}:text, ${values.add(r.lastName)}:text, ${values.add(r.email)}:text, ${values.add(r.password)}:text, ${values.add(r.phone)}:text, ${values.add(r.createdAt)}:timestamp, ${values.add(r.updatedAt)}:timestamp )').join(', ')}\n'
@@ -49,7 +49,10 @@ class _UsersRepository extends BaseRepository
       ),
       parameters: values.values,
     );
-    var result = rows.map<int>((r) => TextEncoder.i.decode(r.toColumnMap()['id'])).toList();
+    final result =
+        rows
+            .map<int>((r) => TextEncoder.i.decode(r.toColumnMap()['id']))
+            .toList();
 
     return result;
   }
@@ -57,7 +60,7 @@ class _UsersRepository extends BaseRepository
   @override
   Future<void> update(List<UsersUpdateRequest> requests) async {
     if (requests.isEmpty) return;
-    var values = QueryValues();
+    final values = QueryValues();
     await db.execute(
       Sql.named(
         'UPDATE "users"\n'
@@ -104,8 +107,8 @@ class _AddressRepository extends BaseRepository
   @override
   Future<List<int>> insert(List<AddressInsertRequest> requests) async {
     if (requests.isEmpty) return [];
-    var values = QueryValues();
-    var rows = await db.execute(
+    final values = QueryValues();
+    final rows = await db.execute(
       Sql.named(
         'INSERT INTO "address" ( "is_default", "address_line1", "address_line2", "city", "state", "country", "zip_code", "created_at", "updated_at", "users_id" )\n'
         'VALUES ${requests.map((r) => '( ${values.add(r.isDefault)}:boolean, ${values.add(r.addressLine1)}:text, ${values.add(r.addressLine2)}:text, ${values.add(r.city)}:text, ${values.add(r.state)}:text, ${values.add(r.country)}:text, ${values.add(r.zipCode)}:text, ${values.add(r.createdAt)}:timestamp, ${values.add(r.updatedAt)}:timestamp, ${values.add(r.usersId)}:int8 )').join(', ')}\n'
@@ -113,7 +116,10 @@ class _AddressRepository extends BaseRepository
       ),
       parameters: values.values,
     );
-    var result = rows.map<int>((r) => TextEncoder.i.decode(r.toColumnMap()['id'])).toList();
+    final result =
+        rows
+            .map<int>((r) => TextEncoder.i.decode(r.toColumnMap()['id']))
+            .toList();
 
     return result;
   }
@@ -121,7 +127,7 @@ class _AddressRepository extends BaseRepository
   @override
   Future<void> update(List<AddressUpdateRequest> requests) async {
     if (requests.isEmpty) return;
-    var values = QueryValues();
+    final values = QueryValues();
     await db.execute(
       Sql.named(
         'UPDATE "address"\n'
@@ -137,12 +143,12 @@ class _AddressRepository extends BaseRepository
 
 class UsersInsertRequest {
   UsersInsertRequest({
-    this.firstName,
-    this.lastName,
     required this.email,
     required this.password,
     required this.phone,
     required this.createdAt,
+    this.firstName,
+    this.lastName,
     this.updatedAt,
   });
 
@@ -263,21 +269,22 @@ class UsersViewQueryable extends KeyedViewQueryable<UsersView, int> {
     phone: map.get('phone'),
     createdAt: map.get('created_at'),
     updatedAt: map.getOpt('updated_at'),
-    addresses: map.getListOpt('addresses', AddressViewQueryable().decoder) ?? const [],
+    addresses:
+        map.getListOpt('addresses', AddressViewQueryable().decoder) ?? const [],
   );
 }
 
 class UsersView {
   UsersView({
     required this.id,
-    this.firstName,
-    this.lastName,
     required this.email,
     required this.password,
     required this.phone,
     required this.createdAt,
-    this.updatedAt,
     required this.addresses,
+    this.firstName,
+    this.lastName,
+    this.updatedAt,
   });
 
   final int id;
