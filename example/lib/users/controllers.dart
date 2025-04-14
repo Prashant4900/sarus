@@ -1,24 +1,43 @@
 import 'dart:convert';
 
-import 'package:example/users/services.dart';
 import 'package:sarus/sarus.dart';
 
-class UserControllers {
-  UserControllers(this._service);
+part 'controllers.g.dart';
 
-  final UserServices _service;
+@Controller('/users')
+class UserController extends BaseController {
+  UserController() : super();
 
-  Future<Response> getUserById(Request request) async {
-    final userId = request.url.queryParameters['id'];
-
-    final user = await _service.getUserById(int.parse(userId!));
-
-    return Response.ok(
-      jsonEncode({
-        'id': user!.id,
-        'first_name': user.firstName,
-        'last_name': user.lastName,
-      }),
-    );
+  @Get('/<name>')
+  Future<Response> sayHello(Request request, String name) async {
+    return Response.ok(jsonEncode({'message': 'Hello $name'}));
   }
+
+  @Post('/')
+  Future<Response> createUser(Request request) async {
+    // Create user logic
+    return Response.ok(jsonEncode({'status': 'created'}));
+  }
+
+  @override
+  Router get router => _$userControllerRouter(this);
+}
+
+@Controller('/profiles')
+class ProfileController extends BaseController {
+  ProfileController() : super();
+
+  @Get('/<username>')
+  Future<Response> getProfile(Request request, String username) async {
+    return Response.ok(jsonEncode({'profile': 'Profile of $username'}));
+  }
+
+  @Post('/')
+  Future<Response> createProfile(Request request) async {
+    // Create profile logic
+    return Response.ok(jsonEncode({'status': 'profile created'}));
+  }
+
+  @override
+  Router get router => _$profileControllerRouter(this);
 }

@@ -7,9 +7,8 @@ environment:
   sdk: ^3.5.0
 
 dependencies:
-  postgres: ^3.5.5
+  meta: ^1.16.0
   shelf: ^1.4.2
-  sqlite3: ^2.7.5
   stormberry:
     path: ../stormberry
 
