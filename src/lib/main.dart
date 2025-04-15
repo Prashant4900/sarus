@@ -2,9 +2,6 @@ import 'package:example/config/router.dart';
 import 'package:example/setup.dart';
 import 'package:sarus/sarus.dart';
 
-// Create the main router
-// final _appRouter = AppRouter();
-
 void main() async {
   await setup();
 

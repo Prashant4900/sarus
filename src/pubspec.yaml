@@ -8,7 +8,6 @@ environment:
 
 dependencies:
   get_it: ^8.0.3
-  postgres: ^3.5.6
   sarus:
     path: ../packages/sarus
   stormberry:

@@ -41,8 +41,8 @@ class Router {
         var handlerWithMiddleware = route.controller.handler;
 
         // Apply route-specific middleware first (if any)
-        if (route.middleware.isNotEmpty) {
-          for (final middleware in route.middleware) {
+        if (route.middlewares.isNotEmpty) {
+          for (final middleware in route.middlewares) {
             handlerWithMiddleware = middleware(handlerWithMiddleware);
           }
         }
@@ -83,7 +83,7 @@ class Router {
       var handlerWithMiddleware = route.controller.handler;
 
       // Apply route-specific middleware
-      for (final middleware in route.middleware) {
+      for (final middleware in route.middlewares) {
         handlerWithMiddleware = middleware(handlerWithMiddleware);
       }
 
@@ -105,12 +105,12 @@ class Route {
   ///
   /// [controller] is the controller that will handle requests to this route.
   /// [prefix] is the URL prefix for this route (must start with '/').
-  /// [middleware] is a list of middleware that will be applied to this route only.
+  /// [middlewares] is a list of middleware that will be applied to this route only.
   /// [name] is an optional name for this route, useful for logging and debugging.
   Route({
     required this.controller,
     this.prefix = '/',
-    this.middleware = const [],
+    this.middlewares = const [],
     this.name,
   }) {
     if (!prefix.startsWith('/')) {
@@ -122,7 +122,7 @@ class Route {
 
   final BaseController controller;
   final String prefix;
-  final List<Middleware> middleware;
+  final List<Middleware> middlewares;
   final String? name;
 
   @override
