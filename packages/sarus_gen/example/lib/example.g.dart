@@ -6,8 +6,8 @@ part of 'example.dart';
 // RouteGenerator
 // **************************************************************************
 
-Router _$userControllerRouter(UserController controller) {
-  final router = Router();
+RouterConfig _$userControllerRouter(UserController controller) {
+  final router = RouterConfig();
 
   router.get('/users/<name>', controller.sayHello);
   router.post('/users/', controller.createUser);

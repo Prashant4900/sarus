@@ -20,5 +20,5 @@ class UserController extends BaseController {
   }
 
   @override
-  Router get router => _$userControllerRouter(this);
+  RouterConfig get router => _$userControllerRouter(this);
 }

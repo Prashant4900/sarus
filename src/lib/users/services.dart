@@ -1,24 +1,30 @@
-import 'dart:convert';
-
-import 'package:example/users/models.dart' hide AddressRepository;
-import 'package:example/users/repositories.dart';
+import 'package:example/users/models.dart';
+import 'package:sarus/sarus.dart';
 import 'package:stormberry/stormberry.dart';
 
-class UserServices {
-  UserServices(this._userRepo, this._addressRepo);
+class UserService
+    extends
+        CoreRepository<UsersInsertRequest, UsersUpdateRequest, UsersView, int> {
+  UserService(Session db)
+    : super(
+        repository: db.userses,
+        queryOne: (id) => db.userses.queryUsers(id),
+        queryMany: (params) => db.userses.queryUserses(params),
+      );
+}
 
-  final UserRepository _userRepo;
-  final AddressRepository _addressRepo;
-
-  Future<UsersView?> getUserById(int id) => _userRepo.get(id);
-
-  Future<List<UsersView>> getAllUsers() => _userRepo.getAll();
-
-  Future<List<AddressView>> getUserAddresses(int userId) async {
-    final address = _addressRepo.getAll(
-      QueryParams(where: jsonEncode({'users_id': userId})),
-    );
-
-    return address;
-  }
+class AddressService
+    extends
+        CoreRepository<
+          AddressInsertRequest,
+          AddressUpdateRequest,
+          AddressView,
+          int
+        > {
+  AddressService(Session db)
+    : super(
+        repository: db.addresses,
+        queryOne: (id) => db.addresses.queryAddress(id),
+        queryMany: (params) => db.addresses.queryAddresses(params),
+      );
 }

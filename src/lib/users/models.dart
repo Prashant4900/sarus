@@ -2,7 +2,13 @@ import 'package:stormberry/stormberry.dart';
 
 part 'models.schema.dart';
 
-@Model(tableName: 'users')
+@Model(
+  tableName: 'users',
+  indexes: [
+    TableIndex(name: 'email', unique: true, columns: ['email']),
+    TableIndex(name: 'phone', unique: true, columns: ['phone']),
+  ],
+)
 abstract class Users {
   @PrimaryKey()
   @AutoIncrement()

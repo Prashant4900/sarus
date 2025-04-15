@@ -1,16 +1,19 @@
 import 'package:example/config/router.dart';
+import 'package:example/setup.dart';
 import 'package:sarus/sarus.dart';
 
+// Create the main router
+// final _appRouter = AppRouter();
+
 void main() async {
-  // Create the main router
-  final appRouter = AppRouter();
+  await setup();
 
   // Use the main router's handler in the pipeline
   final handler = const Pipeline()
       .addMiddleware(logRequests())
-      .addHandler(appRouter.handler);
+      .addHandler(router.handler);
 
-  final server = await serve(handler, 'localhost', 8080, shared: true);
+  final server = await serve(handler, 'localhost', 8080);
 
   // Enable content compression
   server.autoCompress = true;

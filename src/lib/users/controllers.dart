@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:example/setup.dart';
+import 'package:example/users/models.dart';
+import 'package:example/users/services.dart';
 import 'package:sarus/sarus.dart';
 
 part 'controllers.g.dart';
@@ -8,36 +11,48 @@ part 'controllers.g.dart';
 class UserController extends BaseController {
   UserController() : super();
 
-  @Get('/<name>')
-  Future<Response> sayHello(Request request, String name) async {
-    return Response.ok(jsonEncode({'message': 'Hello $name'}));
-  }
+  final userRepo = getIt.get<UserService>();
 
-  @Post('/')
+  @Post('/create')
   Future<Response> createUser(Request request) async {
-    // Create user logic
-    return Response.ok(jsonEncode({'status': 'created'}));
+    final response = await request.readAsString();
+    final body = jsonDecode(response) as Map<String, dynamic>;
+
+    final firstName = body['first_name'] as String?;
+    final lastName = body['last_name'] as String?;
+    final email = body['email'] as String;
+    final password = body['password'] as String;
+    final phone = body['phone'] as String;
+
+    final newUser = UsersInsertRequest(
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+      phone: phone,
+      createdAt: DateTime.now(),
+    );
+
+    try {
+      final userId = await userRepo.insert(newUser);
+
+      return Response.ok(jsonEncode({'user_id': userId}));
+    } catch (e) {
+      return Response.badRequest(body: jsonEncode({'error': e.toString()}));
+    }
+  }
+
+  @Delete('/<user-id>')
+  Future<Response> deleteUser(Request request, String userID) async {
+    try {
+      await userRepo.delete(int.tryParse(userID) ?? 0);
+
+      return Response.ok(jsonEncode({'message': 'User Successfully deleted.'}));
+    } catch (e) {
+      return Response.badRequest(body: jsonEncode({'error': e.toString()}));
+    }
   }
 
   @override
-  Router get router => _$userControllerRouter(this);
-}
-
-@Controller('/profiles')
-class ProfileController extends BaseController {
-  ProfileController() : super();
-
-  @Get('/<username>')
-  Future<Response> getProfile(Request request, String username) async {
-    return Response.ok(jsonEncode({'profile': 'Profile of $username'}));
-  }
-
-  @Post('/')
-  Future<Response> createProfile(Request request) async {
-    // Create profile logic
-    return Response.ok(jsonEncode({'status': 'profile created'}));
-  }
-
-  @override
-  Router get router => _$profileControllerRouter(this);
+  RouterConfig get router => _$userControllerRouter(this);
 }

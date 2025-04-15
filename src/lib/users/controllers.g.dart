@@ -8,20 +8,11 @@ part of 'controllers.dart';
 
 // ignore_for_file: type=lint
 
-Router _$userControllerRouter(UserController controller) {
-  final router = Router();
+RouterConfig _$userControllerRouter(UserController controller) {
+  final router = RouterConfig();
 
-  router.get('/users/<name>', controller.sayHello);
-  router.post('/users/', controller.createUser);
-
-  return router;
-}
-
-Router _$profileControllerRouter(ProfileController controller) {
-  final router = Router();
-
-  router.get('/profiles/<username>', controller.getProfile);
-  router.post('/profiles/', controller.createProfile);
+  router.post('/users/create', controller.createUser);
+  router.delete('/users/<user-id>', controller.deleteUser);
 
   return router;
 }

@@ -1,7 +1,6 @@
 import 'dart:async';
 
-import 'package:sarus/src/core/methods.dart';
-import 'package:shelf/shelf.dart';
+import 'package:shelf/shelf.dart' as shelf;
 
 /// Check if the [regexp] is non-capturing.
 bool _isNoCapture(String regexp) {
@@ -15,12 +14,12 @@ bool _isNoCapture(String regexp) {
 /// This class implements the logic for matching the path pattern.
 class RouterEntry {
   factory RouterEntry(
-    HttpMethod httpMethod,
+    String verb,
     String route,
     Function handler, {
-    Middleware? middleware,
+    shelf.Middleware? middleware,
   }) {
-    middleware = middleware ?? ((Handler fn) => fn);
+    middleware = middleware ?? ((shelf.Handler fn) => fn);
 
     if (!route.startsWith('/')) {
       throw ArgumentError.value(
@@ -49,7 +48,7 @@ class RouterEntry {
     final routePattern = RegExp('^$patternBuffer\$');
 
     return RouterEntry._(
-      httpMethod,
+      verb,
       route,
       handler,
       middleware,
@@ -59,7 +58,7 @@ class RouterEntry {
   } // exposed for using generator.
 
   RouterEntry._(
-    this.httpMethod,
+    this.verb,
     this.route,
     this._handler,
     this._middleware,
@@ -70,10 +69,10 @@ class RouterEntry {
   /// Pattern for parsing the route pattern
   static final RegExp _parser = RegExp(r'([^<]*)(?:<([^>|]+)(?:\|([^>]*))?>)?');
 
-  final HttpMethod httpMethod;
+  final String verb;
   final String route;
   final Function _handler;
-  final Middleware _middleware;
+  final shelf.Middleware _middleware;
 
   /// Expression that the request path must match.
   ///
@@ -104,19 +103,22 @@ class RouterEntry {
   }
 
   // invoke handler with given request and params
-  Future<Response> invoke(Request request, Map<String, String> params) async {
+  Future<shelf.Response> invoke(
+    shelf.Request request,
+    Map<String, String> params,
+  ) async {
     final modifiedRequest =
         request.change(context: {'shelf_router/params': params});
 
     return await _middleware((request) async {
-      if (_handler is Handler || _params.isEmpty) {
+      if (_handler is shelf.Handler || _params.isEmpty) {
         // ignore: avoid_dynamic_calls
-        return await _handler(request) as Response;
+        return await _handler(request) as shelf.Response;
       }
       return await Function.apply(_handler, [
         request,
         ..._params.map((n) => params[n]),
-      ]) as Response;
+      ]) as shelf.Response;
     })(modifiedRequest);
   }
 }
