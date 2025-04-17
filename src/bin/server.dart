@@ -1,22 +1,17 @@
-import 'dart:io';
-
-import 'package:example/config/router.dart';
-import 'package:example/setup.dart';
-import 'package:sarus/sarus.dart';
+import 'package:example/sarus_application.dart';
 
 void main(List<String> args) async {
-  await setup();
+  // Create an instance of the SarusApplication
+  final application = SarusApplication();
 
-  // Use any available host or container IP (usually `0.0.0.0`).
-  final ip = InternetAddress.anyIPv4;
+  // Set up the application
+  await application.setup();
 
-  // Configure a pipeline that logs requests.
-  final handler = const Pipeline()
-      .addMiddleware(logRequests())
-      .addHandler(router.handler);
+  // Start the server
+  final server = await application.run();
 
-  // For running in containers, we respect the PORT environment variable.
-  final port = int.parse(Platform.environment['PORT'] ?? '8080');
-  final server = await serve(handler, ip, port);
+  // Enable content compression
+  server.autoCompress = true;
+
   print('Server listening on port ${server.port}');
 }

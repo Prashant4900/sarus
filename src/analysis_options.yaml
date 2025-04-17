@@ -4,3 +4,4 @@ analyzer:
   errors:
     public_member_api_docs: ignore
     avoid_print: ignore
+    cascade_invocations: ignore

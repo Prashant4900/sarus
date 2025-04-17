@@ -106,10 +106,10 @@ class MakeMigrationsCommand extends Command<int> {
 Future<bool> isAppRegistered(String appLabel) async {
   try {
     final basePath = Directory.current.path;
-    final sarusFile = File(path.join(basePath, 'config.yml'));
+    final sarusFile = File(path.join(basePath, 'application.yaml'));
 
     if (!sarusFile.existsSync()) {
-      throw Exception('config.yml not found');
+      throw Exception('application.yaml not found');
     }
 
     final sarusContent = await sarusFile.readAsString();
@@ -117,12 +117,12 @@ Future<bool> isAppRegistered(String appLabel) async {
 
     // Check if the 'apps' key exists and is a list
     if (!sarusConfig.containsKey('apps')) {
-      throw Exception('App "$appLabel" is not registered in config.yml');
+      throw Exception('App "$appLabel" is not registered in application.yaml');
     }
 
     final apps = sarusConfig['apps'];
     if (apps is! YamlList) {
-      throw Exception('Invalid apps structure in config.yml');
+      throw Exception('Invalid apps structure in application.yaml');
     }
 
     // Check if the appLabel exists in the apps list

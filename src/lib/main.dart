@@ -1,19 +1,27 @@
-import 'package:example/config/router.dart';
-import 'package:example/setup.dart';
-import 'package:sarus/sarus.dart';
+import 'package:example/sarus_application.dart';
 
 void main() async {
-  await setup();
+  // await setup();
 
-  // Use the main router's handler in the pipeline
-  final handler = const Pipeline()
-      .addMiddleware(logRequests())
-      .addHandler(router.handler);
+  // Create an instance of the SarusApplication
+  final application = SarusApplication();
 
-  final server = await serve(handler, 'localhost', 8080);
+  try {
+    // Set up the application
+    await application.setup();
 
-  // Enable content compression
-  server.autoCompress = true;
+    // Start the server
+    final server = await application.run();
 
-  print('Serving at http://${server.address.host}:${server.port}');
+    // Enable content compression
+    server.autoCompress = true;
+
+    print('Serving at http://${server.address.host}:${server.port}');
+  } catch (e) {
+    print('Error starting server: $e');
+
+    print('Shutting down server...');
+    // Close the application
+    await application.close();
+  }
 }

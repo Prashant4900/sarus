@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:example/setup.dart';
 import 'package:example/users/models.dart';
 import 'package:example/users/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:sarus/sarus.dart';
 
 part 'controllers.g.dart';
@@ -11,7 +11,7 @@ part 'controllers.g.dart';
 class UserController extends BaseController {
   UserController() : super();
 
-  final userRepo = getIt.get<UserService>();
+  final userRepo = GetIt.instance.get<UserService>();
 
   @Post('/create')
   Future<Response> createUser(Request request) async {
