@@ -35,9 +35,9 @@ class RouteGenerator extends GeneratorForAnnotation<Controller> {
 
     // Generate the router function
     buffer.writeln(
-      'Router _\$${formattedClassName}Router($className controller) {',
+      'RouterConfig _\$${formattedClassName}RouterConfig($className controller) {',
     );
-    buffer.writeln('  final router = Router();');
+    buffer.writeln('  final routerConfig = RouterConfig();');
     buffer.writeln();
 
     // Process all methods with route annotations
@@ -89,7 +89,7 @@ class RouteGenerator extends GeneratorForAnnotation<Controller> {
     }
 
     buffer.writeln();
-    buffer.writeln('  return router;');
+    buffer.writeln('  return routerConfig;');
     buffer.writeln('}');
 
     // Format the generated code
@@ -118,7 +118,8 @@ class RouteGenerator extends GeneratorForAnnotation<Controller> {
   ) {
     final fullPath = controllerPath +
         (methodPath.startsWith('/') ? methodPath : '/$methodPath');
-    buffer
-        .writeln("  router.$httpMethod('$fullPath', controller.$handlerName);");
+    buffer.writeln(
+      "  routerConfig.$httpMethod('$fullPath', controller.$handlerName);",
+    );
   }
 }

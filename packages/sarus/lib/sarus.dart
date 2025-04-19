@@ -3,6 +3,7 @@ library;
 
 export 'package:auto_injector/auto_injector.dart';
 export 'package:shelf/shelf.dart';
+export 'package:shelf_hotreload/shelf_hotreload.dart';
 
 // Controllers
 export './src/controller/base_controller.dart';

@@ -3,17 +3,17 @@ import 'dart:io';
 import 'package:example/config/db.dart';
 import 'package:example/config/router.dart';
 import 'package:example/users/services.dart';
-import 'package:get_it/get_it.dart';
 import 'package:sarus/sarus.dart';
 
-class SarusApplication implements Application {
-  final getIt = GetIt.instance;
-  final _injector = AutoInjector();
+final injector = AutoInjector();
 
+class SarusApplication implements Application {
   @override
   Future<HttpServer> run() async {
     try {
-      final handler = const Pipeline().addHandler(router.handler);
+      final handler = const Pipeline()
+          .addMiddleware(logRequests())
+          .addHandler(router.handler);
 
       return await serve(handler, InternetAddress.anyIPv4, 8080);
     } catch (e) {
@@ -27,18 +27,13 @@ class SarusApplication implements Application {
     try {
       final db = Database();
 
-      _injector.addLazySingleton<Database>(Database.new);
-
-      _injector.addLazySingleton<Database>(() async {
-        return db.getConnection();
-      });
-
-      getIt.registerSingleton<UserService>(
-        UserService(await db.getConnection()),
-      );
+      final userService = UserService(await db.getConnection());
+      injector.addSingleton<UserService>(() => userService);
     } catch (e) {
       print('Failed to setup dependencies injection: $e');
     }
+
+    injector.commit();
   }
 
   @override

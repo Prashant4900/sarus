@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:example/sarus_application.dart';
 import 'package:example/users/models.dart';
 import 'package:example/users/services.dart';
-import 'package:get_it/get_it.dart';
 import 'package:sarus/sarus.dart';
 
 part 'controllers.g.dart';
@@ -11,7 +11,7 @@ part 'controllers.g.dart';
 class UserController extends BaseController {
   UserController() : super();
 
-  final userRepo = GetIt.instance.get<UserService>();
+  final userRepo = injector.get<UserService>();
 
   @Post('/create')
   Future<Response> createUser(Request request) async {
@@ -47,12 +47,14 @@ class UserController extends BaseController {
     try {
       await userRepo.delete(int.tryParse(userID) ?? 0);
 
-      return Response.ok(jsonEncode({'message': 'User Successfully deleted.'}));
+      return Response.ok(
+        jsonEncode({'message': 'User Successfully deleted from DB.'}),
+      );
     } catch (e) {
       return Response.badRequest(body: jsonEncode({'error': e.toString()}));
     }
   }
 
   @override
-  RouterConfig get router => _$userControllerRouter(this);
+  RouterConfig get router => _$userControllerRouterConfig(this);
 }

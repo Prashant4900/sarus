@@ -40,19 +40,16 @@ class _UsersRepository extends BaseRepository
   @override
   Future<List<int>> insert(List<UsersInsertRequest> requests) async {
     if (requests.isEmpty) return [];
-    final values = QueryValues();
-    final rows = await db.execute(
+    var values = QueryValues();
+    var rows = await db.execute(
       Sql.named(
-        '''INSERT INTO "users" ( "first_name", "last_name", "email", "password", "phone", "created_at", "updated_at" )\n'''
-        '''VALUES ${requests.map((r) => '( ${values.add(r.firstName)}:text, ${values.add(r.lastName)}:text, ${values.add(r.email)}:text, ${values.add(r.password)}:text, ${values.add(r.phone)}:text, ${values.add(r.createdAt)}:timestamp, ${values.add(r.updatedAt)}:timestamp )').join(', ')}\n'''
+        'INSERT INTO "users" ( "first_name", "last_name", "email", "password", "phone", "created_at", "updated_at" )\n'
+        'VALUES ${requests.map((r) => '( ${values.add(r.firstName)}:text, ${values.add(r.lastName)}:text, ${values.add(r.email)}:text, ${values.add(r.password)}:text, ${values.add(r.phone)}:text, ${values.add(r.createdAt)}:timestamp, ${values.add(r.updatedAt)}:timestamp )').join(', ')}\n'
         'RETURNING "id"',
       ),
       parameters: values.values,
     );
-    final result =
-        rows
-            .map<int>((r) => TextEncoder.i.decode(r.toColumnMap()['id']))
-            .toList();
+    var result = rows.map<int>((r) => TextEncoder.i.decode(r.toColumnMap()['id'])).toList();
 
     return result;
   }
@@ -60,14 +57,14 @@ class _UsersRepository extends BaseRepository
   @override
   Future<void> update(List<UsersUpdateRequest> requests) async {
     if (requests.isEmpty) return;
-    final values = QueryValues();
+    var values = QueryValues();
     await db.execute(
       Sql.named(
         'UPDATE "users"\n'
-        '''SET "first_name" = COALESCE(UPDATED."first_name", "users"."first_name"), "last_name" = COALESCE(UPDATED."last_name", "users"."last_name"), "email" = COALESCE(UPDATED."email", "users"."email"), "password" = COALESCE(UPDATED."password", "users"."password"), "phone" = COALESCE(UPDATED."phone", "users"."phone"), "created_at" = COALESCE(UPDATED."created_at", "users"."created_at"), "updated_at" = COALESCE(UPDATED."updated_at", "users"."updated_at")\n'''
-        '''FROM ( VALUES ${requests.map((r) => '( ${values.add(r.id)}:int8::int8, ${values.add(r.firstName)}:text::text, ${values.add(r.lastName)}:text::text, ${values.add(r.email)}:text::text, ${values.add(r.password)}:text::text, ${values.add(r.phone)}:text::text, ${values.add(r.createdAt)}:timestamp::timestamp, ${values.add(r.updatedAt)}:timestamp::timestamp )').join(', ')} )\n'''
-        '''AS UPDATED("id", "first_name", "last_name", "email", "password", "phone", "created_at", "updated_at")\n'''
-        '''WHERE "users"."id" = UPDATED."id"''',
+        'SET "first_name" = COALESCE(UPDATED."first_name", "users"."first_name"), "last_name" = COALESCE(UPDATED."last_name", "users"."last_name"), "email" = COALESCE(UPDATED."email", "users"."email"), "password" = COALESCE(UPDATED."password", "users"."password"), "phone" = COALESCE(UPDATED."phone", "users"."phone"), "created_at" = COALESCE(UPDATED."created_at", "users"."created_at"), "updated_at" = COALESCE(UPDATED."updated_at", "users"."updated_at")\n'
+        'FROM ( VALUES ${requests.map((r) => '( ${values.add(r.id)}:int8::int8, ${values.add(r.firstName)}:text::text, ${values.add(r.lastName)}:text::text, ${values.add(r.email)}:text::text, ${values.add(r.password)}:text::text, ${values.add(r.phone)}:text::text, ${values.add(r.createdAt)}:timestamp::timestamp, ${values.add(r.updatedAt)}:timestamp::timestamp )').join(', ')} )\n'
+        'AS UPDATED("id", "first_name", "last_name", "email", "password", "phone", "created_at", "updated_at")\n'
+        'WHERE "users"."id" = UPDATED."id"',
       ),
       parameters: values.values,
     );
@@ -107,19 +104,16 @@ class _AddressRepository extends BaseRepository
   @override
   Future<List<int>> insert(List<AddressInsertRequest> requests) async {
     if (requests.isEmpty) return [];
-    final values = QueryValues();
-    final rows = await db.execute(
+    var values = QueryValues();
+    var rows = await db.execute(
       Sql.named(
-        '''INSERT INTO "address" ( "is_default", "address_line1", "address_line2", "city", "state", "country", "zip_code", "created_at", "updated_at", "users_id" )\n'''
-        '''VALUES ${requests.map((r) => '( ${values.add(r.isDefault)}:boolean, ${values.add(r.addressLine1)}:text, ${values.add(r.addressLine2)}:text, ${values.add(r.city)}:text, ${values.add(r.state)}:text, ${values.add(r.country)}:text, ${values.add(r.zipCode)}:text, ${values.add(r.createdAt)}:timestamp, ${values.add(r.updatedAt)}:timestamp, ${values.add(r.usersId)}:int8 )').join(', ')}\n'''
-        '''RETURNING "id"''',
+        'INSERT INTO "address" ( "is_default", "address_line1", "address_line2", "city", "state", "country", "zip_code", "created_at", "updated_at", "users_id" )\n'
+        'VALUES ${requests.map((r) => '( ${values.add(r.isDefault)}:boolean, ${values.add(r.addressLine1)}:text, ${values.add(r.addressLine2)}:text, ${values.add(r.city)}:text, ${values.add(r.state)}:text, ${values.add(r.country)}:text, ${values.add(r.zipCode)}:text, ${values.add(r.createdAt)}:timestamp, ${values.add(r.updatedAt)}:timestamp, ${values.add(r.usersId)}:int8 )').join(', ')}\n'
+        'RETURNING "id"',
       ),
       parameters: values.values,
     );
-    final result =
-        rows
-            .map<int>((r) => TextEncoder.i.decode(r.toColumnMap()['id']))
-            .toList();
+    var result = rows.map<int>((r) => TextEncoder.i.decode(r.toColumnMap()['id'])).toList();
 
     return result;
   }
@@ -127,7 +121,7 @@ class _AddressRepository extends BaseRepository
   @override
   Future<void> update(List<AddressUpdateRequest> requests) async {
     if (requests.isEmpty) return;
-    final values = QueryValues();
+    var values = QueryValues();
     await db.execute(
       Sql.named(
         'UPDATE "address"\n'
@@ -143,12 +137,12 @@ class _AddressRepository extends BaseRepository
 
 class UsersInsertRequest {
   UsersInsertRequest({
+    this.firstName,
+    this.lastName,
     required this.email,
     required this.password,
     required this.phone,
     required this.createdAt,
-    this.firstName,
-    this.lastName,
     this.updatedAt,
   });
 
@@ -269,22 +263,21 @@ class UsersViewQueryable extends KeyedViewQueryable<UsersView, int> {
     phone: map.get('phone'),
     createdAt: map.get('created_at'),
     updatedAt: map.getOpt('updated_at'),
-    addresses:
-        map.getListOpt('addresses', AddressViewQueryable().decoder) ?? const [],
+    addresses: map.getListOpt('addresses', AddressViewQueryable().decoder) ?? const [],
   );
 }
 
 class UsersView {
   UsersView({
     required this.id,
+    this.firstName,
+    this.lastName,
     required this.email,
     required this.password,
     required this.phone,
     required this.createdAt,
-    required this.addresses,
-    this.firstName,
-    this.lastName,
     this.updatedAt,
+    required this.addresses,
   });
 
   final int id;
