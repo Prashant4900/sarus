@@ -1,13 +1,15 @@
 import 'dart:io';
 
 import 'package:example/sarus_application.dart';
+import 'package:sarus/sarus.dart';
 
 void main() async {
   // Create an instance of the SarusApplication
   final application = SarusApplication();
 
   try {
-    await setup(application);
+    withHotreload(() => setup(application));
+    // await setup(application);
   } catch (e) {
     print('Error starting server: $e');
 

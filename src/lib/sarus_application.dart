@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:example/config/db.dart';
 import 'package:example/config/router.dart';
 import 'package:example/users/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:sarus/sarus.dart';
 
-final injector = AutoInjector();
+final injector = GetIt.instance;
 
 class SarusApplication implements Application {
   @override
@@ -28,12 +29,10 @@ class SarusApplication implements Application {
       final db = Database();
 
       final userService = UserService(await db.getConnection());
-      injector.addSingleton<UserService>(() => userService);
+      injector.registerSingleton<UserService>(userService);
     } catch (e) {
       print('Failed to setup dependencies injection: $e');
     }
-
-    injector.commit();
   }
 
   @override

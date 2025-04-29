@@ -22,13 +22,13 @@ dry-run:
 .PHONY: dev
 dev:
 	@echo "\033[1;34mRunning the development server...\033[0m"
-	dart run lib/main.dart
+	dart run --enable-vm-service lib/main.dart
 	@echo "\033[1;32m✅ Done.\033[0m"
 
 .PHONY: run
 run:
 	@echo "\033[1;34mRunning the server...\033[0m"
-	dart run bin/server.dart
+	dart run --enable-vm-service bin/server.dart
 	@echo "\033[1;32m✅ Done.\033[0m"
 
 .PHONY: gen

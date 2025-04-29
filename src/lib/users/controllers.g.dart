@@ -11,6 +11,7 @@ part of 'controllers.dart';
 RouterConfig _$userControllerRouterConfig(UserController controller) {
   final routerConfig = RouterConfig();
 
+  routerConfig.get('/users/hello', controller.hello);
   routerConfig.post('/users/create', controller.createUser);
   routerConfig.delete('/users/<user-id>', controller.deleteUser);
 

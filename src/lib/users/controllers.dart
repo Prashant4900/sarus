@@ -13,6 +13,17 @@ class UserController extends BaseController {
 
   final userRepo = injector.get<UserService>();
 
+  @Get('/hello')
+  Future<Response> hello(Request request) async {
+    return Response.ok(
+      jsonEncode({
+        'message': 'Hello from UserController',
+        'timestamp': DateTime.now().toIso8601String(),
+        'method': request.method,
+      }),
+    );
+  }
+
   @Post('/create')
   Future<Response> createUser(Request request) async {
     final response = await request.readAsString();

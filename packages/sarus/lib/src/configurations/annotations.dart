@@ -1,9 +1,5 @@
 import 'dart:io';
 
-class Configuration {
-  const Configuration();
-}
-
 abstract class Application {
   Future<HttpServer> run();
 
