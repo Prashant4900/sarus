@@ -1,12 +1,3 @@
-# 🎨 Common ANSI Colors:
-# \033[0m – Reset
-# \033[1;31m – Bright Red
-# \033[1;32m – Bright Green
-# \033[1;33m – Bright Yellow
-# \033[1;34m – Bright Blue
-# \033[1;35m – Bright Magenta
-# \033[1;36m – Bright Cyan
-
 .PHONY: migrate
 migrate:
 	@echo "\033[1;34mRunning migrations...\033[0m"

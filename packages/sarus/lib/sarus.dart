@@ -3,6 +3,7 @@ library sarus;
 
 export 'package:shelf/shelf.dart';
 export 'package:shelf_hotreload/shelf_hotreload.dart';
+export 'package:stormberry/stormberry.dart';
 
 // Controllers
 export './src/controller/base_controller.dart';

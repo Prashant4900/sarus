@@ -1,12 +1,7 @@
 import 'dart:io';
 
-import 'package:example/config/db.dart';
 import 'package:example/config/router.dart';
-import 'package:example/users/services.dart';
-import 'package:get_it/get_it.dart';
-import 'package:sarus/sarus.dart' hide Database;
-
-final injector = GetIt.instance;
+import 'package:sarus/sarus.dart';
 
 class SarusApplication implements Application {
   @override
@@ -25,16 +20,13 @@ class SarusApplication implements Application {
 
   @override
   Future<void> setup() async {
-    try {
-      final db = Database();
-
-      final userService = UserService(await db.getConnection());
-      injector.registerSingleton<UserService>(userService);
-    } catch (e) {
+    try {} catch (e) {
       print('Failed to setup dependencies injection: $e');
     }
   }
 
   @override
-  Future<void> close() async {}
+  Future<void> close() async {
+    print('Shutting down server...');
+  }
 }

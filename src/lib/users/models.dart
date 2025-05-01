@@ -1,4 +1,4 @@
-import 'package:stormberry/stormberry.dart';
+import 'package:sarus/sarus.dart';
 
 part 'models.schema.dart';
 
@@ -23,6 +23,8 @@ abstract class Users {
   String get password;
 
   String get phone;
+
+  int get age;
 
   DateTime get createdAt;
 
