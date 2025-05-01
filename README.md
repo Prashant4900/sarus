@@ -1,5 +1,5 @@
-[![Dart Frog Logo][logo_white]][sarus_link_dark]
-[![Dart Frog Logo][logo_black]][sarus_link_light]
+[![Dart Frog Logo][logo_white]][sarus_link_light]
+[![Dart Frog Logo][logo_black]][sarus_link_dark]
 
 [![ci][ci_badge]][ci_link]
 [![coverage][coverage_badge]][ci_link]
