@@ -19,10 +19,10 @@ For official documentation, please visit https://dartfrog.vgv.dev.
 
 | Package                                                                                                         | Pub                                                                                                                    |
 | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| [sarus](https://github.com/verygoodopensource/dart_frog/tree/main/packages/dart_frog)                       | [![pub package](https://img.shields.io/pub/v/dart_frog.svg)](https://pub.dev/packages/dart_frog)                       |
-| [sarus_gen](https://github.com/verygoodopensource/dart_frog/tree/main/packages/dart_frog_gen)               | [![pub package](https://img.shields.io/pub/v/dart_frog_gen.svg)](https://pub.dev/packages/dart_frog_gen)               |
-| [sarus_cli](https://github.com/verygoodopensource/dart_frog/tree/main/packages/dart_frog_cli)               | [![pub package](https://img.shields.io/pub/v/dart_frog_cli.svg)](https://pub.dev/packages/dart_frog_cli)               |
-| [stormberry](https://github.com/verygoodopensource/dart_frog/tree/main/packages/dart_frog_web_socket) | [![pub package](https://img.shields.io/pub/v/dart_frog_web_socket.svg)](https://pub.dev/packages/dart_frog_web_socket) |
+| [sarus](https://github.com/verygoodopensource/dart_frog/tree/main/packages/dart_frog)                           | [![pub package](https://img.shields.io/pub/v/dart_frog.svg)](https://pub.dev/packages/dart_frog)                       |
+| [sarus_gen](https://github.com/verygoodopensource/dart_frog/tree/main/packages/dart_frog_gen)                   | [![pub package](https://img.shields.io/pub/v/dart_frog_gen.svg)](https://pub.dev/packages/dart_frog_gen)               |
+| [sarus_cli](https://github.com/verygoodopensource/dart_frog/tree/main/packages/dart_frog_cli)                   | [![pub package](https://img.shields.io/pub/v/dart_frog_cli.svg)](https://pub.dev/packages/dart_frog_cli)               |
+| [stormberry](https://github.com/verygoodopensource/dart_frog/tree/main/packages/dart_frog_web_socket)           | [![pub package](https://img.shields.io/pub/v/dart_frog_web_socket.svg)](https://pub.dev/packages/dart_frog_web_socket) |
 
 
 ## Quick Start 🚀
