@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:stormberry/stormberry.dart';
+import 'package:sarus/sarus.dart';
 
 class Database {
   final _conn = Connection.open(

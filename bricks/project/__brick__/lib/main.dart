@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:example/sarus_application.dart';
 import 'package:sarus/sarus.dart';
+import 'package:{{name}}/sarus_application.dart';
 
 void main() async {
   // Create an instance of the SarusApplication
