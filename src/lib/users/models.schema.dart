@@ -43,8 +43,8 @@ class _UsersRepository extends BaseRepository
     final values = QueryValues();
     final rows = await db.execute(
       Sql.named(
-        'INSERT INTO "users" ( "first_name", "last_name", "email", "password", "phone", "created_at", "updated_at" )\n'
-        'VALUES ${requests.map((r) => '( ${values.add(r.firstName)}:text, ${values.add(r.lastName)}:text, ${values.add(r.email)}:text, ${values.add(r.password)}:text, ${values.add(r.phone)}:text, ${values.add(r.createdAt)}:timestamp, ${values.add(r.updatedAt)}:timestamp )').join(', ')}\n'
+        'INSERT INTO "users" ( "first_name", "last_name", "email", "password", "phone", "age", "created_at", "updated_at" )\n'
+        'VALUES ${requests.map((r) => '( ${values.add(r.firstName)}:text, ${values.add(r.lastName)}:text, ${values.add(r.email)}:text, ${values.add(r.password)}:text, ${values.add(r.phone)}:text, ${values.add(r.age)}:int8, ${values.add(r.createdAt)}:timestamp, ${values.add(r.updatedAt)}:timestamp )').join(', ')}\n'
         'RETURNING "id"',
       ),
       parameters: values.values,
@@ -64,9 +64,9 @@ class _UsersRepository extends BaseRepository
     await db.execute(
       Sql.named(
         'UPDATE "users"\n'
-        'SET "first_name" = COALESCE(UPDATED."first_name", "users"."first_name"), "last_name" = COALESCE(UPDATED."last_name", "users"."last_name"), "email" = COALESCE(UPDATED."email", "users"."email"), "password" = COALESCE(UPDATED."password", "users"."password"), "phone" = COALESCE(UPDATED."phone", "users"."phone"), "created_at" = COALESCE(UPDATED."created_at", "users"."created_at"), "updated_at" = COALESCE(UPDATED."updated_at", "users"."updated_at")\n'
-        'FROM ( VALUES ${requests.map((r) => '( ${values.add(r.id)}:int8::int8, ${values.add(r.firstName)}:text::text, ${values.add(r.lastName)}:text::text, ${values.add(r.email)}:text::text, ${values.add(r.password)}:text::text, ${values.add(r.phone)}:text::text, ${values.add(r.createdAt)}:timestamp::timestamp, ${values.add(r.updatedAt)}:timestamp::timestamp )').join(', ')} )\n'
-        'AS UPDATED("id", "first_name", "last_name", "email", "password", "phone", "created_at", "updated_at")\n'
+        'SET "first_name" = COALESCE(UPDATED."first_name", "users"."first_name"), "last_name" = COALESCE(UPDATED."last_name", "users"."last_name"), "email" = COALESCE(UPDATED."email", "users"."email"), "password" = COALESCE(UPDATED."password", "users"."password"), "phone" = COALESCE(UPDATED."phone", "users"."phone"), "age" = COALESCE(UPDATED."age", "users"."age"), "created_at" = COALESCE(UPDATED."created_at", "users"."created_at"), "updated_at" = COALESCE(UPDATED."updated_at", "users"."updated_at")\n'
+        'FROM ( VALUES ${requests.map((r) => '( ${values.add(r.id)}:int8::int8, ${values.add(r.firstName)}:text::text, ${values.add(r.lastName)}:text::text, ${values.add(r.email)}:text::text, ${values.add(r.password)}:text::text, ${values.add(r.phone)}:text::text, ${values.add(r.age)}:int8::int8, ${values.add(r.createdAt)}:timestamp::timestamp, ${values.add(r.updatedAt)}:timestamp::timestamp )').join(', ')} )\n'
+        'AS UPDATED("id", "first_name", "last_name", "email", "password", "phone", "age", "created_at", "updated_at")\n'
         'WHERE "users"."id" = UPDATED."id"',
       ),
       parameters: values.values,
@@ -146,6 +146,7 @@ class UsersInsertRequest {
     required this.email,
     required this.password,
     required this.phone,
+    required this.age,
     required this.createdAt,
     this.firstName,
     this.lastName,
@@ -157,6 +158,7 @@ class UsersInsertRequest {
   final String email;
   final String password;
   final String phone;
+  final int age;
   final DateTime createdAt;
   final DateTime? updatedAt;
 }
@@ -195,6 +197,7 @@ class UsersUpdateRequest {
     this.email,
     this.password,
     this.phone,
+    this.age,
     this.createdAt,
     this.updatedAt,
   });
@@ -205,6 +208,7 @@ class UsersUpdateRequest {
   final String? email;
   final String? password;
   final String? phone;
+  final int? age;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 }
@@ -267,6 +271,7 @@ class UsersViewQueryable extends KeyedViewQueryable<UsersView, int> {
     email: map.get('email'),
     password: map.get('password'),
     phone: map.get('phone'),
+    age: map.get('age'),
     createdAt: map.get('created_at'),
     updatedAt: map.getOpt('updated_at'),
     addresses:
@@ -280,6 +285,7 @@ class UsersView {
     required this.email,
     required this.password,
     required this.phone,
+    required this.age,
     required this.createdAt,
     required this.addresses,
     this.firstName,
@@ -293,6 +299,7 @@ class UsersView {
   final String email;
   final String password;
   final String phone;
+  final int age;
   final DateTime createdAt;
   final DateTime? updatedAt;
   final List<AddressView> addresses;

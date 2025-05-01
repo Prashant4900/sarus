@@ -41,6 +41,7 @@ class UserController extends BaseController {
       email: email,
       password: password,
       phone: phone,
+      age: 3,
       createdAt: DateTime.now(),
     );
 
