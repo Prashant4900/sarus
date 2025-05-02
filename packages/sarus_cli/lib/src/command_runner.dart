@@ -4,7 +4,6 @@ import 'package:cli_completion/cli_completion.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
 import 'package:sarus_cli/src/commands/commands.dart';
-import 'package:sarus_cli/src/commands/make_migrations_command.dart';
 import 'package:sarus_cli/src/version.dart';
 
 const executableName = 'sarus_cli';
@@ -40,8 +39,8 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
       );
 
     // Add sub commands
-    // addCommand(DevCommand(logger: _logger));
-    addCommand(MakeMigrationsCommand(logger: _logger));
+    addCommand(CreateCommand(logger: _logger));
+    addCommand(CreateModuleCommand(logger: _logger));
     addCommand(UpdateCommand(logger: _logger, pubUpdater: _pubUpdater));
   }
 

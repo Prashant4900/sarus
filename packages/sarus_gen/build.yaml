@@ -14,6 +14,7 @@ builders:
     auto_apply: dependents
     build_to: cache
     runs_before: [":schema", ":runner"]
+
   schema:
     import: "package:stormberry/builder.dart"
     builder_factories: [ "buildSchema" ]
@@ -21,6 +22,7 @@ builders:
     auto_apply: dependents
     build_to: source
     runs_before: ["dart_mappable_builder", "freezed", "json_serializable"]
+
   runner:
     import: "package:stormberry/builder.dart"
     builder_factories: [ "buildRunner" ]
@@ -34,11 +36,14 @@ targets:
       stormberry:
         generate_for:
           - test/**/*.dart
+
       stormberry|schema:
         generate_for:
           - test/**/*.dart
+      
       stormberry|runner:
         generate_for:
           - test/**/*.dart
+      
       build_test:test_bootstrap:
         enabled: false
