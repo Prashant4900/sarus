@@ -11,7 +11,7 @@ Sarus — Minimalistic. Modular. The backend Dart has been waiting for.
 
 Developed with 💙 by [Sarus][sarus_link] 🦄
 
-## Documentation 📝
+<!-- ## Documentation 📝
 
 For official documentation, please visit https://dartfrog.vgv.dev.
 
@@ -22,7 +22,7 @@ For official documentation, please visit https://dartfrog.vgv.dev.
 | [sarus](https://github.com/verygoodopensource/dart_frog/tree/main/packages/dart_frog)                           | [![pub package](https://img.shields.io/pub/v/dart_frog.svg)](https://pub.dev/packages/dart_frog)                       |
 | [sarus_gen](https://github.com/verygoodopensource/dart_frog/tree/main/packages/dart_frog_gen)                   | [![pub package](https://img.shields.io/pub/v/dart_frog_gen.svg)](https://pub.dev/packages/dart_frog_gen)               |
 | [sarus_cli](https://github.com/verygoodopensource/dart_frog/tree/main/packages/dart_frog_cli)                   | [![pub package](https://img.shields.io/pub/v/dart_frog_cli.svg)](https://pub.dev/packages/dart_frog_cli)               |
-| [stormberry](https://github.com/verygoodopensource/dart_frog/tree/main/packages/dart_frog_web_socket)           | [![pub package](https://img.shields.io/pub/v/dart_frog_web_socket.svg)](https://pub.dev/packages/dart_frog_web_socket) |
+| [stormberry](https://github.com/verygoodopensource/dart_frog/tree/main/packages/dart_frog_web_socket)           | [![pub package](https://img.shields.io/pub/v/dart_frog_web_socket.svg)](https://pub.dev/packages/dart_frog_web_socket) | -->
 
 
 ## Quick Start 🚀
@@ -47,6 +47,31 @@ Use the `sarus create` command to create a new project.
 sarus create my_project
 ```
 
+### Configure Database
+
+Configure your PostgreSQL database connection using environment variables, or remove this section if your project doesn’t require a database.
+
+```dart
+class Database {
+  final _conn = Connection.open(
+    Endpoint(
+      host: Platform.environment['DB_HOST'] ?? 'localhost',
+      database: Platform.environment['DB_NAME'] ?? 'postgres',
+      username: Platform.environment['DB_USER'] ?? 'postgres',
+      password: Platform.environment['DB_PASS'] ?? 'admin',
+    ),
+    settings: const ConnectionSettings(sslMode: SslMode.disable),
+  );
+
+  Future<Connection> getConnection() async => _conn;
+
+  Future<void> close() async {
+    final res = await _conn;
+    await res.close();
+  }
+}
+```
+
 ### Start the Dev Server 🏁
 
 Next, open the newly created project and start the dev server via:
@@ -68,27 +93,8 @@ Or you can try locally
 dart run bin/server.dart
 ```
 
-### Create New Routes and Middleware 🛣️
 
-To add new routes and middleware to your project, use the `dart_frog new` command.
-
-```sh
-# 🛣️ Create a new route "/hello/world"
-dart_frog new route "/hello/world"
-
-# 🛣️ Create a new middleware for the route "/hello/world"
-dart_frog new middleware "/hello/world"
-```
-
-## Goals 🎯
-
-Dart Frog is built on top of [shelf](https://pub.dev/packages/shelf) and [mason](https://pub.dev/packages/mason) and is inspired by many tools including [remix.run](https://remix.run), [next.js](https://nextjs.org), and [express.js](https://expressjs.com).
-
-The goal of Dart Frog is to help developers effectively build backends in Dart. Currently, Dart Frog is focused on optimizing the process of building backends which aggregate, compose, and normalize data from multiple sources.
-
-Dart Frog provides a simple core with a small API surface area in order to reduce the learning curve and ramp-up time for developers. In addition, Dart Frog is intended to help Flutter/Dart developers maximize their productivity by having a unified tech stack that enables sharing tooling, models, and more!
-
-
+<!-- Variables -->
 
 [dart_installation_link]: https://dart.dev/get-dart
 [ci_badge]: https://github.com/VeryGoodOpenSource/dart_frog/actions/workflows/main.yaml/badge.svg
