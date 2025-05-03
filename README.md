@@ -34,8 +34,8 @@ In order to use Dart Frog you must have the [Dart SDK][dart_installation_link] i
 ### Installing 🧑‍💻
 
 ```sh
-# 📦 Install the sarus cli from pub.dev
-dart pub global activate sarus_cli
+# 📦 Install the sarus cli from github
+dart pub global activate --source git https://github.com/Prashant4900/sarus.git --git-path packages/sarus_cli
 ```
 
 ### Creating a Project ✨
