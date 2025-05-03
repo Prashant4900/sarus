@@ -6,5 +6,6 @@ final router = Router(
   routes: [
     Route(controller: UserController(), name: 'Users Routes'),
     Route(controller: HomeController(), name: 'Home Routes'),
+    Route(controller: AdminController(), name: 'Admin Routes'),
   ],
 );

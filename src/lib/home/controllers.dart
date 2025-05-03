@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:sarus/sarus.dart';
@@ -14,4 +15,15 @@ class HomeController extends BaseController {
 
   @override
   RouterConfig get router => _$homeControllerRouterConfig(this);
+}
+
+@Controller('/admin')
+class AdminController extends BaseController {
+  @Get('/')
+  Future<Response> hello(Request request) async {
+    return Response.ok(jsonEncode("{'message': 'Hello from AdminController'}"));
+  }
+
+  @override
+  RouterConfig get router => _$adminControllerRouterConfig(this);
 }

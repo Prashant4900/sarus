@@ -15,3 +15,13 @@ RouterConfig _$homeControllerRouterConfig(HomeController controller) {
 
   return routerConfig;
 }
+
+// ignore_for_file: type=lint
+
+RouterConfig _$adminControllerRouterConfig(AdminController controller) {
+  final routerConfig = RouterConfig();
+
+  routerConfig.get('/admin', controller.hello);
+
+  return routerConfig;
+}
