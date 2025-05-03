@@ -72,6 +72,32 @@ class Database {
 }
 ```
 
+### Create Model
+
+```dart
+import 'package:sarus/sarus.dart';
+
+part 'models.schema.dart';
+
+// Create the models
+@Model(tableName: 'admins')
+abstract class Admin {
+  @PrimaryKey()
+  @AutoIncrement()
+  int get id;
+
+  String? get firstName;
+
+  String? get lastName;
+
+  String get email;
+
+  String get password;
+}
+```
+
+Note: Sometimes auto generated not works as expected so for that please comment part 'models.schema.dart' first then generate the code and for more details you can follow the official [stormberry](https://pub.dev/packages/stormberry) documentation.
+
 ### Start the Dev Server 🏁
 
 Next, open the newly created project and start the dev server via:
