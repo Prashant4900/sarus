@@ -96,7 +96,9 @@ abstract class Admin {
 }
 ```
 
-Note: Sometimes auto generated not works as expected so for that please comment part 'models.schema.dart' first then generate the code and for more details you can follow the official [stormberry](https://pub.dev/packages/stormberry) documentation.
+### Note: 
+- Primary key should have AutoIncrement annotation.
+- Sometimes auto generated not works as expected so for that please comment part 'models.schema.dart' first then generate the code and for more details you can follow the official [stormberry](https://pub.dev/packages/stormberry) documentation.
 
 ### Start the Dev Server 🏁
 
