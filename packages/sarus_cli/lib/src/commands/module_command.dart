@@ -85,7 +85,7 @@ class CreateModuleCommand extends Command<int> {
     final file = File('application.yaml');
 
     if (!file.existsSync()) {
-      _logger.err('Error: application.yml not found in the project root.');
+      _logger.err('Error: application.yaml not found in the project root.');
       exit(1);
     }
 
@@ -93,22 +93,30 @@ class CreateModuleCommand extends Command<int> {
       final content = file.readAsStringSync();
       final yaml = loadYaml(content) as Map;
 
-      // Ensure modules list exists
-      final modules = (yaml['modules'] as List<dynamic>? ?? []).toList();
+      // Create a mutable copy of the original YAML content
+      final mutableYaml = <String, dynamic>{};
+      yaml.forEach((key, value) {
+        mutableYaml[key.toString()] = value;
+      });
+
+      // Handle modules list
+      final modules = (mutableYaml['modules'] as List<dynamic>? ?? []).toList();
 
       // Avoid duplicates
       if (!modules.contains(module)) {
         modules.add(module);
       }
 
-      // Write back to YAML file
-      final updatedYaml = {'modules': modules};
-      final yamlWriter = YamlWriter();
-      file.writeAsStringSync(yamlWriter.write(updatedYaml));
+      // Update only the modules key
+      mutableYaml['modules'] = modules;
 
-      _logger.info('Added module "$module" to application.yml.');
+      // Write back to YAML file
+      final yamlWriter = YamlWriter();
+      file.writeAsStringSync(yamlWriter.write(mutableYaml));
+
+      _logger.info('Added module "$module" to application.yaml.');
     } catch (e) {
-      _logger.err('Error updating application.yml: $e');
+      _logger.err('Error updating application.yaml: $e');
     }
   }
 }
