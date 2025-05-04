@@ -6,14 +6,15 @@ void run(HookContext context) {
   context.logger.info('Generate model schema...');
 
   final result = Process.runSync(
-      'dart',
-      [
-        'run',
-        'build_runner',
-        'build',
-        '--delete-conflicting-outputs',
-      ],
-      workingDirectory: Directory.current.path);
+    'dart',
+    [
+      'run',
+      'build_runner',
+      'build',
+      '--delete-conflicting-outputs',
+    ],
+    workingDirectory: Directory.current.path,
+  );
 
   if (result.exitCode == 0) {
     context.logger.info('Model schema generated successfully.');
@@ -23,12 +24,13 @@ void run(HookContext context) {
 
   context.logger.info('Running dart fix --apply...');
   final resultFix = Process.runSync(
-      'dart',
-      [
-        'fix',
-        '--apply',
-      ],
-      workingDirectory: Directory.current.path);
+    'dart',
+    [
+      'fix',
+      '--apply',
+    ],
+    workingDirectory: Directory.current.path,
+  );
 
   if (resultFix.exitCode == 0) {
     context.logger.info('dart fix --apply executed successfully.');

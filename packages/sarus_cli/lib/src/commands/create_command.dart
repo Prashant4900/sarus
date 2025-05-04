@@ -63,7 +63,7 @@ class CreateCommand extends Command<int> {
   /// stderr.
   Future<void> generateBrick() async {
     try {
-      _logger.info('Generating new project...');
+      _logger.progress('Generating new project...');
 
       final generator = await _generator(projectBundle);
       final target = DirectoryGeneratorTarget(Directory.current);
@@ -74,13 +74,48 @@ class CreateCommand extends Command<int> {
         vars: {'name': projectName},
       );
 
-      _logger.info('Project "$projectName" created successfully.');
+      _logger.success('Project "$projectName" created successfully.');
 
-      await generator.hooks.postGen(
-        logger: _logger,
-        workingDirectory: '${Directory.current.path}/$projectName',
-        vars: {'name': projectName},
+      // await generator.hooks.postGen(
+      //   logger: _logger,
+      //   workingDirectory: '${Directory.current.path}/$projectName',
+      //   vars: {'name': projectName},
+      // );
+
+      _logger.progress('Generate model schema...');
+
+      final result = Process.runSync(
+        'dart',
+        [
+          'run',
+          'build_runner',
+          'build',
+          '--delete-conflicting-outputs',
+        ],
+        workingDirectory: Directory.current.path,
       );
+
+      if (result.exitCode == 0) {
+        _logger.success('Model schema generated successfully.');
+      } else {
+        _logger.err('Failed to generate model schema: ${result.stderr}');
+      }
+
+      _logger.progress('Running dart fix --apply...');
+      final resultFix = Process.runSync(
+        'dart',
+        [
+          'fix',
+          '--apply',
+        ],
+        workingDirectory: Directory.current.path,
+      );
+
+      if (resultFix.exitCode == 0) {
+        _logger.success('dart fix --apply executed successfully.');
+      } else {
+        _logger.err('Failed to run dart fix --apply: ${resultFix.stderr}');
+      }
     } catch (e) {
       _logger.err('Error generating brick: $e');
     }
