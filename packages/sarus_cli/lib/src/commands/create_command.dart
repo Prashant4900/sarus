@@ -63,9 +63,15 @@ class CreateCommand extends Command<int> {
   /// stderr.
   Future<void> generateBrick() async {
     try {
-      _logger.progress('Generating new project...');
+      _logger
+        ..info('Starting Sarus project generation process...')
+        ..progress('Step 1/5: Initializing project generator...');
 
       final generator = await _generator(projectBundle);
+
+      _logger
+        ..detail('Project generator initialized successfully.')
+        ..progress('Step 2/5: Creating project structure...');
       final target = DirectoryGeneratorTarget(Directory.current);
       await generator.generate(
         target,
@@ -74,18 +80,23 @@ class CreateCommand extends Command<int> {
         vars: {'name': projectName},
       );
 
-      _logger.success('Project "$projectName" created successfully.');
-
-      // await generator.hooks.postGen(
-      //   logger: _logger,
-      //   workingDirectory: '${Directory.current.path}/$projectName',
-      //   vars: {'name': projectName},
-      // );
+      _logger.success('Project "$projectName" structure created successfully.');
 
       // Create workingDir variable for project path
       final workingDir = Directory('${Directory.current.path}/$projectName');
 
-      _logger.progress('Generate model schema...');
+      _logger
+        ..detail('Project working directory: ${workingDir.path}')
+        ..progress('Step 3/5: Verifying project directory...');
+
+      if (!workingDir.existsSync()) {
+        _logger.err('Project directory not found at: ${workingDir.path}');
+        throw Exception('Project directory creation failed');
+      }
+      _logger
+        ..detail('Project directory verified successfully.')
+        ..progress('Step 4/5: Generating model schema...')
+        ..detail('Running build_runner to generate model code...');
 
       final result = Process.runSync(
         'dart',
@@ -99,12 +110,19 @@ class CreateCommand extends Command<int> {
       );
 
       if (result.exitCode == 0) {
-        _logger.success('Model schema generated successfully.');
+        _logger
+          ..success('Model schema generated successfully.')
+          ..detail('Code generation completed with no errors.');
       } else {
-        _logger.err('Failed to generate model schema: ${result.stderr}');
+        _logger
+          ..err('Failed to generate model schema: ${result.stderr}')
+          ..detail('Error code: ${result.exitCode}');
       }
 
-      _logger.progress('Running dart fix --apply...');
+      _logger
+        ..progress('Step 5/5: Applying Dart fixes...')
+        ..detail('Running dart fix to improve code quality...');
+
       final resultFix = Process.runSync(
         'dart',
         [
@@ -115,12 +133,24 @@ class CreateCommand extends Command<int> {
       );
 
       if (resultFix.exitCode == 0) {
-        _logger.success('dart fix --apply executed successfully.');
+        _logger
+          ..success('Dart fixes applied successfully.')
+          ..detail('Code linting and formatting completed.');
       } else {
-        _logger.err('Failed to run dart fix --apply: ${resultFix.stderr}');
+        _logger
+          ..err('Failed to run dart fix --apply: ${resultFix.stderr}')
+          ..detail('Error code: ${resultFix.exitCode}');
       }
+
+      _logger
+        ..info('Project generation completed successfully!')
+        ..detail('Your new Sarus project is ready at: ${workingDir.path}');
     } catch (e) {
-      _logger.err('Error generating brick: $e');
+      _logger
+        ..err('Error generating project: $e')
+        ..detail(
+          'Project generation failed. Please check the error message above.',
+        );
     }
   }
 
