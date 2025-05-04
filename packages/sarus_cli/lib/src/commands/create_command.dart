@@ -74,6 +74,8 @@ class CreateCommand extends Command<int> {
         vars: {'name': projectName},
       );
 
+      _logger.info('Project "$projectName" created successfully.');
+
       await generator.hooks.postGen(
         logger: _logger,
         workingDirectory: '${Directory.current.path}/$projectName',
