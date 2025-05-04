@@ -82,6 +82,9 @@ class CreateCommand extends Command<int> {
       //   vars: {'name': projectName},
       // );
 
+      // Create workingDir variable for project path
+      final workingDir = Directory('${Directory.current.path}/$projectName');
+
       _logger.progress('Generate model schema...');
 
       final result = Process.runSync(
@@ -92,7 +95,7 @@ class CreateCommand extends Command<int> {
           'build',
           '--delete-conflicting-outputs',
         ],
-        workingDirectory: Directory.current.path,
+        workingDirectory: workingDir.path,
       );
 
       if (result.exitCode == 0) {
@@ -108,7 +111,7 @@ class CreateCommand extends Command<int> {
           'fix',
           '--apply',
         ],
-        workingDirectory: Directory.current.path,
+        workingDirectory: workingDir.path,
       );
 
       if (resultFix.exitCode == 0) {
