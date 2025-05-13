@@ -19,7 +19,7 @@ Looking for some open contribution to create a inbuilt ORM for Sarus.
 
 ### Prerequisites 📝
 
-In order to use Dart Frog you must have the [Dart SDK][dart_installation_link] installed on your machine.
+In order to use Sarus you must have the [Dart SDK][dart_installation_link] installed on your machine.
 
 ### Installing 🧑‍💻
 
