@@ -17,11 +17,6 @@ dependencies:
       path: packages/sarus
       ref: main
   source_gen: ^2.0.0
-  stormberry:
-    git:
-      url: https://github.com/Prashant4900/sarus.git
-      path: packages/stormberry
-      ref: main
 
 
 dev_dependencies:

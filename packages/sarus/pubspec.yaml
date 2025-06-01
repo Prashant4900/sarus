@@ -11,11 +11,6 @@ dependencies:
   meta: ^1.16.0
   shelf: ^1.4.2
   shelf_hotreload: ^1.5.0
-  stormberry:
-    git:
-      url: https://github.com/Prashant4900/sarus.git
-      path: packages/stormberry
-      ref: main
 
 dev_dependencies:
   mocktail: ^1.0.4
