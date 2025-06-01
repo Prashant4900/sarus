@@ -1,5 +1,5 @@
 name: {{name}}
-description: A sample command-line application.
+description: A basic sarus application.
 version: 1.0.0
 publish_to: none
 
