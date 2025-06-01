@@ -14,8 +14,6 @@ dependencies:
       url: https://github.com/Prashant4900/sarus.git
       path: packages/sarus
       ref: main
-  # stormberry:
-  #   path: ../packages/stormberry
 
 dev_dependencies:
   build_runner: ^2.4.15
