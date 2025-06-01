@@ -10,3 +10,9 @@ bricks:
 .PHONY: sarus-cli
 sarus-cli:
 	dart pub global activate --source git https://github.com/Prashant4900/sarus.git --git-path packages/sarus_cli
+
+.PHONY: bricks-git
+bricks-git:
+	find packages/sarus_cli/lib/templates/ -name '*_bundle.dart' -delete
+	mason bundle --source git https://github.com/Prashant4900/sarus.git --git-ref main --git-path bricks/project --output-dir packages/sarus_cli/lib/templates --type dart
+	mason bundle --source git https://github.com/Prashant4900/sarus.git --git-ref main --git-path bricks/module --output-dir packages/sarus_cli/lib/templates --type dart
