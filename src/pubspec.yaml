@@ -1,5 +1,5 @@
-name: example
-description: A sample command-line application.
+name: src
+description: A basic sarus application.
 version: 1.0.0
 publish_to: none
 
@@ -8,18 +8,14 @@ environment:
 
 dependencies:
   get_it: ^8.0.3
-  injectable: ^2.5.0
   sarus:
     git:
       url: https://github.com/Prashant4900/sarus.git
       path: packages/sarus
       ref: main
-  # stormberry:
-  #   path: ../packages/stormberry
 
 dev_dependencies:
   build_runner: ^2.4.15
-  injectable_generator: ^2.7.0
   sarus_gen:
     git:
       url: https://github.com/Prashant4900/sarus.git

@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:example/sarus_application.dart';
 import 'package:sarus/sarus.dart';
+import 'package:src/sarus_application.dart';
 
 void main() async {
   // Create an instance of the SarusApplication
@@ -9,12 +9,9 @@ void main() async {
 
   try {
     withHotreload(() => setup(application));
-    // await setup(application);
   } catch (e) {
     print('Error starting server: $e');
 
-    print('Shutting down server...');
-    // Close the application
     await application.close();
   }
 }
@@ -29,7 +26,7 @@ Future<HttpServer> setup(SarusApplication application) async {
   // Enable content compression
   server.autoCompress = true;
 
-  print('Serving at http://${server.address.host}:${server.port}');
+  print('Serving at http://localhost:${server.port}');
 
   return server;
 }

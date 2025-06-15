@@ -1,4 +1,2 @@
-name: example
+name: src
 
-modules:
-  - users
