@@ -1,7 +1,6 @@
 name: sarus_cli
 description: A Very Good Project created by Very Good CLI.
 version: 0.0.1-alpha.1
-publish_to: https://pub.dev
 
 homepage: https://github.com/Prashant4900/sarus/
 repository: https://github.com/Prashant4900/sarus/
