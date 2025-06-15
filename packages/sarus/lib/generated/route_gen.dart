@@ -1,4 +1,3 @@
-// File: lib/src/route_gen.dart
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';

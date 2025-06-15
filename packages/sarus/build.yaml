@@ -1,6 +1,6 @@
 builders:
   route_builder:
-    import: "package:sarus_gen/builder.dart"
+    import: "package:sarus/builder.dart"
     builder_factories: ["routeBuilder"]
     build_extensions: {".dart": [".routes.g.part"]}  # Explicit part files
     auto_apply: dependents
