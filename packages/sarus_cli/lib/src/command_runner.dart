@@ -8,7 +8,7 @@ import 'package:sarus_cli/src/version.dart';
 
 const executableName = 'sarus';
 const packageName = 'sarus_cli';
-const description = 'A Very Good Project created by Very Good CLI.';
+const description = 'A fast, minimalistic backend framework for Dart.';
 
 /// {@template sarus_cli_command_runner}
 /// A [CommandRunner] for the CLI.

@@ -1,4 +1,4 @@
-/// sarus_cli, A Very Good Project created by Very Good CLI.
+/// sarus_cli, A fast, minimalistic backend framework for Dart.
 ///
 /// ```sh
 /// # activate sarus_cli
