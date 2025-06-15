@@ -154,7 +154,8 @@ class CreateCommand extends Command<int> {
     }
   }
 
-  /// Checks if Dart SDK is installed on the system by running the `dart --version` command.
+  /// Checks if Dart SDK is installed on the system by running the
+  /// `dart --version` command.
   ///
   /// If Dart SDK is not installed, logs a warning message. If there is an error
   /// running the command, logs an error message and exits with code 1.

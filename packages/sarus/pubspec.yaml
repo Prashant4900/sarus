@@ -14,7 +14,7 @@ dependencies:
   build: ^2.4.2
   dart_style: ^3.1.0
   http_methods: ^1.1.1
-  meta: ^1.16.0
+  meta: ^1.17.0
   shelf: ^1.4.2
   shelf_hotreload: ^1.5.0
   source_gen: ^2.0.0
