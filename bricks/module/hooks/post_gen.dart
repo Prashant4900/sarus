@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:mason/mason.dart';
 
 void run(HookContext context) {
-  context.logger.info('Generate model schema...');
+  context.logger.info('Generate routes...');
 
   final result = Process.runSync('dart', [
     'run',
@@ -13,9 +13,9 @@ void run(HookContext context) {
   ]);
 
   if (result.exitCode == 0) {
-    context.logger.info('Model schema generated successfully.');
+    context.logger.info('Routes generated successfully.');
   } else {
-    context.logger.err('Failed to generate model schema: ${result.stderr}');
+    context.logger.err('Failed to generate routes: ${result.stderr}');
   }
 
   context.logger.info('Running dart fix --apply...');

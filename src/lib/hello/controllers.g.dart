@@ -8,10 +8,10 @@ part of 'controllers.dart';
 
 // ignore_for_file: type=lint
 
-RouterConfig _${{name.camelCase()}}ControllerRouterConfig({{name.pascalCase()}}Controller controller) {
+RouterConfig _$helloControllerRouterConfig(HelloController controller) {
   final routerConfig = RouterConfig();
 
-  routerConfig.get('/{{name.paramCase()}}', controller.index);
+  routerConfig.get('/hello/', controller.index);
 
   return routerConfig;
 }

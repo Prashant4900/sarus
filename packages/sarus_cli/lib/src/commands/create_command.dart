@@ -95,32 +95,7 @@ class CreateCommand extends Command<int> {
       }
       _logger
         ..detail('Project directory verified successfully.')
-        ..progress('Step 4/5: Generating model schema...')
-        ..detail('Running build_runner to generate model code...');
-
-      final result = Process.runSync(
-        'dart',
-        [
-          'run',
-          'build_runner',
-          'build',
-          '--delete-conflicting-outputs',
-        ],
-        workingDirectory: workingDir.path,
-      );
-
-      if (result.exitCode == 0) {
-        _logger
-          ..success('Model schema generated successfully.')
-          ..detail('Code generation completed with no errors.');
-      } else {
-        _logger
-          ..err('Failed to generate model schema: ${result.stderr}')
-          ..detail('Error code: ${result.exitCode}');
-      }
-
-      _logger
-        ..progress('Step 5/5: Applying Dart fixes...')
+        ..progress('Step 4/4: Applying Dart fixes...')
         ..detail('Running dart fix to improve code quality...');
 
       final resultFix = Process.runSync(
