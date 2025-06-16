@@ -10,3 +10,13 @@ bricks:
 .PHONY: sarus-cli
 sarus-cli:
 	dart pub global activate --source git https://github.com/Prashant4900/sarus.git --git-path packages/sarus_cli
+
+.PHONY: publish-sarus-cli
+test:
+	make sarus-cli
+	dart pub publish
+
+.PHONY: publish-sarus-cli-dry-run
+publish-sarus-cli-dry-run:
+	make sarus-cli
+	dart pub publish --dry-run
