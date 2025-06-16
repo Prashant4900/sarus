@@ -93,9 +93,46 @@ class CreateCommand extends Command<int> {
         _logger.err('Project directory not found at: ${workingDir.path}');
         throw Exception('Project directory creation failed');
       }
+
       _logger
         ..detail('Project directory verified successfully.')
-        ..progress('Step 4/4: Applying Dart fixes...')
+        ..progress('Step 4/5: Generate routes...');
+
+      final resultBuilder = Process.runSync('dart', [
+        'run',
+        'build_runner',
+        'build',
+        '--delete-conflicting-outputs',
+      ]);
+
+      if (resultBuilder.exitCode == 0) {
+        _logger.detail('Routes generated successfully.');
+      } else {
+        _logger.err('Failed to generate routes: ${resultBuilder.stderr}');
+      }
+
+      _logger
+        ..detail('Project directory verified successfully.')
+        ..progress('Step 5/6: Running dart pub get...');
+
+      final result = Process.runSync(
+        'dart',
+        [
+          'pub',
+          'get',
+        ],
+        workingDirectory: workingDir.path,
+      );
+
+      if (result.exitCode == 0) {
+        _logger.detail('dart pub get executed successfully.');
+      } else {
+        _logger.err('Failed to run dart pub get: ${result.stderr}');
+      }
+
+      _logger
+        ..detail('Project directory verified successfully.')
+        ..progress('Step 6/6: Applying Dart fixes...')
         ..detail('Running dart fix to improve code quality...');
 
       final resultFix = Process.runSync(
