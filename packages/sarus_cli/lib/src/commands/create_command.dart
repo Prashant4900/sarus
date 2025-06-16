@@ -98,12 +98,16 @@ class CreateCommand extends Command<int> {
         ..detail('Project directory verified successfully.')
         ..progress('Step 4/5: Generate routes...');
 
-      final resultBuilder = Process.runSync('dart', [
-        'run',
-        'build_runner',
-        'build',
-        '--delete-conflicting-outputs',
-      ]);
+      final resultBuilder = Process.runSync(
+        'dart',
+        [
+          'run',
+          'build_runner',
+          'build',
+          '--delete-conflicting-outputs',
+        ],
+        workingDirectory: workingDir.path,
+      );
 
       if (resultBuilder.exitCode == 0) {
         _logger.detail('Routes generated successfully.');
