@@ -22,7 +22,7 @@ class DevCommand extends Command<int> {
       )
       ..addFlag(
         'hot-reload',
-        abbr: 'h',
+        abbr: 'r',
         help: 'Enable hot reload (automatically restarts on file changes)',
         defaultsTo: true,
       )
