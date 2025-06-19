@@ -1,6 +1,6 @@
 name: sarus_cli
 description: The official command line interface for Sarus, built to streamline your development workflow.
-version: 0.0.1-alpha.12
+version: 0.0.1-alpha.13
 homepage: https://github.com/Prashant4900/sarus
 repository: https://github.com/Prashant4900/sarus
 issue_tracker: https://github.com/Prashant4900/sarus/issues

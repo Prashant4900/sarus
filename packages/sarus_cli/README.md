@@ -21,3 +21,5 @@ Available commands:
 
 Run "sarus help <command>" for more information about a command.
 ```
+
+### ⚠️ This project is not ready for production yet
