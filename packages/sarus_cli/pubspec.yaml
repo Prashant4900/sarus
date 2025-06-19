@@ -13,10 +13,6 @@ dependencies:
   analyzer: ^7.4.5
   args: ^2.7.0
   cli_completion: ^0.5.1
-  flutter_umami:
-    git:
-      url: https://github.com/Prashant4900/lib-mobile-flutter-umami.git
-      ref: main
   mason: ^0.1.1
   mason_logger: ^0.3.3
   path: ^1.9.1
