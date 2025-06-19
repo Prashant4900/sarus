@@ -165,6 +165,13 @@ class DevCommand extends Command<int> {
       final process = await Process.start(
         'dart',
         ['run', 'lib/main.dart'],
+        environment: {
+          ...Platform.environment, // inherit existing ones
+          'PORT': '8080',
+          'HOST': 'localhost',
+          'ENVIRONMENT': 'development',
+          'LOG_LEVEL': 'info',
+        },
       );
 
       _serverProcess = process;
