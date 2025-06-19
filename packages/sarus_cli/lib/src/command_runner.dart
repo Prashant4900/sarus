@@ -4,6 +4,7 @@ import 'package:cli_completion/cli_completion.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
 import 'package:sarus_cli/src/commands/commands.dart';
+import 'package:sarus_cli/src/utils/umami.dart';
 import 'package:sarus_cli/src/version.dart';
 
 const executableName = 'sarus';
@@ -53,6 +54,11 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
   @override
   Future<int> run(Iterable<String> args) async {
     try {
+      try {
+        final umami = await umamiClient;
+        await umami.trackEvent(eventType: 'Main');
+      } catch (_) {}
+
       final topLevelResults = parse(args);
       if (topLevelResults['verbose'] == true) {
         _logger.level = Level.verbose;
