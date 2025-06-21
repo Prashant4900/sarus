@@ -1,18 +1,20 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 
+// Replace with your actual Mixpanel project token
+const String _mixpanelToken = 'e8f959f7c72641b182c366a4d9616f01';
+
 /// Service for tracking events with Mixpanel including geolocation
 class MixpanelService {
   MixpanelService({
-    required String projectToken,
     http.Client? httpClient,
-  })  : _projectToken = projectToken,
-        _httpClient = httpClient ?? http.Client();
+  }) : _httpClient = httpClient ?? http.Client();
   static const String _mixpanelUrl = 'https://api.mixpanel.com/track';
-  final String _projectToken;
+
   final http.Client _httpClient;
 
   // Cache for geolocation data to avoid multiple API calls
@@ -81,12 +83,13 @@ class MixpanelService {
     final response = await _httpClient
         .get(
           Uri.parse(
-              'http://ip-api.com/json/?fields=status,country,countryCode,region,regionName,city,timezone,isp'),
+            'http://ip-api.com/json/?fields=status,country,countryCode,region,regionName,city,timezone,isp',
+          ),
         )
         .timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+      final data = json.decode(response.body) as Map<String, dynamic>;
       if (data['status'] == 'success') {
         return {
           'country': data['country'],
@@ -111,7 +114,7 @@ class MixpanelService {
         .timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+      final data = json.decode(response.body) as Map<String, dynamic>;
       if (data['country'] != null) {
         return {
           'country': data['country'],
@@ -136,7 +139,7 @@ class MixpanelService {
         .timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+      final data = json.decode(response.body) as Map<String, dynamic>;
       if (data['country'] != null) {
         return {
           'country': data['country_name'],
@@ -169,14 +172,14 @@ class MixpanelService {
           geoData = await _getGeolocationData();
         } catch (e) {
           // Don't fail the event if geo lookup fails
-          print('Geolocation lookup failed (non-critical): $e');
+          log('Geolocation lookup failed (non-critical): $e');
         }
       }
 
       final eventData = {
         'event': eventName,
         'properties': {
-          'token': _projectToken,
+          'token': _mixpanelToken,
           'distinct_id': userId,
           'time': DateTime.now().millisecondsSinceEpoch,
           r'$insert_id':
@@ -219,12 +222,13 @@ class MixpanelService {
         return;
       } else {
         // Log error but don't fail the command
-        print(
-            'Mixpanel tracking failed: ${response.statusCode} - ${response.body}');
+        log(
+          'Mixpanel tracking failed: ${response.statusCode} - ${response.body}',
+        );
       }
     } catch (e) {
       // Silently fail - don't let analytics break the CLI
-      print('Analytics error (non-critical): $e');
+      log('Analytics error (non-critical): $e');
     }
   }
 

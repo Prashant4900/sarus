@@ -5,15 +5,11 @@ import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
 import 'package:sarus_cli/analytics/analytics_manager.dart';
 import 'package:sarus_cli/src/commands/commands.dart';
-import 'package:sarus_cli/src/commands/debug_command.dart';
 import 'package:sarus_cli/src/version.dart';
 
 const executableName = 'sarus';
 const packageName = 'sarus_cli';
 const description = 'A fast, minimalistic backend framework for Dart.';
-
-// Replace with your actual Mixpanel project token
-const String _mixpanelToken = 'e8f959f7c72641b182c366a4d9616f01';
 
 /// {@template sarus_cli_command_runner}
 /// A [CommandRunner] for the CLI.
@@ -30,8 +26,7 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
     MixpanelService? mixpanelService,
   })  : _logger = logger ?? Logger(),
         _pubUpdater = pubUpdater ?? PubUpdater(),
-        _mixpanelService =
-            mixpanelService ?? MixpanelService(projectToken: _mixpanelToken),
+        _mixpanelService = mixpanelService ?? MixpanelService(),
         super(executableName, description) {
     // Add root options and flags
     argParser
@@ -54,15 +49,23 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
 
     // Add sub commands - pass mixpanel service to commands that need it
     addCommand(
-      CreateCommand(logger: _logger, mixpanelService: _mixpanelService),
-    );
-    addCommand(CreateModuleCommand(logger: _logger));
-    addCommand(DevCommand(logger: _logger));
-    addCommand(
-      UpdateCommand(logger: _logger, pubUpdater: _pubUpdater),
+      CreateCommand(
+        logger: _logger,
+        mixpanelService: _mixpanelService,
+      ),
     );
     addCommand(
-      DebugCommand(logger: _logger, mixpanelService: _mixpanelService),
+      CreateModuleCommand(
+        logger: _logger,
+        mixpanelService: _mixpanelService,
+      ),
+    );
+    addCommand(
+      UpdateCommand(
+        logger: _logger,
+        pubUpdater: _pubUpdater,
+        mixpanelService: _mixpanelService,
+      ),
     );
   }
 
@@ -79,12 +82,12 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
       final topLevelResults = parse(args);
 
       // Track CLI startup (if analytics not disabled)
-      if (topLevelResults['no-analytics'] != true) {
-        await _mixpanelService.trackCliStartup(
-          version: packageVersion,
-          args: args.toList(),
-        );
-      }
+      // if (topLevelResults['no-analytics'] != true) {
+      await _mixpanelService.trackCliStartup(
+        version: packageVersion,
+        args: args.toList(),
+      );
+      // }
 
       if (topLevelResults['verbose'] == true) {
         _logger.level = Level.verbose;
@@ -93,18 +96,17 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
       return await runCommand(topLevelResults) ?? ExitCode.success.code;
     } on FormatException catch (e, stackTrace) {
       // Track error (if analytics enabled)
-      final topLevelResults = parse(
-        args,
+      // final topLevelResults = parse(args);
+
+      // if (topLevelResults['no-analytics'] != true) {
+      await _mixpanelService.trackEvent(
+        'cli_error',
+        properties: {
+          'error_type': 'format_exception',
+          'error_message': e.message,
+        },
       );
-      if (topLevelResults['no-analytics'] != true) {
-        await _mixpanelService.trackEvent(
-          'cli_error',
-          properties: {
-            'error_type': 'format_exception',
-            'error_message': e.message,
-          },
-        );
-      }
+      // }
 
       // On format errors, show the commands error message, root usage and
       // exit with an error code
@@ -116,18 +118,17 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
       return ExitCode.usage.code;
     } on UsageException catch (e) {
       // Track error (if analytics enabled)
-      final topLevelResults = parse(
-        args,
+      // final topLevelResults = parse(args);
+
+      // if (topLevelResults['no-analytics'] != true) {
+      await _mixpanelService.trackEvent(
+        'cli_error',
+        properties: {
+          'error_type': 'usage_exception',
+          'error_message': e.message,
+        },
       );
-      if (topLevelResults['no-analytics'] != true) {
-        await _mixpanelService.trackEvent(
-          'cli_error',
-          properties: {
-            'error_type': 'usage_exception',
-            'error_message': e.message,
-          },
-        );
-      }
+      // }
 
       // On usage errors, show the commands usage message and
       // exit with an error code
