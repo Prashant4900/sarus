@@ -5,6 +5,7 @@ import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
 import 'package:sarus_cli/analytics/analytics_manager.dart';
 import 'package:sarus_cli/src/commands/commands.dart';
+import 'package:sarus_cli/src/commands/debug_command.dart';
 import 'package:sarus_cli/src/version.dart';
 
 const executableName = 'sarus';
@@ -58,10 +59,10 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
     addCommand(CreateModuleCommand(logger: _logger));
     addCommand(DevCommand(logger: _logger));
     addCommand(
-      UpdateCommand(
-        logger: _logger,
-        pubUpdater: _pubUpdater,
-      ),
+      UpdateCommand(logger: _logger, pubUpdater: _pubUpdater),
+    );
+    addCommand(
+      DebugCommand(logger: _logger, mixpanelService: _mixpanelService),
     );
   }
 
