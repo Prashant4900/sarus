@@ -59,7 +59,7 @@ class CreateCommand extends Command<int> {
       await SarusAnalytics.trackProjectCreation(
         projectName,
         totalTime: stopwatch.elapsed,
-        success: false,
+        success: success,
         errorStep: errorStep ?? 'unknown',
       );
 
