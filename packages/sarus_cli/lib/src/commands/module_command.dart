@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:sarus_cli/analytics/analytics_manager.dart';
 import 'package:sarus_cli/src/commands/commands.dart';
 import 'package:sarus_cli/templates/module_bundle.dart';
 import 'package:yaml/yaml.dart';
@@ -20,8 +21,10 @@ class CreateModuleCommand extends Command<int> {
   CreateModuleCommand({
     required Logger logger,
     GeneratorBuilder? generator,
+    MixpanelService? mixpanelService,
   })  : _logger = logger,
-        _generator = generator ?? MasonGenerator.fromBundle;
+        _generator = generator ?? MasonGenerator.fromBundle,
+        _mixpanelService = mixpanelService;
 
   @override
   String get description => 'Create a new module inside the Sarus project.';
@@ -33,18 +36,54 @@ class CreateModuleCommand extends Command<int> {
 
   final GeneratorBuilder _generator;
 
+  final MixpanelService? _mixpanelService;
+
   @override
   FutureOr<int>? run() async {
     // Validate module name
     final module = moduleName;
+    final startTime = DateTime.now();
 
-    // Generate the module
-    await generateModule(module);
+    try {
+      await _mixpanelService?.trackEvent(
+        'create_module_started',
+        properties: {
+          'module_name': module,
+          'timestamp': startTime.toIso8601String(),
+        },
+      );
 
-    // Update application.yml
-    await updateSarusConfig(module);
+      // Generate the module
+      await generateModule(module);
 
-    return ExitCode.success.code;
+      // Update application.yml
+      await updateSarusConfig(module);
+
+      final duration = DateTime.now().difference(startTime);
+      await _mixpanelService?.trackEvent(
+        'create_module_completed',
+        properties: {
+          'module_name': module,
+          'duration_seconds': duration.inSeconds,
+          'success': true,
+        },
+      );
+
+      return ExitCode.success.code;
+    } catch (e) {
+      final duration = DateTime.now().difference(startTime);
+      await _mixpanelService?.trackEvent(
+        'create_module_failed',
+        properties: {
+          'module_name': module,
+          'duration_seconds': duration.inSeconds,
+          'error_type': e.runtimeType.toString(),
+          'error_message': e.toString(),
+        },
+      );
+
+      return ExitCode.tempFail.code;
+    }
   }
 
   /// Retrieves and validates the module name.

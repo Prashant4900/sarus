@@ -1,289 +1,280 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
-import 'package:mason_logger/mason_logger.dart';
-import 'package:path/path.dart' as path;
 
-class AnalyticsManager {
-  static const String _measurementId = 'G-3ZZYT1CJRV';
-  static const String _apiSecret = 'AIzaSyDeLzndzgYiughdN0BvrOb_hQbgSQF2Yioxc';
-  static const String _endpoint = 'https://www.google-analytics.com/mp/collect';
+// Replace with your actual Mixpanel project token
+const String _mixpanelToken = 'e8f959f7c72641b182c366a4d9616f01';
 
-  static String? _clientId;
-  static String? _sessionId;
-  static bool _consentGiven = true;
-  static final Logger _logger = Logger();
+/// Service for tracking events with Mixpanel including geolocation
+class MixpanelService {
+  MixpanelService({
+    http.Client? httpClient,
+  }) : _httpClient = httpClient ?? http.Client();
+  static const String _mixpanelUrl = 'https://api.mixpanel.com/track';
 
-  // Initialize analytics
-  static Future<void> initialize() async {
+  final http.Client _httpClient;
+
+  // Cache for geolocation data to avoid multiple API calls
+  Map<String, dynamic>? _cachedGeoData;
+  DateTime? _geoDataCacheTime;
+  static const Duration _geoCacheDuration = Duration(hours: 24);
+
+  /// Generate a unique user ID based on system info
+  String _generateUserId() {
     try {
-      await _loadClientId();
-      await _loadConsent();
-      _sessionId = _generateSessionId();
+      // Use a combination of username and hostname for anonymized tracking
+      final username = Platform.environment['USER'] ??
+          Platform.environment['USERNAME'] ??
+          'unknown';
+      final hostname = Platform.localHostname;
+      final combined = '$username@$hostname';
+
+      // Hash it for privacy
+      final bytes = utf8.encode(combined);
+      final digest = sha256.convert(bytes);
+      return digest.toString().substring(0, 16);
     } catch (e) {
-      // Silent fail on analytics initialization
+      // Fallback to a random identifier
+      return DateTime.now().millisecondsSinceEpoch.toString();
     }
   }
 
-  // Load or generate client ID
-  static Future<void> _loadClientId() async {
-    final configDir = await _getConfigDirectory();
-    final clientIdFile = File(path.join(configDir.path, 'client_id'));
-
-    if (clientIdFile.existsSync()) {
-      _clientId = await clientIdFile.readAsString();
-    } else {
-      _clientId = _generateClientId();
-      await clientIdFile.writeAsString(_clientId!);
-    }
-  }
-
-  // Load consent status
-  static Future<void> _loadConsent() async {
-    final configDir = await _getConfigDirectory();
-    final consentFile = File(path.join(configDir.path, 'analytics_consent'));
-    _consentGiven = consentFile.existsSync();
-  }
-
-  // Get config directory
-  static Future<Directory> _getConfigDirectory() async {
-    final homeDir = Platform.environment['HOME'] ??
-        Platform.environment['USERPROFILE'] ??
-        '';
-    final configDir = Directory(path.join(homeDir, '.sarus_cli'));
-
-    if (!configDir.existsSync()) {
-      await configDir.create(recursive: true);
+  /// Get geolocation data from multiple services (with fallbacks)
+  Future<Map<String, dynamic>> _getGeolocationData() async {
+    // Return cached data if still valid
+    if (_cachedGeoData != null &&
+        _geoDataCacheTime != null &&
+        DateTime.now().difference(_geoDataCacheTime!) < _geoCacheDuration) {
+      return _cachedGeoData!;
     }
 
-    return configDir;
-  }
+    var geoData = <String, dynamic>{};
 
-  // Generate unique client ID
-  static String _generateClientId() {
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final hostname = Platform.localHostname;
-    final random = DateTime.now().microsecondsSinceEpoch;
-    return sha256
-        .convert(utf8.encode('$hostname-$timestamp-$random'))
-        .toString()
-        .substring(0, 32);
-  }
+    // List of free geolocation services to try
+    final services = [
+      _tryIpApiService,
+      _tryIpInfoService,
+      _tryIpGeolocationService,
+    ];
 
-  // Generate session ID
-  static String _generateSessionId() {
-    return DateTime.now().millisecondsSinceEpoch.toString();
-  }
-
-  // Request user consent
-  static Future<void> requestConsent() async {
-    if (_consentGiven == true) return;
-
-    try {
-      _logger.info('');
-      _logger.info('📊 ${lightCyan.wrap('Help improve Sarus CLI!')}');
-      _logger.info(
-        "We'd like to collect anonymous usage data to improve the tool.",
-      );
-      _logger.info(
-        'This includes command usage, errors, and performance metrics.',
-      );
-      _logger
-          .info('${lightGray.wrap('No personal information is collected.')}');
-      _logger.info('');
-
-      stdout.write('${lightYellow.wrap('Allow anonymous analytics?')} (y/n): ');
-      final input = stdin.readLineSync()?.trim().toLowerCase();
-
-      if (input == 'y' || input == 'yes') {
-        await _saveConsent(true);
-        _logger.success(
-          'Analytics enabled. Thank you for helping us improve Sarus!',
-        );
-      } else {
-        await _saveConsent(false);
-        _logger.info('Analytics disabled.');
-      }
-    } catch (e) {
-      // If consent request fails, disable analytics
-      _consentGiven = false;
-    }
-  }
-
-  // Save consent status
-  static Future<void> _saveConsent(bool consent) async {
-    try {
-      final configDir = await _getConfigDirectory();
-      final consentFile = File(path.join(configDir.path, 'analytics_consent'));
-
-      if (consent) {
-        await consentFile.writeAsString('granted');
-        _consentGiven = true;
-      } else {
-        if (consentFile.existsSync()) {
-          await consentFile.delete();
+    for (final service in services) {
+      try {
+        geoData = await service();
+        if (geoData.isNotEmpty) {
+          // Cache successful result
+          _cachedGeoData = geoData;
+          _geoDataCacheTime = DateTime.now();
+          break;
         }
-        _consentGiven = false;
+      } catch (e) {
+        // Continue to next service
+        continue;
       }
-    } catch (e) {
-      _consentGiven = false;
     }
+
+    return geoData;
   }
 
-  // Check if analytics is enabled
-  static bool get isEnabled => _consentGiven == true;
+  /// Try ip-api.com service (free, no API key required)
+  Future<Map<String, dynamic>> _tryIpApiService() async {
+    final response = await _httpClient
+        .get(
+          Uri.parse(
+            'http://ip-api.com/json/?fields=status,country,countryCode,region,regionName,city,timezone,isp',
+          ),
+        )
+        .timeout(const Duration(seconds: 5));
 
-  // Track command usage
-  static Future<void> trackCommand(
-    String command, {
-    Map<String, dynamic>? parameters,
-    Duration? executionTime,
-    bool success = true,
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      if (data['status'] == 'success') {
+        return {
+          'country': data['country'],
+          'country_code': data['countryCode'],
+          'region': data['regionName'],
+          'city': data['city'],
+          'timezone': data['timezone'],
+          'isp': data['isp'],
+          'service_used': 'ip-api',
+        };
+      }
+    }
+    return {};
+  }
+
+  /// Try ipinfo.io service (free tier available)
+  Future<Map<String, dynamic>> _tryIpInfoService() async {
+    final response = await _httpClient
+        .get(
+          Uri.parse('https://ipinfo.io/json'),
+        )
+        .timeout(const Duration(seconds: 5));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      if (data['country'] != null) {
+        return {
+          'country': data['country'],
+          'country_code': data['country'],
+          'region': data['region'],
+          'city': data['city'],
+          'timezone': data['timezone'],
+          'org': data['org'],
+          'service_used': 'ipinfo',
+        };
+      }
+    }
+    return {};
+  }
+
+  /// Try ip-geolocation.io service (free tier available)
+  Future<Map<String, dynamic>> _tryIpGeolocationService() async {
+    final response = await _httpClient
+        .get(
+          Uri.parse('https://ipapi.co/json/'),
+        )
+        .timeout(const Duration(seconds: 5));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      if (data['country'] != null) {
+        return {
+          'country': data['country_name'],
+          'country_code': data['country_code'],
+          'region': data['region'],
+          'city': data['city'],
+          'timezone': data['timezone'],
+          'org': data['org'],
+          'service_used': 'ipapi.co',
+        };
+      }
+    }
+    return {};
+  }
+
+  /// Track an event with Mixpanel including geolocation
+  Future<void> trackEvent(
+    String eventName, {
+    Map<String, dynamic>? properties,
+    Duration timeout = const Duration(seconds: 3),
+    bool includeGeo = true,
   }) async {
-    if (!isEnabled) return;
-
-    await _sendEvent('command_executed', {
-      'command_name': command,
-      'success': success,
-      'execution_time_ms': executionTime?.inMilliseconds,
-      'platform': Platform.operatingSystem,
-      ...?parameters,
-    });
-  }
-
-  // Track CLI start
-  static Future<void> trackAppStart() async {
-    if (!isEnabled) return;
-
-    await _sendEvent('cli_start', {
-      'platform': Platform.operatingSystem,
-      'platform_version': Platform.operatingSystemVersion,
-      'dart_version': Platform.version,
-    });
-  }
-
-  // Track errors
-  static Future<void> trackError(
-    String error, {
-    String? command,
-    String? context,
-  }) async {
-    if (!isEnabled) return;
-
-    await _sendEvent('error_occurred', {
-      'error_type': error.length > 50 ? error.substring(0, 50) : error,
-      'command': command,
-      'context': context,
-      'platform': Platform.operatingSystem,
-    });
-  }
-
-  // Track project creation with details
-  static Future<void> trackProjectCreation(
-    String projectName, {
-    Duration? totalTime,
-    bool success = true,
-    String? errorStep,
-  }) async {
-    if (!isEnabled) return;
-
-    await _sendEvent('project_created', {
-      'success': success,
-      'total_time_ms': totalTime?.inMilliseconds,
-      'error_step': errorStep,
-      'has_custom_name': projectName != 'sarus_project',
-    });
-  }
-
-  // Track module generation
-  static Future<void> trackModuleCreation(
-    String moduleName, {
-    Duration? executionTime,
-    bool success = true,
-  }) async {
-    if (!isEnabled) return;
-
-    await _sendEvent('module_created', {
-      'success': success,
-      'execution_time_ms': executionTime?.inMilliseconds,
-      'has_custom_name': moduleName != 'default_module',
-    });
-  }
-
-  // Track update operations
-  static Future<void> trackUpdate(
-    bool success, {
-    String? fromVersion,
-    String? toVersion,
-    Duration? updateTime,
-  }) async {
-    if (!isEnabled) return;
-
-    await _sendEvent('cli_updated', {
-      'success': success,
-      'from_version': fromVersion,
-      'to_version': toVersion,
-      'update_time_ms': updateTime?.inMilliseconds,
-    });
-  }
-
-  // Send event to Google Analytics
-  static Future<void> _sendEvent(
-    String eventName,
-    Map<String, dynamic> parameters,
-  ) async {
     try {
-      if (_clientId == null || _sessionId == null) return;
+      final userId = _generateUserId();
 
-      final payload = {
-        'client_id': _clientId,
-        'events': [
-          {
-            'name': eventName,
-            'params': {
-              'session_id': _sessionId,
-              'engagement_time_msec': '1',
-              ...parameters
-                  .map((key, value) => MapEntry(key, value?.toString())),
-            },
+      // Get geolocation data
+      var geoData = <String, dynamic>{};
+      if (includeGeo) {
+        try {
+          geoData = await _getGeolocationData();
+        } catch (e) {
+          // Don't fail the event if geo lookup fails
+          log('Geolocation lookup failed (non-critical): $e');
+        }
+      }
+
+      final eventData = {
+        'event': eventName,
+        'properties': {
+          'token': _mixpanelToken,
+          'distinct_id': userId,
+          'time': DateTime.now().millisecondsSinceEpoch,
+          r'$insert_id':
+              '${userId}_${eventName}_${DateTime.now().millisecondsSinceEpoch}',
+
+          // Add CLI-specific properties
+          'cli_version': Platform.version,
+          'platform': Platform.operatingSystem,
+          'platform_version': Platform.operatingSystemVersion,
+
+          // Add geolocation properties with $ prefix for Mixpanel's built-in properties
+          if (geoData.isNotEmpty) ...{
+            r'$city': geoData['city'],
+            r'$region': geoData['region'],
+            r'$country_code': geoData['country_code'],
+            'country': geoData['country'],
+            'timezone': geoData['timezone'],
+            'isp': geoData['isp'] ?? geoData['org'],
+            'geo_service': geoData['service_used'],
           },
-        ],
+
+          // Add custom properties
+          if (properties != null) ...properties,
+        },
       };
 
-      await http
+      final encodedData = base64Encode(utf8.encode(json.encode(eventData)));
+
+      final response = await _httpClient
           .post(
-            Uri.parse(
-              '$_endpoint?measurement_id=$_measurementId&api_secret=$_apiSecret',
-            ),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode(payload),
+            Uri.parse(_mixpanelUrl),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'data=$encodedData',
           )
-          .timeout(const Duration(seconds: 3));
+          .timeout(timeout);
+
+      // Mixpanel returns "1" for success
+      if (response.statusCode == 200 && response.body == '1') {
+        // Success - event tracked
+        return;
+      } else {
+        // Log error but don't fail the command
+        log(
+          'Mixpanel tracking failed: ${response.statusCode} - ${response.body}',
+        );
+      }
     } catch (e) {
-      // Silently fail - don't interrupt user experience
+      // Silently fail - don't let analytics break the CLI
+      log('Analytics error (non-critical): $e');
     }
   }
 
-  // Analytics management methods
-  static Future<void> enableAnalytics() async {
-    await _saveConsent(true);
-    _logger.success('Analytics enabled successfully.');
+  /// Track command usage with geolocation
+  Future<void> trackCommandUsage(
+    String commandName, {
+    Map<String, dynamic>? additionalProperties,
+  }) async {
+    await trackEvent(
+      'command_executed',
+      properties: {
+        'command_name': commandName,
+        'timestamp': DateTime.now().toIso8601String(),
+        if (additionalProperties != null) ...additionalProperties,
+      },
+    );
   }
 
-  static Future<void> disableAnalytics() async {
-    await _saveConsent(false);
-    _logger.info('Analytics disabled successfully.');
+  /// Track CLI startup with geolocation
+  Future<void> trackCliStartup({
+    String? version,
+    List<String>? args,
+  }) async {
+    await trackEvent(
+      'cli_startup',
+      properties: {
+        'version': version,
+        'args_count': args?.length ?? 0,
+        'has_command': args != null && args.isNotEmpty,
+      },
+    );
   }
 
-  static Future<void> showStatus() async {
-    await _loadConsent();
-    if (isEnabled) {
-      _logger.info('Analytics: ${lightGreen.wrap('Enabled')}');
-      _logger.detail('Client ID: ${_clientId?.substring(0, 8)}...');
-    } else {
-      _logger.info('Analytics: ${lightRed.wrap('Disabled')}');
-    }
+  /// Get current geolocation info (useful for debugging)
+  Future<Map<String, dynamic>> getCurrentLocation() async {
+    return _getGeolocationData();
+  }
+
+  /// Clear geolocation cache (useful for testing)
+  void clearGeoCache() {
+    _cachedGeoData = null;
+    _geoDataCacheTime = null;
+  }
+
+  /// Dispose of resources
+  void dispose() {
+    _httpClient.close();
   }
 }
