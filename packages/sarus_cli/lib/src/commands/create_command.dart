@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:sarus_cli/analytics/analytics_wrapper.dart';
+import 'package:sarus_cli/analytics/analytics_manager.dart';
 import 'package:sarus_cli/src/commands/commands.dart';
 import 'package:sarus_cli/templates/project_bundle.dart';
 
@@ -15,9 +15,13 @@ final RegExp _identifierRegExp = RegExp('[a-z_][a-z0-9_]*');
 /// A [Command] to check if Node.js is installed on the system
 /// {@endtemplate}
 class CreateCommand extends Command<int> {
-  CreateCommand({required Logger logger, GeneratorBuilder? generator})
-      : _logger = logger,
-        _generator = generator ?? MasonGenerator.fromBundle;
+  CreateCommand({
+    required Logger logger,
+    GeneratorBuilder? generator,
+    MixpanelService? mixpanelService,
+  })  : _logger = logger,
+        _generator = generator ?? MasonGenerator.fromBundle,
+        _mixpanelService = mixpanelService;
 
   @override
   String get description => 'Create a new sarus project.';
@@ -26,50 +30,57 @@ class CreateCommand extends Command<int> {
   String get name => 'create';
 
   final Logger _logger;
-
   final GeneratorBuilder _generator;
+  final MixpanelService? _mixpanelService;
 
   @override
   FutureOr<int>? run() async {
-    final stopwatch = Stopwatch()..start();
-    String? errorStep;
-    var success = false;
+    final startTime = DateTime.now();
 
     try {
+      /// Track command start
+      await _mixpanelService?.trackEvent(
+        'create_command_started',
+        properties: {
+          'project_name': projectName,
+          'timestamp': startTime.toIso8601String(),
+        },
+      );
+
       /// Check if Dart SDK is installed
       await checkDart();
 
       /// Generate a new sarus project
       await generateBrick();
 
-      stopwatch.stop();
-      success = true;
+      final duration = DateTime.now().difference(startTime);
 
-      // Track successful project creation
-      await SarusAnalytics.trackProjectCreation(
-        projectName,
-        totalTime: stopwatch.elapsed,
+      /// Track successful completion
+      await _mixpanelService?.trackEvent(
+        'create_command_completed',
+        properties: {
+          'project_name': projectName,
+          'duration_seconds': duration.inSeconds,
+          'success': true,
+        },
       );
 
       return ExitCode.success.code;
     } catch (e) {
-      stopwatch.stop();
+      final duration = DateTime.now().difference(startTime);
 
-      // Track failed project creation
-      await SarusAnalytics.trackProjectCreation(
-        projectName,
-        totalTime: stopwatch.elapsed,
-        success: success,
-        errorStep: errorStep ?? 'unknown',
+      /// Track failure
+      await _mixpanelService?.trackEvent(
+        'create_command_failed',
+        properties: {
+          'project_name': projectName,
+          'duration_seconds': duration.inSeconds,
+          'error_type': e.runtimeType.toString(),
+          'error_message': e.toString(),
+        },
       );
 
-      await SarusAnalytics.trackError(
-        e.toString(),
-        command: 'create',
-        context: errorStep,
-      );
-
-      return ExitCode.success.code;
+      rethrow;
     }
   }
 
@@ -96,21 +107,16 @@ class CreateCommand extends Command<int> {
   /// If there is an error during generation, an error message is printed to
   /// stderr.
   Future<void> generateBrick() async {
-    var currentStep = 'initialization';
-
     try {
       _logger
         ..info('Starting Sarus project generation process...')
         ..progress('Step 1/5: Initializing project generator...');
 
-      currentStep = 'generator_setup';
       final generator = await _generator(projectBundle);
 
       _logger
         ..detail('Project generator initialized successfully.')
         ..progress('Step 2/5: Creating project structure...');
-
-      currentStep = 'project_structure';
       final target = DirectoryGeneratorTarget(Directory.current);
       await generator.generate(
         target,
@@ -121,6 +127,14 @@ class CreateCommand extends Command<int> {
 
       _logger.success('Project "$projectName" structure created successfully.');
 
+      // Track project structure creation
+      await _mixpanelService?.trackEvent(
+        'project_structure_created',
+        properties: {
+          'project_name': projectName,
+        },
+      );
+
       // Create workingDir variable for project path
       final workingDir = Directory('${Directory.current.path}/$projectName');
 
@@ -128,7 +142,6 @@ class CreateCommand extends Command<int> {
         ..detail('Project working directory: ${workingDir.path}')
         ..progress('Step 3/5: Verifying project directory...');
 
-      currentStep = 'directory_verification';
       if (!workingDir.existsSync()) {
         _logger.err('Project directory not found at: ${workingDir.path}');
         throw Exception('Project directory creation failed');
@@ -138,7 +151,7 @@ class CreateCommand extends Command<int> {
         ..detail('Project directory verified successfully.')
         ..progress('Step 4/5: Generate routes...');
 
-      currentStep = 'route_generation';
+      final buildStartTime = DateTime.now();
       final resultBuilder = Process.runSync(
         'dart',
         [
@@ -150,17 +163,34 @@ class CreateCommand extends Command<int> {
         workingDirectory: workingDir.path,
       );
 
+      final buildDuration = DateTime.now().difference(buildStartTime);
+
       if (resultBuilder.exitCode == 0) {
         _logger.detail('Routes generated successfully.');
+        await _mixpanelService?.trackEvent(
+          'build_runner_success',
+          properties: {
+            'project_name': projectName,
+            'duration_seconds': buildDuration.inSeconds,
+          },
+        );
       } else {
         _logger.err('Failed to generate routes: ${resultBuilder.stderr}');
+        await _mixpanelService?.trackEvent(
+          'build_runner_failed',
+          properties: {
+            'project_name': projectName,
+            'duration_seconds': buildDuration.inSeconds,
+            'error': resultBuilder.stderr.toString(),
+          },
+        );
       }
 
       _logger
         ..detail('Project directory verified successfully.')
         ..progress('Step 5/6: Running dart pub get...');
 
-      currentStep = 'route_generation';
+      final pubGetStartTime = DateTime.now();
       final result = Process.runSync(
         'dart',
         [
@@ -170,10 +200,27 @@ class CreateCommand extends Command<int> {
         workingDirectory: workingDir.path,
       );
 
+      final pubGetDuration = DateTime.now().difference(pubGetStartTime);
+
       if (result.exitCode == 0) {
         _logger.detail('dart pub get executed successfully.');
+        await _mixpanelService?.trackEvent(
+          'pub_get_success',
+          properties: {
+            'project_name': projectName,
+            'duration_seconds': pubGetDuration.inSeconds,
+          },
+        );
       } else {
         _logger.err('Failed to run dart pub get: ${result.stderr}');
+        await _mixpanelService?.trackEvent(
+          'pub_get_failed',
+          properties: {
+            'project_name': projectName,
+            'duration_seconds': pubGetDuration.inSeconds,
+            'error': result.stderr.toString(),
+          },
+        );
       }
 
       _logger
@@ -181,7 +228,7 @@ class CreateCommand extends Command<int> {
         ..progress('Step 6/6: Applying Dart fixes...')
         ..detail('Running dart fix to improve code quality...');
 
-      currentStep = 'dart_fixes';
+      final fixStartTime = DateTime.now();
       final resultFix = Process.runSync(
         'dart',
         [
@@ -191,31 +238,55 @@ class CreateCommand extends Command<int> {
         workingDirectory: workingDir.path,
       );
 
+      final fixDuration = DateTime.now().difference(fixStartTime);
+
       if (resultFix.exitCode == 0) {
         _logger
           ..success('Dart fixes applied successfully.')
           ..detail('Code linting and formatting completed.');
+        await _mixpanelService?.trackEvent(
+          'dart_fix_success',
+          properties: {
+            'project_name': projectName,
+            'duration_seconds': fixDuration.inSeconds,
+          },
+        );
       } else {
         _logger
           ..err('Failed to run dart fix --apply: ${resultFix.stderr}')
           ..detail('Error code: ${resultFix.exitCode}');
+        await _mixpanelService?.trackEvent(
+          'dart_fix_failed',
+          properties: {
+            'project_name': projectName,
+            'duration_seconds': fixDuration.inSeconds,
+            'error': resultFix.stderr.toString(),
+            'exit_code': resultFix.exitCode,
+          },
+        );
       }
 
       _logger
         ..info('Project generation completed successfully!')
         ..detail('Your new Sarus project is ready at: ${workingDir.path}');
     } catch (e) {
-      await SarusAnalytics.trackError(
-        'Project generation failed at $currentStep: $e',
-        command: 'create',
-        context: currentStep,
-      );
-
       _logger
         ..err('Error generating project: $e')
         ..detail(
           'Project generation failed. Please check the error message above.',
         );
+
+      // Track generation failure
+      await _mixpanelService?.trackEvent(
+        'project_generation_failed',
+        properties: {
+          'project_name': projectName,
+          'error_type': e.runtimeType.toString(),
+          'error_message': e.toString(),
+        },
+      );
+
+      rethrow;
     }
   }
 
@@ -232,21 +303,24 @@ class CreateCommand extends Command<int> {
       // If the result exits with 0, Dart SDK is installed
       if (result.exitCode != 0) {
         _logger.warn('Dart SDK is not installed.');
-        await SarusAnalytics.trackError(
-          'Dart SDK not installed',
-          command: 'create',
-          context: 'dart_check',
+        await _mixpanelService?.trackEvent(
+          'dart_sdk_check_failed',
+          properties: {
+            'exit_code': result.exitCode,
+          },
         );
+      } else {
+        await _mixpanelService?.trackEvent('dart_sdk_check_success');
       }
     } catch (e) {
-      await SarusAnalytics.trackError(
-        'Error checking Dart SDK: $e',
-        command: 'create',
-        context: 'dart_check',
-      );
-
       // Catch any errors (e.g., Process not found)
       _logger.err('Error checking Dart SDK installation: $e');
+      await _mixpanelService?.trackEvent(
+        'dart_sdk_check_error',
+        properties: {
+          'error': e.toString(),
+        },
+      );
       exit(1);
     }
   }
