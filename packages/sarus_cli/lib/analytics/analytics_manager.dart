@@ -8,7 +8,7 @@ import 'package:path/path.dart' as path;
 
 class AnalyticsManager {
   static const String _measurementId = 'G-3ZZYT1CJRV';
-  static const String _apiSecret = 'AIzaSyDeLzndzgYiughdN0BvrOb_hQbgSQF2Yxc';
+  static const String _apiSecret = 'AIzaSyDeLzndzgYiughdN0BvrOb_hQbgSQF2Yioxc';
   static const String _endpoint = 'https://www.google-analytics.com/mp/collect';
 
   static String? _clientId;
