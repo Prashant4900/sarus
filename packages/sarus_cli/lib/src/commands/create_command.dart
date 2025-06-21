@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:sarus_cli/analytics/analytics_wrapper.dart';
 import 'package:sarus_cli/src/commands/commands.dart';
 import 'package:sarus_cli/templates/project_bundle.dart';
 
@@ -30,13 +31,46 @@ class CreateCommand extends Command<int> {
 
   @override
   FutureOr<int>? run() async {
-    /// Check if Dart SDK is installed
-    await checkDart();
+    final stopwatch = Stopwatch()..start();
+    String? errorStep;
+    var success = false;
 
-    /// Generate a new sarus project
-    await generateBrick();
+    try {
+      /// Check if Dart SDK is installed
+      await checkDart();
 
-    return ExitCode.success.code;
+      /// Generate a new sarus project
+      await generateBrick();
+
+      stopwatch.stop();
+      success = true;
+
+      // Track successful project creation
+      await SarusAnalytics.trackProjectCreation(
+        projectName,
+        totalTime: stopwatch.elapsed,
+      );
+
+      return ExitCode.success.code;
+    } catch (e) {
+      stopwatch.stop();
+
+      // Track failed project creation
+      await SarusAnalytics.trackProjectCreation(
+        projectName,
+        totalTime: stopwatch.elapsed,
+        success: false,
+        errorStep: errorStep ?? 'unknown',
+      );
+
+      await SarusAnalytics.trackError(
+        e.toString(),
+        command: 'create',
+        context: errorStep,
+      );
+
+      return ExitCode.success.code;
+    }
   }
 
   String get projectName {
@@ -62,16 +96,21 @@ class CreateCommand extends Command<int> {
   /// If there is an error during generation, an error message is printed to
   /// stderr.
   Future<void> generateBrick() async {
+    var currentStep = 'initialization';
+
     try {
       _logger
         ..info('Starting Sarus project generation process...')
         ..progress('Step 1/5: Initializing project generator...');
 
+      currentStep = 'generator_setup';
       final generator = await _generator(projectBundle);
 
       _logger
         ..detail('Project generator initialized successfully.')
         ..progress('Step 2/5: Creating project structure...');
+
+      currentStep = 'project_structure';
       final target = DirectoryGeneratorTarget(Directory.current);
       await generator.generate(
         target,
@@ -89,6 +128,7 @@ class CreateCommand extends Command<int> {
         ..detail('Project working directory: ${workingDir.path}')
         ..progress('Step 3/5: Verifying project directory...');
 
+      currentStep = 'directory_verification';
       if (!workingDir.existsSync()) {
         _logger.err('Project directory not found at: ${workingDir.path}');
         throw Exception('Project directory creation failed');
@@ -98,6 +138,7 @@ class CreateCommand extends Command<int> {
         ..detail('Project directory verified successfully.')
         ..progress('Step 4/5: Generate routes...');
 
+      currentStep = 'route_generation';
       final resultBuilder = Process.runSync(
         'dart',
         [
@@ -119,6 +160,7 @@ class CreateCommand extends Command<int> {
         ..detail('Project directory verified successfully.')
         ..progress('Step 5/6: Running dart pub get...');
 
+      currentStep = 'route_generation';
       final result = Process.runSync(
         'dart',
         [
@@ -139,6 +181,7 @@ class CreateCommand extends Command<int> {
         ..progress('Step 6/6: Applying Dart fixes...')
         ..detail('Running dart fix to improve code quality...');
 
+      currentStep = 'dart_fixes';
       final resultFix = Process.runSync(
         'dart',
         [
@@ -162,6 +205,12 @@ class CreateCommand extends Command<int> {
         ..info('Project generation completed successfully!')
         ..detail('Your new Sarus project is ready at: ${workingDir.path}');
     } catch (e) {
+      await SarusAnalytics.trackError(
+        'Project generation failed at $currentStep: $e',
+        command: 'create',
+        context: currentStep,
+      );
+
       _logger
         ..err('Error generating project: $e')
         ..detail(
@@ -183,8 +232,19 @@ class CreateCommand extends Command<int> {
       // If the result exits with 0, Dart SDK is installed
       if (result.exitCode != 0) {
         _logger.warn('Dart SDK is not installed.');
+        await SarusAnalytics.trackError(
+          'Dart SDK not installed',
+          command: 'create',
+          context: 'dart_check',
+        );
       }
     } catch (e) {
+      await SarusAnalytics.trackError(
+        'Error checking Dart SDK: $e',
+        command: 'create',
+        context: 'dart_check',
+      );
+
       // Catch any errors (e.g., Process not found)
       _logger.err('Error checking Dart SDK installation: $e');
       exit(1);

@@ -3,6 +3,7 @@ import 'package:args/command_runner.dart';
 import 'package:cli_completion/cli_completion.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
+import 'package:sarus_cli/analytics/analytics_wrapper.dart';
 import 'package:sarus_cli/src/commands/commands.dart';
 import 'package:sarus_cli/src/version.dart';
 
@@ -54,12 +55,37 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
   @override
   Future<int> run(Iterable<String> args) async {
     try {
+      await SarusAnalytics.init();
+
+      // Request consent on first run (only if not analytics command)
+      if (args.isNotEmpty && args.first != 'analytics') {
+        await SarusAnalytics.requestConsentIfNeeded();
+      }
+
       final topLevelResults = parse(args);
       if (topLevelResults['verbose'] == true) {
         _logger.level = Level.verbose;
       }
-      return await runCommand(topLevelResults) ?? ExitCode.success.code;
+
+      final exitCode =
+          await runCommand(topLevelResults) ?? ExitCode.success.code;
+
+      // Track successful command execution
+      if (exitCode == ExitCode.success.code &&
+          topLevelResults.command != null) {
+        await SarusAnalytics.trackCommand(
+          topLevelResults.command!.name ?? 'error',
+        );
+      }
+
+      return exitCode;
     } on FormatException catch (e, stackTrace) {
+      // Track error
+      await SarusAnalytics.trackError(
+        'FormatException: ${e.message}',
+        context: 'command_parsing',
+      );
+
       // On format errors, show the commands error message, root usage and
       // exit with an error code
       _logger
@@ -69,6 +95,12 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
         ..info(usage);
       return ExitCode.usage.code;
     } on UsageException catch (e) {
+      // Track error
+      await SarusAnalytics.trackError(
+        'UsageException: ${e.message}',
+        context: 'command_usage',
+      );
+
       // On usage errors, show the commands usage message and
       // exit with an error code
       _logger
@@ -76,6 +108,18 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
         ..info('')
         ..info(e.usage);
       return ExitCode.usage.code;
+    } catch (e, stackTrace) {
+      // Track unexpected errors
+      await SarusAnalytics.trackError(
+        'UnexpectedException: $e',
+        context: 'command_execution',
+      );
+
+      // On unexpected errors, show the error message and stack trace
+      _logger
+        ..err('An unexpected error occurred: $e')
+        ..err('$stackTrace');
+      return ExitCode.software.code;
     }
   }
 
