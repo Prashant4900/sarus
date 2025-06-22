@@ -55,7 +55,7 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "{{name}}/lib/config/router.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6e3tuYW1lfX0vaGVsbG8vY29udHJvbGxlcnMuZGFydCc7CgpmaW5hbCByb3V0ZXIgPSBSb3V0ZXIocm91dGVzOiBbUm91dGUoY29udHJvbGxlcjogSGVsbG9Db250cm9sbGVyKCkpXSk7Cg==",
+          "aW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6e3tuYW1lfX0vaGVsbG8vY29udHJvbGxlcnMuZGFydCc7CgpmaW5hbCByb3V0ZXIgPSBSb3V0ZXIocm91dGVzOiBbCiAgICBSb3V0ZShjb250cm9sbGVyOiBIZWxsb0NvbnRyb2xsZXIoKSksCl0pOwo=",
       "type": "text"
     },
     {
@@ -67,7 +67,7 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "{{name}}/lib/sarus_application.dart",
       "data":
-          "aW1wb3J0ICdkYXJ0OmlvJzsKCmltcG9ydCAncGFja2FnZTpzYXJ1cy9zYXJ1cy5kYXJ0JzsKaW1wb3J0ICdwYWNrYWdlOnt7bmFtZX19L2NvbmZpZy9yb3V0ZXIuZGFydCc7CgpjbGFzcyBTYXJ1c0FwcGxpY2F0aW9uIGltcGxlbWVudHMgQXBwbGljYXRpb24gewogIEBvdmVycmlkZQogIEZ1dHVyZTxIdHRwU2VydmVyPiBydW4oKSBhc3luYyB7CiAgICB0cnkgewogICAgICBmaW5hbCBoYW5kbGVyID0gY29uc3QgUGlwZWxpbmUoKQogICAgICAgICAgLmFkZE1pZGRsZXdhcmUobG9nUmVxdWVzdHMoKSkKICAgICAgICAgIC5hZGRIYW5kbGVyKHJvdXRlci5oYW5kbGVyKTsKCiAgICAgIHJldHVybiBhd2FpdCBzZXJ2ZShoYW5kbGVyLCBJbnRlcm5ldEFkZHJlc3MuYW55SVB2NCwgODA4MCk7CiAgICB9IGNhdGNoIChlKSB7CiAgICAgIHByaW50KCdFcnJvciBzdGFydGluZyBzZXJ2ZXI6ICRlJyk7CiAgICAgIHJldGhyb3c7CiAgICB9CiAgfQp9Cg==",
+          "aW1wb3J0ICdkYXJ0OmlvJzsKCmltcG9ydCAncGFja2FnZTpzYXJ1cy9zYXJ1cy5kYXJ0JzsKaW1wb3J0ICdwYWNrYWdlOnt7bmFtZX19L2NvbmZpZy9yb3V0ZXIuZGFydCc7CgpjbGFzcyBTYXJ1c0FwcGxpY2F0aW9uIGltcGxlbWVudHMgQXBwbGljYXRpb24gewogIEBvdmVycmlkZQogIEZ1dHVyZTxIdHRwU2VydmVyPiBydW4oKSBhc3luYyB7CiAgICB0cnkgewogICAgICBmaW5hbCBoYW5kbGVyID0gY29uc3QgUGlwZWxpbmUoKQogICAgICAgICAgLmFkZE1pZGRsZXdhcmUobG9nUmVxdWVzdHMoKSkKICAgICAgICAgIC5hZGRIYW5kbGVyKHJvdXRlci5oYW5kbGVyKTsKCiAgICAgIHJldHVybiBhd2FpdCBzZXJ2ZShoYW5kbGVyLCBJbnRlcm5ldEFkZHJlc3MuYW55SVB2NCwgODA4MCk7CiAgICB9IGNhdGNoIChlKSB7CiAgICAgIHByaW50KCdFcnJvciBzdGFydGluZyBzZXJ2ZXI6ICRlJyk7CiAgICAgIHJldGhyb3c7CiAgICB9CiAgfQoKICBAb3ZlcnJpZGUKICBGdXR1cmU8dm9pZD4gc2V0dXAoKSBhc3luYyB7CiAgICB0cnkge30gY2F0Y2ggKGUpIHsKICAgICAgcHJpbnQoJ0ZhaWxlZCB0byBzZXR1cCBkZXBlbmRlbmNpZXMgaW5qZWN0aW9uOiAkZScpOwogICAgfQogIH0KfQo=",
       "type": "text"
     },
     {
