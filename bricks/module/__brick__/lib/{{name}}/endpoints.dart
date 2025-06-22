@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:sarus/sarus.dart';
 
-part 'controllers.g.dart';
+part 'endpoints.g.dart';
 
 @Endpoint('/{{name.paramCase()}}')
 class {{name.pascalCase()}}Endpoints extends Endpoints {
-  {{name.pascalCase()}}Controller() : super();
+  {{name.pascalCase()}}Endpoints() : super();
 
   @Get('')
   Future<Response> index(Request request) async {

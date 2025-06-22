@@ -10,11 +10,9 @@ class GreetingEndpoints extends Endpoints {
 
   @Get('')
   Future<Response> index(Request request) async {
-    return Response.ok(
-      jsonEncode({'message': 'Hello from GreetingEndpoint'}),
-    );
+    return Response.ok(jsonEncode({'message': 'Hello from GreetingEndpoint'}));
   }
 
   @override
-  RouterConfig get router => _$greetingControllerRouterConfig(this);
+  RouterConfig get router => _$greetingEndpointsRouterConfig(this);
 }
