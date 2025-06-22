@@ -55,7 +55,7 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "{{name}}/lib/config/router.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6e3tuYW1lfX0vaGVsbG8vY29udHJvbGxlcnMuZGFydCc7CgpmaW5hbCByb3V0ZXIgPSBSb3V0ZXIocm91dGVzOiBbUm91dGUoZW5kcG9pbnQ6IEdyZWV0aW5nRW5kcG9pbnRzKCkpXSk7Cg==",
+          "aW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6e3tuYW1lfX0vZ3JlZXRpbmcvZW5kcG9pbnRzLmRhcnQnOwoKZmluYWwgcm91dGVyID0gUm91dGVyKHJvdXRlczogW1JvdXRlKGVuZHBvaW50czogR3JlZXRpbmdFbmRwb2ludHMoKSldKTsK",
       "type": "text"
     },
     {

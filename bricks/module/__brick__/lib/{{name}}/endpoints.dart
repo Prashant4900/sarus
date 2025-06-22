@@ -10,9 +10,9 @@ class {{name.pascalCase()}}Endpoints extends Endpoints {
 
   @Get('')
   Future<Response> index(Request request) async {
-    return Response.ok(jsonEncode({'message': 'Hello from {{name.pascalCase()}}Controller'}));
+    return Response.ok(jsonEncode({'message': 'Hello from {{name.pascalCase()}}Endpoint'}));
   }
 
   @override
-  RouterConfig get router => _${{name.camelCase()}}ControllerRouterConfig(this);
+  RouterConfig get router => _${{name.camelCase()}}EndpointsRouterConfig(this);
 }

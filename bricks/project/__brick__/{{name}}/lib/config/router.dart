@@ -1,4 +1,4 @@
 import 'package:sarus/sarus.dart';
-import 'package:{{name}}/hello/controllers.dart';
+import 'package:{{name}}/greeting/endpoints.dart';
 
-final router = Router(routes: [Route(endpoint: GreetingEndpoints())]);
+final router = Router(routes: [Route(endpoints: GreetingEndpoints())]);
