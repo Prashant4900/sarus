@@ -17,4 +17,9 @@ class SarusApplication implements Application {
       rethrow;
     }
   }
+
+  Future<void> setup() async {
+    // Any setup logic can go here, such as initializing services or databases.
+    print('Setting up SarusApplication...');
+  }
 }
