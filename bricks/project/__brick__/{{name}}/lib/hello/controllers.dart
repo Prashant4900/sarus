@@ -5,7 +5,7 @@ import 'package:sarus/sarus.dart';
 part 'controllers.g.dart';
 
 @Controller('/hello')
-class HelloController extends BaseController {
+class HelloController extends Endpoint {
   HelloController() : super();
 
   @Get('')

@@ -26,7 +26,7 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "{{name}}/analysis_options.yaml",
       "data":
-          "aW5jbHVkZTogcGFja2FnZTp2ZXJ5X2dvb2RfYW5hbHlzaXMvYW5hbHlzaXNfb3B0aW9ucy45LjAuMC55YW1sCgphbmFseXplcjoKICBlcnJvcnM6CiAgICBwdWJsaWNfbWVtYmVyX2FwaV9kb2NzOiBpZ25vcmUKICAgIGF2b2lkX3ByaW50OiBpZ25vcmUK",
+          "aW5jbHVkZTogcGFja2FnZTp2ZXJ5X2dvb2RfYW5hbHlzaXMvYW5hbHlzaXNfb3B0aW9ucy45LjAuMC55YW1sCgphbmFseXplcjoKICBlcnJvcnM6CiAgICBwdWJsaWNfbWVtYmVyX2FwaV9kb2NzOiBpZ25vcmUKICAgIGF2b2lkX3ByaW50OiBpZ25vcmUKICAgIGF2b2lkX2NhdGNoZXNfd2l0aG91dF9vbl9jbGF1c2VzOiBpZ25vcmUK",
       "type": "text"
     },
     {
@@ -61,7 +61,7 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "{{name}}/lib/hello/controllers.dart",
       "data":
-          "aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKaW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwoKcGFydCAnY29udHJvbGxlcnMuZy5kYXJ0JzsKCkBDb250cm9sbGVyKCcvaGVsbG8nKQpjbGFzcyBIZWxsb0NvbnRyb2xsZXIgZXh0ZW5kcyBCYXNlQ29udHJvbGxlciB7CiAgSGVsbG9Db250cm9sbGVyKCkgOiBzdXBlcigpOwoKICBAR2V0KCcnKQogIEZ1dHVyZTxSZXNwb25zZT4gaW5kZXgoUmVxdWVzdCByZXF1ZXN0KSBhc3luYyB7CiAgICByZXR1cm4gUmVzcG9uc2Uub2soanNvbkVuY29kZSh7J21lc3NhZ2UnOiAnSGVsbG8gZnJvbSBIZWxsb0NvbnRyb2xsZXInfSkpOwogIH0KCiAgQG92ZXJyaWRlCiAgUm91dGVyQ29uZmlnIGdldCByb3V0ZXIgPT4gXyRoZWxsb0NvbnRyb2xsZXJSb3V0ZXJDb25maWcodGhpcyk7Cn0K",
+          "aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKaW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwoKcGFydCAnY29udHJvbGxlcnMuZy5kYXJ0JzsKCkBDb250cm9sbGVyKCcvaGVsbG8nKQpjbGFzcyBIZWxsb0NvbnRyb2xsZXIgZXh0ZW5kcyBFbmRwb2ludCB7CiAgSGVsbG9Db250cm9sbGVyKCkgOiBzdXBlcigpOwoKICBAR2V0KCcnKQogIEZ1dHVyZTxSZXNwb25zZT4gaW5kZXgoUmVxdWVzdCByZXF1ZXN0KSBhc3luYyB7CiAgICByZXR1cm4gUmVzcG9uc2Uub2soanNvbkVuY29kZSh7J21lc3NhZ2UnOiAnSGVsbG8gZnJvbSBIZWxsb0NvbnRyb2xsZXInfSkpOwogIH0KCiAgQG92ZXJyaWRlCiAgUm91dGVyQ29uZmlnIGdldCByb3V0ZXIgPT4gXyRoZWxsb0NvbnRyb2xsZXJSb3V0ZXJDb25maWcodGhpcyk7Cn0K",
       "type": "text"
     },
     {
@@ -79,7 +79,7 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "{{name}}/pubspec.yaml",
       "data":
-          "bmFtZToge3tuYW1lfX0KZGVzY3JpcHRpb246IEEgZmFzdCwgbWluaW1hbGlzdGljIGJhY2tlbmQgZnJhbWV3b3JrIGZvciBEYXJ0Lgp2ZXJzaW9uOiAxLjAuMApwdWJsaXNoX3RvOiBub25lCgplbnZpcm9ubWVudDoKICBzZGs6IF4zLjcuMAoKZGVwZW5kZW5jaWVzOgogIGdldF9pdDogXjguMC4zCiAgc2FydXM6IF4wLjAuMS1hbHBoYS4xCgpkZXZfZGVwZW5kZW5jaWVzOgogIGJ1aWxkX3J1bm5lcjogXjIuNC4xNQogIHRlc3Q6IF4xLjI0LjAKICB2ZXJ5X2dvb2RfYW5hbHlzaXM6IF45LjAuMAo=",
+          "bmFtZToge3tuYW1lfX0KZGVzY3JpcHRpb246IEEgZmFzdCwgbWluaW1hbGlzdGljIGJhY2tlbmQgZnJhbWV3b3JrIGZvciBEYXJ0Lgp2ZXJzaW9uOiAxLjAuMApwdWJsaXNoX3RvOiBub25lCgplbnZpcm9ubWVudDoKICBzZGs6IF4zLjcuMAoKZGVwZW5kZW5jaWVzOgogIHNhcnVzOgogICAgZ2l0OgogICAgICB1cmw6IGh0dHBzOi8vZ2l0aHViLmNvbS9QcmFzaGFudDQ5MDAvc2FydXMuZ2l0CiAgICAgIHBhdGg6IHBhY2thZ2VzL3NhcnVzCiAgICAgIHJlZjogZGV2ZWxvcG1lbnQKCmRldl9kZXBlbmRlbmNpZXM6CiAgYnVpbGRfcnVubmVyOiBeMi40LjE1CiAgdGVzdDogXjEuMjQuMAogIHZlcnlfZ29vZF9hbmFseXNpczogXjkuMC4wCg==",
       "type": "text"
     },
     {
