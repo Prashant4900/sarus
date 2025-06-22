@@ -1,4 +1,4 @@
-import 'package:sarus/src/controller/base_controller.dart';
+import 'package:sarus/src/endpoint/endpoint.dart';
 import 'package:sarus/src/router/router_config.dart';
 import 'package:shelf/shelf.dart';
 
@@ -120,7 +120,7 @@ class Route {
     }
   }
 
-  final BaseController controller;
+  final Endpoint controller;
   final String prefix;
   final List<Middleware> middlewares;
   final String? name;
