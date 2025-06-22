@@ -6,9 +6,9 @@ import 'package:mason/mason.dart';
 final moduleBundle = MasonBundle.fromJson(<String, dynamic>{
   "files": [
     {
-      "path": "lib/{{name}}/controllers.dart",
+      "path": "lib/{{name}}/endpoints.dart",
       "data":
-          "aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKaW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwoKcGFydCAnY29udHJvbGxlcnMuZy5kYXJ0JzsKCkBDb250cm9sbGVyKCcve3tuYW1lLnBhcmFtQ2FzZSgpfX0nKQpjbGFzcyB7e25hbWUucGFzY2FsQ2FzZSgpfX1Db250cm9sbGVyIGV4dGVuZHMgQmFzZUNvbnRyb2xsZXIgewogIHt7bmFtZS5wYXNjYWxDYXNlKCl9fUNvbnRyb2xsZXIoKSA6IHN1cGVyKCk7CgogIEBHZXQoJycpCiAgRnV0dXJlPFJlc3BvbnNlPiBpbmRleChSZXF1ZXN0IHJlcXVlc3QpIGFzeW5jIHsKICAgIHJldHVybiBSZXNwb25zZS5vayhqc29uRW5jb2RlKHsnbWVzc2FnZSc6ICdIZWxsbyBmcm9tIHt7bmFtZS5wYXNjYWxDYXNlKCl9fUNvbnRyb2xsZXInfSkpOwogIH0KCiAgQG92ZXJyaWRlCiAgUm91dGVyQ29uZmlnIGdldCByb3V0ZXIgPT4gXyR7e25hbWUuY2FtZWxDYXNlKCl9fUNvbnRyb2xsZXJSb3V0ZXJDb25maWcodGhpcyk7Cn0K",
+          "aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKaW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwoKcGFydCAnY29udHJvbGxlcnMuZy5kYXJ0JzsKCkBFbmRwb2ludCgnL3t7bmFtZS5wYXJhbUNhc2UoKX19JykKY2xhc3Mge3tuYW1lLnBhc2NhbENhc2UoKX19RW5kcG9pbnRzIGV4dGVuZHMgRW5kcG9pbnRzIHsKICB7e25hbWUucGFzY2FsQ2FzZSgpfX1Db250cm9sbGVyKCkgOiBzdXBlcigpOwoKICBAR2V0KCcnKQogIEZ1dHVyZTxSZXNwb25zZT4gaW5kZXgoUmVxdWVzdCByZXF1ZXN0KSBhc3luYyB7CiAgICByZXR1cm4gUmVzcG9uc2Uub2soanNvbkVuY29kZSh7J21lc3NhZ2UnOiAnSGVsbG8gZnJvbSB7e25hbWUucGFzY2FsQ2FzZSgpfX1Db250cm9sbGVyJ30pKTsKICB9CgogIEBvdmVycmlkZQogIFJvdXRlckNvbmZpZyBnZXQgcm91dGVyID0+IF8ke3tuYW1lLmNhbWVsQ2FzZSgpfX1Db250cm9sbGVyUm91dGVyQ29uZmlnKHRoaXMpOwp9Cg==",
       "type": "text"
     }
   ],

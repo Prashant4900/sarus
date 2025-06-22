@@ -38,7 +38,7 @@ class Router {
         }
 
         // Apply middleware to the controller handler if defined
-        var handlerWithMiddleware = route.endpoint.handler;
+        var handlerWithMiddleware = route.endpoints.handler;
 
         // Apply route-specific middleware first (if any)
         if (route.middlewares.isNotEmpty) {
@@ -80,7 +80,7 @@ class Router {
   void addRoute(Route route) {
     routes.add(route);
     try {
-      var handlerWithMiddleware = route.endpoint.handler;
+      var handlerWithMiddleware = route.endpoints.handler;
 
       // Apply route-specific middleware
       for (final middleware in route.middlewares) {
@@ -103,12 +103,12 @@ class Router {
 class Route {
   /// Creates a new route configuration.
   ///
-  /// [endpoint] is the endpoint that will handle requests to this route.
+  /// [endpoints] is the endpoint that will handle requests to this route.
   /// [prefix] is the URL prefix for this route (must start with '/').
   /// [middlewares] is a list of middleware that will be applied to this route only.
   /// [name] is an optional name for this route, useful for logging and debugging.
   Route({
-    required this.endpoint,
+    required this.endpoints,
     this.prefix = '/',
     this.middlewares = const [],
     this.name,
@@ -120,11 +120,11 @@ class Route {
     }
   }
 
-  final Endpoint endpoint;
+  final Endpoints endpoints;
   final String prefix;
   final List<Middleware> middlewares;
   final String? name;
 
   @override
-  String toString() => 'Route($name: $prefix -> ${endpoint.runtimeType})';
+  String toString() => 'Route($name: $prefix -> ${endpoints.runtimeType})';
 }

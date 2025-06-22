@@ -4,8 +4,8 @@ import 'package:sarus/sarus.dart';
 
 part 'controllers.g.dart';
 
-@Controller('/{{name.paramCase()}}')
-class {{name.pascalCase()}}Controller extends BaseController {
+@Endpoint('/{{name.paramCase()}}')
+class {{name.pascalCase()}}Endpoints extends Endpoints {
   {{name.pascalCase()}}Controller() : super();
 
   @Get('')

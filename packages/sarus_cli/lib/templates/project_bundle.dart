@@ -31,7 +31,7 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
     },
     {
       "path": "{{name}}/application.yaml",
-      "data": "bmFtZToge3tuYW1lfX0KCm1vZHVsZXM6CiAgLSAiaGVsbG8i",
+      "data": "bmFtZToge3tuYW1lfX0KCm1vZHVsZXM6CiAgLSAiZ3JlZXRpbmci",
       "type": "text"
     },
     {
@@ -55,13 +55,13 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "{{name}}/lib/config/router.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6e3tuYW1lfX0vaGVsbG8vY29udHJvbGxlcnMuZGFydCc7CgpmaW5hbCByb3V0ZXIgPSBSb3V0ZXIocm91dGVzOiBbCiAgICBSb3V0ZShjb250cm9sbGVyOiBIZWxsb0NvbnRyb2xsZXIoKSksCl0pOwo=",
+          "aW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6e3tuYW1lfX0vaGVsbG8vY29udHJvbGxlcnMuZGFydCc7CgpmaW5hbCByb3V0ZXIgPSBSb3V0ZXIocm91dGVzOiBbUm91dGUoZW5kcG9pbnQ6IEdyZWV0aW5nRW5kcG9pbnRzKCkpXSk7Cg==",
       "type": "text"
     },
     {
-      "path": "{{name}}/lib/hello/controllers.dart",
+      "path": "{{name}}/lib/greeting/endpoints.dart",
       "data":
-          "aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKaW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwoKcGFydCAnY29udHJvbGxlcnMuZy5kYXJ0JzsKCkBDb250cm9sbGVyKCcvaGVsbG8nKQpjbGFzcyBIZWxsb0NvbnRyb2xsZXIgZXh0ZW5kcyBFbmRwb2ludCB7CiAgSGVsbG9Db250cm9sbGVyKCkgOiBzdXBlcigpOwoKICBAR2V0KCcnKQogIEZ1dHVyZTxSZXNwb25zZT4gaW5kZXgoUmVxdWVzdCByZXF1ZXN0KSBhc3luYyB7CiAgICByZXR1cm4gUmVzcG9uc2Uub2soanNvbkVuY29kZSh7J21lc3NhZ2UnOiAnSGVsbG8gZnJvbSBIZWxsb0NvbnRyb2xsZXInfSkpOwogIH0KCiAgQG92ZXJyaWRlCiAgUm91dGVyQ29uZmlnIGdldCByb3V0ZXIgPT4gXyRoZWxsb0NvbnRyb2xsZXJSb3V0ZXJDb25maWcodGhpcyk7Cn0K",
+          "aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKaW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwoKcGFydCAnZW5kcG9pbnRzLmcuZGFydCc7CgpARW5kcG9pbnQoJy9ncmVldGluZycpCmNsYXNzIEdyZWV0aW5nRW5kcG9pbnRzIGV4dGVuZHMgRW5kcG9pbnRzIHsKICBHcmVldGluZ0VuZHBvaW50cygpIDogc3VwZXIoKTsKCiAgQEdldCgnJykKICBGdXR1cmU8UmVzcG9uc2U+IGluZGV4KFJlcXVlc3QgcmVxdWVzdCkgYXN5bmMgewogICAgcmV0dXJuIFJlc3BvbnNlLm9rKAogICAgICBqc29uRW5jb2RlKHsnbWVzc2FnZSc6ICdIZWxsbyBmcm9tIEdyZWV0aW5nRW5kcG9pbnQnfSksCiAgICApOwogIH0KCiAgQG92ZXJyaWRlCiAgUm91dGVyQ29uZmlnIGdldCByb3V0ZXIgPT4gXyRncmVldGluZ0NvbnRyb2xsZXJSb3V0ZXJDb25maWcodGhpcyk7Cn0K",
       "type": "text"
     },
     {

@@ -4,7 +4,7 @@ import 'package:dart_style/dart_style.dart';
 import 'package:sarus/sarus.dart';
 import 'package:source_gen/source_gen.dart';
 
-class RouteGenerator extends GeneratorForAnnotation<Controller> {
+class RouteGenerator extends GeneratorForAnnotation<Endpoint> {
   @override
   String generateForAnnotatedElement(
     Element element,

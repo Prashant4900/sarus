@@ -24,8 +24,8 @@ class Delete extends HttpRoute {
   const Delete(super.path);
 }
 
-/// Controller annotation to define base path
-class Controller {
-  const Controller([this.path = '']);
+/// Endpoint annotation to define base path
+class Endpoint {
+  const Endpoint([this.path = '']);
   final String path;
 }
