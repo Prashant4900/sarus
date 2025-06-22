@@ -17,16 +17,4 @@ class SarusApplication implements Application {
       rethrow;
     }
   }
-
-  @override
-  Future<void> setup() async {
-    try {} catch (e) {
-      print('Failed to setup dependencies injection: $e');
-    }
-  }
-
-  @override
-  Future<void> close() async {
-    print('Shutting down server...');
-  }
 }
