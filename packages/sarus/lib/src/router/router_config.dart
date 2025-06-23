@@ -6,13 +6,18 @@ import 'package:meta/meta.dart' show sealed;
 import 'package:sarus/src/router/router_entry.dart' show RouterEntry;
 import 'package:shelf/shelf.dart' as shelf;
 
+/// Pre-allocated empty parameters map to avoid repeated allocations
 final _emptyParams = UnmodifiableMapView(<String, String>{});
 
+/// Extension to add parameter extraction functionality to shelf.Request
 extension RouterParams on shelf.Request {
-  /// Get URL parameters captured by the [RouterConfig].
-  /// If no parameters are captured this returns an empty map.
+  /// Extract URL parameters captured by the RouterConfig during route matching.
   ///
-  /// The returned map is unmodifiable.
+  /// Returns an unmodifiable map containing all captured route parameters.
+  /// If no parameters were captured, returns an empty map.
+  ///
+  /// Example:
+  /// For route '/users/<id>' matching '/users/123', this returns {'id': '123'}
   Map<String, String> get params {
     final p = context['shelf_router/params'];
     if (p is Map<String, String>) {
@@ -22,7 +27,8 @@ extension RouterParams on shelf.Request {
   }
 }
 
-/// Middleware to remove body from request.
+/// Middleware that removes the response body and sets content-length to 0.
+/// Used internally for HEAD request handling to comply with HTTP specifications.
 final _removeBody = shelf.createMiddleware(
   responseHandler: (r) {
     if (r.headers.containsKey('content-length')) {
@@ -32,144 +38,152 @@ final _removeBody = shelf.createMiddleware(
   },
 );
 
-/// A shelf [RouterConfig] routes requests to handlers based on HTTP verb and route
-/// pattern.
+/// A HTTP request router that matches incoming requests to registered handlers
+/// based on HTTP method and route patterns.
 ///
-/// If multiple routes match the same request, the handler for the first
-/// route is called.
-/// If no route matches a request, a [shelf.Response.notFound] will be returned
-/// instead. The default matcher can be overridden with the `notFoundHandler`
-/// constructor parameter.
+/// The router processes routes in registration order and returns the response
+/// from the first matching route. If no routes match, returns a 404 response.
+///
+/// Features:
+/// - Supports all standard HTTP methods (GET, POST, PUT, DELETE, etc.)
+/// - Automatic HEAD request handling for GET routes
+/// - Route parameter extraction (e.g., '/users/<id>')
+/// - Route mounting for sub-applications
+/// - Customizable 404 handling
 @sealed
 class RouterConfig {
-  /// Creates a new [RouterConfig] routing requests to handlers.
+  /// Creates a new RouterConfig instance.
   ///
-  /// The [notFoundHandler] will be invoked for requests where no matching route
-  /// was found. By default, a simple [shelf.Response.notFound] will be used instead.
+  /// [notFoundHandler] - Custom handler for unmatched requests.
+  /// Defaults to returning a simple 404 "Route not found" response.
   RouterConfig({shelf.Handler notFoundHandler = _defaultNotFound})
       : _notFoundHandler = notFoundHandler;
+
+  /// Internal list storing all registered routes in order of registration
   final List<RouterEntry> _routes = [];
+
+  /// Handler called when no routes match the incoming request
   final shelf.Handler _notFoundHandler;
 
-  /// Add [handler] for [verb] requests to [route].
+  /// Register a handler for a specific HTTP method and route pattern.
   ///
-  /// If [verb] is `GET` the [handler] will also be called for `HEAD` requests
-  /// matching [route]. This is because handling `GET` requests without handling
-  /// `HEAD` is always wrong. To explicitely implement a `HEAD` handler it must
-  /// be registered before the `GET` handler.
+  /// [verb] - HTTP method (GET, POST, PUT, DELETE, etc.)
+  /// [route] - Route pattern supporting parameters (e.g., '/users/<id>')
+  /// [handler] - Function to handle matching requests
+  ///
+  /// Special behavior for GET requests:
+  /// - Automatically registers a HEAD handler that returns the same response
+  ///   but with an empty body (HTTP specification requirement)
   void add(String verb, String route, Function handler) {
     if (!isHttpMethod(verb)) {
       throw ArgumentError.value(verb, 'verb', 'expected a valid HTTP method');
     }
 
+    // HTTP specification requires HEAD support for all GET endpoints
     if (verb.toUpperCase() == 'GET') {
-      // Handling in a 'GET' request without handling a 'HEAD' request is always
-      // wrong, thus, we add a default implementation that discards the body.
       _routes.add(RouterEntry('HEAD', route, handler, middleware: _removeBody));
     }
     _routes.add(RouterEntry(verb, route, handler));
   }
 
-  /// Handle all request to [route] using [handler].
+  /// Register a handler that responds to ALL HTTP methods for the given route.
+  ///
+  /// [route] - Route pattern supporting parameters
+  /// [handler] - Function to handle requests with any HTTP method
   void all(String route, Function handler) {
     _routes.add(RouterEntry('ALL', route, handler));
   }
 
-  /// Mount a handler below a prefix.
+  /// Mount a sub-handler under a URL prefix.
   ///
-  /// In this case prefix may not contain any parameters, nor
+  /// This allows composing applications by mounting sub-routers or handlers
+  /// under specific path prefixes.
+  ///
+  /// [prefix] - URL prefix (must start with '/')
+  /// [handler] - Handler to process requests under this prefix
+  ///
+  /// Examples:
+  /// - mount('/api', apiRouter) - All /api/* requests go to apiRouter
+  /// - mount('/static', staticFileHandler) - Serve static files under /static
   void mount(String prefix, shelf.Handler handler) {
     if (!prefix.startsWith('/')) {
       throw ArgumentError.value(prefix, 'prefix', 'must start with a slash');
     }
 
-    // first slash is always in request.handlerPath
+    // Remove leading slash since it's included in request.handlerPath
     final path = prefix.substring(1);
+
     if (prefix.endsWith('/')) {
+      // Handle prefix ending with slash
       all('$prefix<path|[^]*>', (shelf.Request request) {
         return handler(request.change(path: path));
       });
     } else {
+      // Handle exact prefix match
       all(prefix, (shelf.Request request) {
         return handler(request.change(path: path));
       });
+      // Handle prefix with additional path segments
       all('$prefix/<path|[^]*>', (shelf.Request request) {
         return handler(request.change(path: '$path/'));
       });
     }
   }
 
-  /// Route incoming requests to registered handlers.
+  /// Main request handler - routes incoming requests to registered handlers.
   ///
-  /// This method allows a Router instance to be a [shelf.Handler].
+  /// This method makes RouterConfig instances usable as shelf.Handler.
+  /// It iterates through registered routes in order and returns the response
+  /// from the first matching route.
+  ///
+  /// Returns 404 response if no routes match.
   Future<shelf.Response> call(shelf.Request request) async {
-    // Note: this is a great place to optimize the implementation by building
-    //       a trie for faster matching... left as an exercise for the reader :)
+    // Iterate through routes in registration order
     for (final route in _routes) {
+      // Check if HTTP method matches (or route accepts ALL methods)
       if (route.verb != request.method.toUpperCase() && route.verb != 'ALL') {
         continue;
       }
+
+      // Attempt to match the route pattern against request path
       final params = route.match('/${request.url.path}');
       if (params != null) {
+        // Route matched - invoke the handler
         final response = await route.invoke(request, params);
         if (response != routeNotFound) {
           return response;
         }
       }
     }
+
+    // No routes matched - return 404
     return _notFoundHandler(request);
   }
 
-  // Handlers for all methods
-
-  /// Handle `GET` request to [route] using [handler].
-  ///
-  /// If no matching handler for `HEAD` requests is registered, such requests
-  /// will also be routed to the [handler] registered here.
-  void get(String route, Function handler) => add('GET', route, handler);
-
-  /// Handle `HEAD` request to [route] using [handler].
-  void head(String route, Function handler) => add('HEAD', route, handler);
-
-  /// Handle `POST` request to [route] using [handler].
-  void post(String route, Function handler) => add('POST', route, handler);
-
-  /// Handle `PUT` request to [route] using [handler].
-  void put(String route, Function handler) => add('PUT', route, handler);
-
-  /// Handle `DELETE` request to [route] using [handler].
-  void delete(String route, Function handler) => add('DELETE', route, handler);
-
-  /// Handle `CONNECT` request to [route] using [handler].
-  void connect(String route, Function handler) =>
-      add('CONNECT', route, handler);
-
-  /// Handle `OPTIONS` request to [route] using [handler].
-  void options(String route, Function handler) =>
-      add('OPTIONS', route, handler);
-
-  /// Handle `TRACE` request to [route] using [handler].
-  void trace(String route, Function handler) => add('TRACE', route, handler);
-
-  /// Handle `PATCH` request to [route] using [handler].
-  void patch(String route, Function handler) => add('PATCH', route, handler);
-
+  /// Default 404 handler - returns the standard route not found response
   static shelf.Response _defaultNotFound(shelf.Request request) =>
       routeNotFound;
 
+  /// Standard 404 response used throughout the router
   static final shelf.Response routeNotFound = _RouteNotFoundResponse();
 }
 
-/// Extends [shelf.Response] to allow it to be used multiple times in the
-/// actual content being served.
+/// Custom 404 response implementation that can be reused multiple times.
+///
+/// Extends shelf.Response to provide a reusable "Route not found" response
+/// that doesn't consume the response stream on first read.
 class _RouteNotFoundResponse extends shelf.Response {
   _RouteNotFoundResponse() : super.notFound(_message);
+
   static const _message = 'Route not found';
   static final _messageBytes = utf8.encode(_message);
 
+  /// Override read() to return a fresh stream each time
+  /// This allows the response to be used multiple times
   @override
   Stream<List<int>> read() => Stream<List<int>>.value(_messageBytes);
 
+  /// Override change() to maintain the default message when body is not specified
   @override
   shelf.Response change({
     Map<String, /* String | List<String> */ Object?>? headers,

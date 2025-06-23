@@ -17,7 +17,7 @@ class Router {
     this.globalMiddleware = const [],
   }) {
     if (autoRegister) {
-      registerControllers();
+      registerEndpoints();
     }
   }
 
@@ -27,7 +27,7 @@ class Router {
   final List<Middleware> globalMiddleware;
 
   /// Registers all controllers defined in [routes].
-  void registerControllers() {
+  void registerEndpoints() {
     for (final route in routes) {
       try {
         // Validate the route prefix
