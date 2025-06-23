@@ -4,11 +4,11 @@ import 'package:sarus/sarus.dart';
 
 part 'endpoints.g.dart';
 
-@Endpoint('/{{name.paramCase()}}')
+@Endpoint(path: '/{{name.paramCase()}}')
 class {{name.pascalCase()}}Endpoints extends Endpoints {
   {{name.pascalCase()}}Endpoints() : super();
 
-  @Get('')
+  @Get()
   Future<Response> index(Request request) async {
     return Response.ok(jsonEncode({'message': 'Hello from {{name.pascalCase()}}Endpoint'}));
   }

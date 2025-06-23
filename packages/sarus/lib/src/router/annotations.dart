@@ -31,8 +31,8 @@ class Delete extends HttpRoute {
 
 /// Endpoint annotation to define base path
 class Endpoint {
-  const Endpoint(this.path, {this.middlewares = const []});
-  final String path;
+  const Endpoint({this.path, this.middlewares = const []});
+  final String? path;
 
   final List<Middleware> middlewares;
 }
