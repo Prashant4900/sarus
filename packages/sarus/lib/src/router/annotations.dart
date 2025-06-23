@@ -11,22 +11,22 @@ abstract class HttpRoute {
 
 /// GET route annotation
 class Get extends HttpRoute {
-  // const Get(super.path);
+  const Get();
 }
 
 /// POST route annotation
 class Post extends HttpRoute {
-  // const Post(super.path);
+  const Post();
 }
 
 /// PUT route annotation
 class Put extends HttpRoute {
-  // const Put(super.path);
+  const Put();
 }
 
 /// DELETE route annotation
 class Delete extends HttpRoute {
-  // const Delete(super.path);
+  const Delete();
 }
 
 /// Endpoint annotation to define base path
