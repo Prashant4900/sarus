@@ -115,8 +115,15 @@ class RouteGenerator extends GeneratorForAnnotation<Endpoint> {
     String controllerPath,
     String handlerName,
   ) {
-    final fullPath = controllerPath +
-        (methodPath.startsWith('/') ? methodPath : '/$methodPath');
+    final basePath = controllerPath.trim();
+    final routePath = methodPath.trim();
+
+    // Concatenate paths safely, ensuring only one slash between parts
+    final fullPath = '/${[
+      basePath,
+      routePath,
+    ].where((segment) => segment.isNotEmpty).map((s) => s.startsWith('/') ? s.substring(1) : s).join('/')}';
+
     buffer.writeln(
       "  routerConfig.$httpMethod('$fullPath', controller.$handlerName);",
     );
