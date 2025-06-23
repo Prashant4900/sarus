@@ -160,6 +160,43 @@ class RouterConfig {
     return _notFoundHandler(request);
   }
 
+  // ============================================================================
+  // HTTP Method Convenience Handlers
+  //
+  // These methods provide a convenient API for registering handlers for
+  // specific HTTP methods. They are thin wrappers around the add() method.
+  // ============================================================================
+
+  /// Register handler for GET requests.
+  /// Also automatically handles HEAD requests (returns same response with empty body).
+  void get(String route, Function handler) => add('GET', route, handler);
+
+  /// Register handler for HEAD requests.
+  void head(String route, Function handler) => add('HEAD', route, handler);
+
+  /// Register handler for POST requests.
+  void post(String route, Function handler) => add('POST', route, handler);
+
+  /// Register handler for PUT requests.
+  void put(String route, Function handler) => add('PUT', route, handler);
+
+  /// Register handler for DELETE requests.
+  void delete(String route, Function handler) => add('DELETE', route, handler);
+
+  /// Register handler for CONNECT requests.
+  void connect(String route, Function handler) =>
+      add('CONNECT', route, handler);
+
+  /// Register handler for OPTIONS requests.
+  void options(String route, Function handler) =>
+      add('OPTIONS', route, handler);
+
+  /// Register handler for TRACE requests.
+  void trace(String route, Function handler) => add('TRACE', route, handler);
+
+  /// Register handler for PATCH requests.
+  void patch(String route, Function handler) => add('PATCH', route, handler);
+
   /// Default 404 handler - returns the standard route not found response
   static shelf.Response _defaultNotFound(shelf.Request request) =>
       routeNotFound;

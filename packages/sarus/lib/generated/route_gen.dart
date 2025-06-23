@@ -112,10 +112,10 @@ class RouteGenerator extends GeneratorForAnnotation<Endpoint> {
     StringBuffer buffer,
     String httpMethod,
     String methodPath,
-    String controllerPath,
+    String? controllerPath,
     String handlerName,
   ) {
-    final basePath = controllerPath.trim();
+    final basePath = (controllerPath ?? '').trim();
     final routePath = methodPath.trim();
 
     // Concatenate paths safely, ensuring only one slash between parts

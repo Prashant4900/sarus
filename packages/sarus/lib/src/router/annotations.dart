@@ -2,9 +2,9 @@ import 'package:shelf/shelf.dart';
 
 /// Base annotation for all HTTP methods
 abstract class HttpRoute {
-  const HttpRoute({this.path, this.middlewares = const []});
+  const HttpRoute({this.path = '', this.middlewares = const []});
 
-  final String? path;
+  final String path;
 
   final List<Middleware> middlewares;
 }
@@ -31,8 +31,8 @@ class Delete extends HttpRoute {
 
 /// Endpoint annotation to define base path
 class Endpoint {
-  const Endpoint({this.path, this.middlewares = const []});
-  final String? path;
+  const Endpoint({this.path = '', this.middlewares = const []});
+  final String path;
 
   final List<Middleware> middlewares;
 }
