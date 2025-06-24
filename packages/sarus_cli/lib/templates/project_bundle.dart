@@ -77,12 +77,6 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     },
     {
-      "path": "{{name}}/public/index.html",
-      "data":
-          "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KCjxoZWFkPgogICAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogICAgPG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCwgaW5pdGlhbC1zY2FsZT0xLjAiPgogICAgPG1ldGEgaHR0cC1lcXVpdj0iWC1VQS1Db21wYXRpYmxlIiBjb250ZW50PSJpZT1lZGdlIj4KICAgIDx0aXRsZT5Eb2N1bWVudDwvdGl0bGU+CjwvaGVhZD4KCjxib2R5PgogICAgPGgxPkhlbGxvIFdvcmxkPC9oMT4KPC9ib2R5PgoKPC9odG1sPg==",
-      "type": "text"
-    },
-    {
       "path": "{{name}}/pubspec.yaml",
       "data":
           "bmFtZToge3tuYW1lfX0KZGVzY3JpcHRpb246IEEgZmFzdCwgbWluaW1hbGlzdGljIGJhY2tlbmQgZnJhbWV3b3JrIGZvciBEYXJ0Lgp2ZXJzaW9uOiAxLjAuMApwdWJsaXNoX3RvOiBub25lCgplbnZpcm9ubWVudDoKICBzZGs6IF4zLjcuMAoKZGVwZW5kZW5jaWVzOgogIHNhcnVzOgogICAgZ2l0OgogICAgICB1cmw6IGh0dHBzOi8vZ2l0aHViLmNvbS9QcmFzaGFudDQ5MDAvc2FydXMuZ2l0CiAgICAgIHBhdGg6IHBhY2thZ2VzL3NhcnVzCiAgICAgIHJlZjogZGV2ZWxvcG1lbnQKCmRldl9kZXBlbmRlbmNpZXM6CiAgYnVpbGRfcnVubmVyOiBeMi40LjE1CiAgdGVzdDogXjEuMjQuMAogIHZlcnlfZ29vZF9hbmFseXNpczogXjkuMC4wCg==",
