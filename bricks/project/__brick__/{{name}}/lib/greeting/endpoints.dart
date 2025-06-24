@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:sarus/sarus.dart';
+import 'package:{{name}}/greeting/middlewares.dart';
 
 part 'endpoints.g.dart';
 

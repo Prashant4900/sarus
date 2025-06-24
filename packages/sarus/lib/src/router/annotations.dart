@@ -2,15 +2,15 @@ import 'package:shelf/shelf.dart';
 
 /// Base annotation for all HTTP methods
 abstract class HttpRoute {
-  const HttpRoute({this.path = '', this.middlewares = const []});
+  HttpRoute({this.path = '', this.middlewares});
 
   final String path;
-  final List<Middleware> middlewares;
+  final List<Middleware>? middlewares;
 }
 
 /// GET route annotation
 class Get extends HttpRoute {
-  const Get({
+  Get({
     super.path,
     super.middlewares,
   });
@@ -18,7 +18,7 @@ class Get extends HttpRoute {
 
 /// POST route annotation
 class Post extends HttpRoute {
-  const Post({
+  Post({
     super.path,
     super.middlewares,
   });
@@ -26,7 +26,7 @@ class Post extends HttpRoute {
 
 /// PUT route annotation
 class Put extends HttpRoute {
-  const Put({
+  Put({
     super.path,
     super.middlewares,
   });
@@ -34,7 +34,7 @@ class Put extends HttpRoute {
 
 /// DELETE route annotation
 class Delete extends HttpRoute {
-  const Delete({
+  Delete({
     super.path,
     super.middlewares,
   });
@@ -42,7 +42,7 @@ class Delete extends HttpRoute {
 
 /// PATCH route annotation
 class Patch extends HttpRoute {
-  const Patch({
+  Patch({
     super.path,
     super.middlewares,
   });
@@ -50,7 +50,7 @@ class Patch extends HttpRoute {
 
 /// OPTIONS route annotation
 class Options extends HttpRoute {
-  const Options({
+  Options({
     super.path,
     super.middlewares,
   });
@@ -58,7 +58,7 @@ class Options extends HttpRoute {
 
 /// HEAD route annotation
 class Head extends HttpRoute {
-  const Head({
+  Head({
     super.path,
     super.middlewares,
   });

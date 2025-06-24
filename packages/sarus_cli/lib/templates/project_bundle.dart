@@ -61,7 +61,13 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "{{name}}/lib/greeting/endpoints.dart",
       "data":
-          "aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKaW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwoKcGFydCAnZW5kcG9pbnRzLmcuZGFydCc7CgpARW5kcG9pbnQocGF0aDogJy9ncmVldGluZycpCmNsYXNzIEdyZWV0aW5nRW5kcG9pbnRzIGV4dGVuZHMgRW5kcG9pbnRzIHsKICBHcmVldGluZ0VuZHBvaW50cygpIDogc3VwZXIoKTsKCiAgQEdldCgpCiAgRnV0dXJlPFJlc3BvbnNlPiBpbmRleChSZXF1ZXN0IHJlcXVlc3QpIGFzeW5jIHsKICAgIHJldHVybiBSZXNwb25zZS5vayhqc29uRW5jb2RlKHsnbWVzc2FnZSc6ICdIZWxsbyBmcm9tIEdyZWV0aW5nRW5kcG9pbnQnfSkpOwogIH0KCiAgQG92ZXJyaWRlCiAgUm91dGVyQ29uZmlnIGdldCByb3V0ZXIgPT4gXyRncmVldGluZ0VuZHBvaW50c1JvdXRlckNvbmZpZyh0aGlzKTsKfQo=",
+          "aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKaW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6e3tuYW1lfX0vZ3JlZXRpbmcvbWlkZGxld2FyZXMuZGFydCc7CgpwYXJ0ICdlbmRwb2ludHMuZy5kYXJ0JzsKCkBFbmRwb2ludChwYXRoOiAnL2dyZWV0aW5nJykKY2xhc3MgR3JlZXRpbmdFbmRwb2ludHMgZXh0ZW5kcyBFbmRwb2ludHMgewogIEdyZWV0aW5nRW5kcG9pbnRzKCkgOiBzdXBlcigpOwoKICBAR2V0KCkKICBGdXR1cmU8UmVzcG9uc2U+IGluZGV4KFJlcXVlc3QgcmVxdWVzdCkgYXN5bmMgewogICAgcmV0dXJuIFJlc3BvbnNlLm9rKGpzb25FbmNvZGUoeydtZXNzYWdlJzogJ0hlbGxvIGZyb20gR3JlZXRpbmdFbmRwb2ludCd9KSk7CiAgfQoKICBAb3ZlcnJpZGUKICBSb3V0ZXJDb25maWcgZ2V0IHJvdXRlciA9PiBfJGdyZWV0aW5nRW5kcG9pbnRzUm91dGVyQ29uZmlnKHRoaXMpOwp9Cg==",
+      "type": "text"
+    },
+    {
+      "path": "{{name}}/lib/greeting/middlewares.dart",
+      "data":
+          "aW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwoKZmluYWwgTWlkZGxld2FyZSBsb2dnaW5nTWlkZGxld2FyZSA9IGNyZWF0ZU1pZGRsZXdhcmUoCiAgcmVxdWVzdEhhbmRsZXI6IChyZXF1ZXN0KSB7CiAgICBwcmludCgnUmVxdWVzdDogJHtyZXF1ZXN0Lm1ldGhvZH0gJHtyZXF1ZXN0LnJlcXVlc3RlZFVyaX0nKTsKICAgIHJldHVybiBudWxsOwogIH0sCik7Cg==",
       "type": "text"
     },
     {
