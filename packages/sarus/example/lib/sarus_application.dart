@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:example/config/router.dart';
 import 'package:sarus/sarus.dart';
 
-class ExampleApplication implements Application {
+class SarusApplication implements Application {
   @override
   Future<HttpServer> run() async {
     try {

@@ -1,10 +1,13 @@
 name: sarus
 description: A fast, minimalistic backend framework for Dart.
-version: 0.0.1-alpha.1
-
+version: 0.0.1-alpha.3
 homepage: https://github.com/Prashant4900/sarus/
 repository: https://github.com/Prashant4900/sarus/
 issue_tracker: https://github.com/Prashant4900/sarus/issues
+topics: [server, backend, shelf, sarus, cli]
+
+example:
+  - example/lib/sarus_application.dart
 
 environment:
   sdk: ^3.5.0

@@ -1,8 +1,8 @@
-import 'package:example/example_application.dart';
+import 'package:example/sarus_application.dart';
 
 void main(List<String> args) async {
   // Create an instance of the SarusApplication
-  final application = ExampleApplication();
+  final application = SarusApplication();
 
   // Set up the application
   await application.setup();
