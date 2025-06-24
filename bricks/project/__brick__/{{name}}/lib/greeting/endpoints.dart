@@ -16,4 +16,9 @@ class GreetingEndpoints extends Endpoints {
 
   @override
   RouterConfig get router => _$greetingEndpointsRouterConfig(this);
+
+  @override
+  Handler get handler => const Pipeline()
+      .addMiddleware(greetingMiddleware)
+      .addHandler(router.call);
 }

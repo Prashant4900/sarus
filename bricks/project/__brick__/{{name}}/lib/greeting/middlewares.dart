@@ -1,8 +1,8 @@
 import 'package:sarus/sarus.dart';
 
-final Middleware loggingMiddleware = createMiddleware(
+final Middleware greetingMiddleware = createMiddleware(
   requestHandler: (request) {
-    print('Request: ${request.method} ${request.requestedUri}');
+    print('Greeting Request: ${request.method} ${request.requestedUri}');
     return null;
   },
 );
