@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:example/config/router.dart';
 import 'package:sarus/sarus.dart';
-import 'package:{{name}}/config/router.dart';
 
-class SarusApplication implements Application {
+class ExampleApplication implements Application {
   @override
   Future<HttpServer> run() async {
     try {

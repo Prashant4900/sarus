@@ -1,31 +1,33 @@
 /// Base annotation for all HTTP methods
 abstract class HttpRoute {
-  const HttpRoute(this.path);
+  const HttpRoute({this.path = ''});
+
   final String path;
 }
 
 /// GET route annotation
 class Get extends HttpRoute {
-  const Get(super.path);
+  const Get();
 }
 
 /// POST route annotation
 class Post extends HttpRoute {
-  const Post(super.path);
+  const Post();
 }
 
 /// PUT route annotation
 class Put extends HttpRoute {
-  const Put(super.path);
+  const Put();
 }
 
 /// DELETE route annotation
 class Delete extends HttpRoute {
-  const Delete(super.path);
+  const Delete();
 }
 
-/// Controller annotation to define base path
-class Controller {
-  const Controller([this.path = '']);
+/// Endpoint annotation to define base path
+class Endpoint {
+  const Endpoint({this.path = ''});
+
   final String path;
 }

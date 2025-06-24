@@ -4,7 +4,7 @@ import 'package:dart_style/dart_style.dart';
 import 'package:sarus/sarus.dart';
 import 'package:source_gen/source_gen.dart';
 
-class RouteGenerator extends GeneratorForAnnotation<Controller> {
+class RouteGenerator extends GeneratorForAnnotation<Endpoint> {
   @override
   String generateForAnnotatedElement(
     Element element,
@@ -19,12 +19,10 @@ class RouteGenerator extends GeneratorForAnnotation<Controller> {
     }
 
     final className = element.name;
-    final controllerPath = annotation.read('path').stringValue;
+    final endpointPath = annotation.read('path').stringValue;
     final buffer = StringBuffer();
 
     // Create the part of directive
-    // buffer.writeln('// Generated code - do not modify');
-    buffer.writeln('// ignore_for_file: type=lint');
     buffer.writeln();
 
     // Generate correct function name with camelCase
@@ -34,7 +32,7 @@ class RouteGenerator extends GeneratorForAnnotation<Controller> {
 
     // Generate the router function
     buffer.writeln(
-      'RouterConfig _\$${formattedClassName}RouterConfig($className controller) {',
+      'RouterConfig _\$${formattedClassName}RouterConfig($className endpoints) {',
     );
     buffer.writeln('  final routerConfig = RouterConfig();');
     buffer.writeln();
@@ -51,7 +49,7 @@ class RouteGenerator extends GeneratorForAnnotation<Controller> {
           buffer,
           'get',
           getAnnotation.read('path').stringValue,
-          controllerPath,
+          endpointPath,
           method.name,
         );
       }
@@ -61,7 +59,7 @@ class RouteGenerator extends GeneratorForAnnotation<Controller> {
           buffer,
           'post',
           postAnnotation.read('path').stringValue,
-          controllerPath,
+          endpointPath,
           method.name,
         );
       }
@@ -71,7 +69,7 @@ class RouteGenerator extends GeneratorForAnnotation<Controller> {
           buffer,
           'put',
           putAnnotation.read('path').stringValue,
-          controllerPath,
+          endpointPath,
           method.name,
         );
       }
@@ -81,7 +79,7 @@ class RouteGenerator extends GeneratorForAnnotation<Controller> {
           buffer,
           'delete',
           deleteAnnotation.read('path').stringValue,
-          controllerPath,
+          endpointPath,
           method.name,
         );
       }
@@ -112,13 +110,20 @@ class RouteGenerator extends GeneratorForAnnotation<Controller> {
     StringBuffer buffer,
     String httpMethod,
     String methodPath,
-    String controllerPath,
+    String? endpointPath,
     String handlerName,
   ) {
-    final fullPath = controllerPath +
-        (methodPath.startsWith('/') ? methodPath : '/$methodPath');
+    final basePath = (endpointPath ?? '').trim();
+    final routePath = methodPath.trim();
+
+    // Concatenate paths safely, ensuring only one slash between parts
+    final fullPath = '/${[
+      basePath,
+      routePath,
+    ].where((segment) => segment.isNotEmpty).map((s) => s.startsWith('/') ? s.substring(1) : s).join('/')}';
+
     buffer.writeln(
-      "  routerConfig.$httpMethod('$fullPath', controller.$handlerName);",
+      "  routerConfig.$httpMethod('$fullPath', endpoints.$handlerName);",
     );
   }
 }

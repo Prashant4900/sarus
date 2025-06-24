@@ -25,7 +25,7 @@ Future<HttpServer> serve(
   SecurityContext? securityContext,
   int? backlog,
   bool shared = false,
-  String? poweredByHeader = 'Dart with package:shelf',
+  String? poweredByHeader = 'Dart with package:sarus',
 }) async {
   backlog ??= 0;
   final server = await (securityContext == null
