@@ -17,7 +17,7 @@ class {{name.pascalCase()}}Endpoints extends Endpoints {
   @override
   RouterConfig get router => _${{name.camelCase()}}EndpointsRouterConfig(this);
 
-    @override
+  @override
   Handler get handler => const Pipeline()
       .addMiddleware({{name.paramCase()}}Middleware)
       .addHandler(router.call);

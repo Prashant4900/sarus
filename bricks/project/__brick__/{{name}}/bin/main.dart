@@ -2,7 +2,7 @@ import 'package:{{name}}/sarus_application.dart';
 
 void main(List<String> args) async {
   // Create an instance of the SarusApplication
-  final application = SarusApplication();
+  final application = {{name.pascalCase()}}Application();
 
   // Set up the application
   await application.setup();
