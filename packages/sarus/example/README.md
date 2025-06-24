@@ -1,6 +1,6 @@
 # Example
 
-To explore the full example you can check the official repository at [sarus_example]()
+To explore the full example you can check the official repository at [example](https://github.com/Prashant4900/sarus/tree/main/packages/sarus/example)
 
 ```dart
 import 'dart:io';
