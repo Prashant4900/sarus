@@ -26,7 +26,7 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "{{name}}/analysis_options.yaml",
       "data":
-          "aW5jbHVkZTogcGFja2FnZTp2ZXJ5X2dvb2RfYW5hbHlzaXMvYW5hbHlzaXNfb3B0aW9ucy45LjAuMC55YW1sCgphbmFseXplcjoKICBlcnJvcnM6CiAgICBwdWJsaWNfbWVtYmVyX2FwaV9kb2NzOiBpZ25vcmUKICAgIGF2b2lkX3ByaW50OiBpZ25vcmUKICAgIGF2b2lkX2NhdGNoZXNfd2l0aG91dF9vbl9jbGF1c2VzOiBpZ25vcmUK",
+          "aW5jbHVkZTogcGFja2FnZTp2ZXJ5X2dvb2RfYW5hbHlzaXMvYW5hbHlzaXNfb3B0aW9ucy45LjAuMC55YW1sCgphbmFseXplcjoKICBlcnJvcnM6CiAgICBwdWJsaWNfbWVtYmVyX2FwaV9kb2NzOiBpZ25vcmUKICAgIGF2b2lkX3ByaW50OiBpZ25vcmUKICAgIGF2b2lkX2NhdGNoZXNfd2l0aG91dF9vbl9jbGF1c2VzOiBpZ25vcmUKICAgIGNhc2NhZGVfaW52b2NhdGlvbnM6IGlnbm9yZQo=",
       "type": "text"
     },
     {

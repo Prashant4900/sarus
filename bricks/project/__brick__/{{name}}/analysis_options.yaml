@@ -5,3 +5,4 @@ analyzer:
     public_member_api_docs: ignore
     avoid_print: ignore
     avoid_catches_without_on_clauses: ignore
+    cascade_invocations: ignore

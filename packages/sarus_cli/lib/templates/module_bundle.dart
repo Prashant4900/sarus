@@ -14,7 +14,7 @@ final moduleBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "lib/{{name}}/middlewares.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwoKTWlkZGxld2FyZSB7e25hbWUucGFyYW1DYXNlKCl9fU1pZGRsZXdhcmUgPSBjcmVhdGVNaWRkbGV3YXJlKAogIHJlcXVlc3RIYW5kbGVyOiAocmVxdWVzdCkgewogICAgcHJpbnQoJ3t7bmFtZS5wYXJhbUNhc2UoKX19IFJlcXVlc3Q6ICR7cmVxdWVzdC5tZXRob2R9ICR7cmVxdWVzdC5yZXF1ZXN0ZWRVcml9Jyk7CiAgICByZXR1cm4gbnVsbDsKICB9LAopOwo=",
+          "aW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwoKTWlkZGxld2FyZSB7e25hbWUucGFyYW1DYXNlKCl9fU1pZGRsZXdhcmUgPSBjcmVhdGVNaWRkbGV3YXJlKAogIHJlcXVlc3RIYW5kbGVyOiAocmVxdWVzdCkgewogICAgcHJpbnQoJ3t7bmFtZS5wYXNjYWxDYXNlKCl9fSBSZXF1ZXN0OiAke3JlcXVlc3QubWV0aG9kfSAke3JlcXVlc3QucmVxdWVzdGVkVXJpfScpOwogICAgcmV0dXJuIG51bGw7CiAgfSwKKTsK",
       "type": "text"
     }
   ],
