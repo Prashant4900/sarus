@@ -3,12 +3,13 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:path/path.dart' as path;
 import 'package:sarus_cli/analytics/analytics_manager.dart';
 import 'package:sarus_cli/src/commands/commands.dart';
 
 /// {@template build_command}
 /// `sarus_cli build`
-/// A [Command] to create a production build of the Sarus project.
+/// A [Command] to create a production build of the Sarus server application.
 /// {@endtemplate}
 class BuildCommand extends Command<int> {
   BuildCommand({
@@ -24,7 +25,8 @@ class BuildCommand extends Command<int> {
   final MixpanelService? _mixpanelService;
 
   @override
-  String get description => 'Create a production build.';
+  String get description =>
+      'Create a production build ready for Docker deployment.';
 
   @override
   String get name => 'build';
@@ -73,16 +75,14 @@ class BuildCommand extends Command<int> {
   }
 
   Future<void> _generateBuild() async {
-    _logger.info('Starting build process...');
+    _logger.info('Starting production build...');
 
-    // Check if build directory already exists
     final buildDir = Directory('build');
     if (buildDir.existsSync()) {
       _logger.info('Cleaning existing build directory...');
       await buildDir.delete(recursive: true);
     }
 
-    // Create build directory
     _logger.info('Creating build directory...');
     await buildDir.create();
 
@@ -91,71 +91,213 @@ class BuildCommand extends Command<int> {
       properties: {'command': name},
     );
 
-    // Example build steps - customize based on your project needs
-    await _buildProject();
-    await _copyAssets();
-    await _optimizeBuild();
+    await _copyProjectFiles();
+    await _createDockerfile();
+    await _createDockerCompose();
+    await _createDockerignore();
+    await _generateBuildInfo();
 
-    _logger.success('Build completed successfully!');
+    _logger.success('Production build completed successfully!');
+    _logger.info('Build directory is ready for Docker deployment.');
   }
 
-  Future<void> _buildProject() async {
-    _logger.info('Building project...');
+  Future<void> _copyProjectFiles() async {
+    _logger.info('Copying all project files...');
 
-    // Example: Run dart compile or flutter build
-    // Adjust based on your project type
-    final result = await Process.run(
-      'dart',
-      ['compile', 'exe', 'bin/main.dart', '-o', 'build/sarus_cli'],
-      workingDirectory: Directory.current.path,
-    );
+    final currentDir = Directory.current;
+    final buildDir = Directory('build');
 
-    if (result.exitCode != 0) {
-      throw Exception('Build compilation failed: ${result.stderr}');
-    }
+    await for (final entity in currentDir.list()) {
+      final name = path.basename(entity.path);
 
-    _logger.success('Project compiled successfully');
-  }
-
-  Future<void> _copyAssets() async {
-    _logger.info('Copying assets...');
-
-    // Copy any necessary assets to build directory
-    final assetsDir = Directory('assets');
-    if (assetsDir.existsSync()) {
-      final buildAssetsDir = Directory('build/assets');
-      await buildAssetsDir.create(recursive: true);
-
-      // Copy assets recursively
-      await for (final entity in assetsDir.list(recursive: true)) {
-        if (entity is File) {
-          final relativePath = entity.path.substring(assetsDir.path.length + 1);
-          final targetFile = File('build/assets/$relativePath');
-          await targetFile.parent.create(recursive: true);
-          await entity.copy(targetFile.path);
-        }
+      if (_shouldSkipItem(name)) {
+        _logger.detail('Skipping: $name');
+        continue;
       }
 
-      _logger.success('Assets copied successfully');
+      final targetPath = path.join(buildDir.path, name);
+
+      if (entity is File) {
+        await entity.copy(targetPath);
+        _logger.detail('Copied file: $name');
+      } else if (entity is Directory) {
+        await _copyDirectory(entity, Directory(targetPath));
+        _logger.detail('Copied directory: $name');
+      }
+    }
+
+    _logger.success('All project files copied successfully');
+  }
+
+  Future<void> _copyDirectory(Directory source, Directory target) async {
+    await target.create(recursive: true);
+
+    await for (final entity in source.list()) {
+      final name = path.basename(entity.path);
+
+      if (_shouldSkipItem(name)) continue;
+
+      if (entity is File) {
+        final targetFile = File(path.join(target.path, name));
+        await entity.copy(targetFile.path);
+      } else if (entity is Directory) {
+        final targetDir = Directory(path.join(target.path, name));
+        await _copyDirectory(entity, targetDir);
+      }
     }
   }
 
-  Future<void> _optimizeBuild() async {
-    _logger.info('Optimizing build...');
+  bool _shouldSkipItem(String name) {
+    final skipItems = {
+      '.dart_tool',
+      '.git',
+      '.github',
+      'node_modules',
+      'build',
+      '.vscode',
+      '.idea',
+      'coverage',
+      'doc',
+      '.env',
+      '.DS_Store',
+      'Thumbs.db',
+      '*.log',
+      '*.tmp',
+    };
 
-    // Add any optimization steps here
-    // For example: minification, compression, etc.
+    return skipItems.any((pattern) {
+      if (pattern.contains('*')) {
+        final extension = pattern.replaceAll('*', '');
+        return name.endsWith(extension);
+      }
+      return name == pattern;
+    });
+  }
 
-    // Create a build info file
+  Future<void> _createDockerfile() async {
+    _logger.info('Creating Dockerfile...');
+
+    const dockerfile = '''
+# Use latest stable channel SDK.
+FROM dart:stable AS build
+
+WORKDIR /app
+COPY pubspec.* ./
+RUN dart pub get
+
+COPY . .
+RUN dart compile exe bin/server.dart -o bin/server
+
+FROM scratch
+COPY --from=build /runtime/ /
+COPY --from=build /app/bin/server /app/bin/
+COPY --from=build /app/assets /app/assets 2>/dev/null || true
+COPY --from=build /app/config /app/config 2>/dev/null || true
+COPY --from=build /app/public /app/public 2>/dev/null || true
+
+EXPOSE 8080
+CMD ["/app/bin/server"]
+''';
+
+    final dockerfileFile = File('build/Dockerfile');
+    await dockerfileFile.writeAsString(dockerfile);
+
+    _logger.success('Dockerfile created');
+  }
+
+  Future<void> _createDockerCompose() async {
+    _logger.info('Creating docker-compose.yml...');
+
+    const dockerCompose = '''
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      - DART_ENV=production
+    restart: unless-stopped
+''';
+
+    final dockerComposeFile = File('build/docker-compose.yml');
+    await dockerComposeFile.writeAsString(dockerCompose);
+
+    _logger.success('docker-compose.yml created');
+  }
+
+  Future<void> _createDockerignore() async {
+    _logger.info('Creating .dockerignore...');
+
+    const dockerignore = '''
+.git
+.github
+.vscode
+.idea
+.dart_tool
+build
+coverage
+doc
+*.log
+.env
+node_modules
+README.md
+''';
+
+    final dockerignoreFile = File('build/.dockerignore');
+    await dockerignoreFile.writeAsString(dockerignore);
+
+    _logger.success('.dockerignore created');
+  }
+
+  Future<void> _generateBuildInfo() async {
+    _logger.info('Generating build information...');
+
     final buildInfo = {
-      'version': '1.0.0', // Get from pubspec.yaml
       'buildTime': DateTime.now().toIso8601String(),
       'buildType': 'production',
+      'dartVersion': Platform.version,
+      'platform': Platform.operatingSystem,
     };
 
     final buildInfoFile = File('build/build_info.json');
-    await buildInfoFile.writeAsString(buildInfo.toString());
+    await buildInfoFile.writeAsString('''
+{
+  "buildTime": "${buildInfo['buildTime']}",
+  "buildType": "${buildInfo['buildType']}",
+  "dartVersion": "${buildInfo['dartVersion']}",
+  "platform": "${buildInfo['platform']}"
+}
+''');
 
-    _logger.success('Build optimized successfully');
+    const buildScript = '''
+#!/bin/bash
+echo "🚀 Sarus Server Build & Deploy Script"
+echo "===================================="
+echo "Building and starting services with Docker Compose..."
+docker-compose up --build -d
+echo ""
+echo "✅ Services started successfully!"
+echo ""
+echo "📋 Available commands:"
+echo "  View logs:           docker-compose logs -f"
+echo "  Stop services:       docker-compose down"
+echo "  Rebuild:             docker-compose up --build -d"
+echo "  View running:        docker-compose ps"
+echo ""
+echo "🌐 Server should be available at: http://localhost:8080"
+''';
+
+    final buildScriptFile = File('build/docker-build.sh');
+    await buildScriptFile.writeAsString(buildScript);
+
+    final result = await Process.run('chmod', ['+x', 'build/docker-build.sh']);
+    if (result.exitCode == 0) {
+      _logger.success('Build script created and made executable');
+    }
+
+    _logger.success('Build information generated');
   }
 }
