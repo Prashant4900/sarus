@@ -5,7 +5,6 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as path;
 import 'package:sarus_cli/analytics/analytics_manager.dart';
-import 'package:sarus_cli/src/commands/commands.dart';
 
 /// {@template build_command}
 /// `sarus_cli build`
@@ -14,14 +13,11 @@ import 'package:sarus_cli/src/commands/commands.dart';
 class BuildCommand extends Command<int> {
   BuildCommand({
     required Logger logger,
-    GeneratorBuilder? generator,
     MixpanelService? mixpanelService,
   })  : _logger = logger,
-        _generator = generator ?? MasonGenerator.fromBundle,
         _mixpanelService = mixpanelService;
 
   final Logger _logger;
-  final GeneratorBuilder _generator;
   final MixpanelService? _mixpanelService;
 
   @override
@@ -181,20 +177,22 @@ class BuildCommand extends Command<int> {
 # Use latest stable channel SDK.
 FROM dart:stable AS build
 
+# Resolve app dependencies.
 WORKDIR /app
 COPY pubspec.* ./
 RUN dart pub get
 
+# Copy app source code (except anything in .dockerignore) and AOT compile app.
 COPY . .
 RUN dart compile exe bin/server.dart -o bin/server
 
+# Build minimal serving image from AOT-compiled `/server`
+# and the pre-built AOT-runtime in the `/runtime/` directory of the base image.
 FROM scratch
 COPY --from=build /runtime/ /
 COPY --from=build /app/bin/server /app/bin/
-COPY --from=build /app/assets /app/assets 2>/dev/null || true
-COPY --from=build /app/config /app/config 2>/dev/null || true
-COPY --from=build /app/public /app/public 2>/dev/null || true
 
+# Start server.
 EXPOSE 8080
 CMD ["/app/bin/server"]
 ''';
