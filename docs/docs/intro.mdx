@@ -1,0 +1,59 @@
+---
+sidebar_position: 1
+---
+
+# Overview
+
+Sarus is a lightweight backend framework for Dart, built on the top of Shelf with the modular approch.
+
+## Quick Start 🚀
+
+In order to use Dart Frog you must have the [Dart SDK](https://dart.dev/get-dart) installed on your machine.
+
+:::info Info
+
+Dart Frog requires Dart `>=3.0.0 <4.0.0`
+
+:::
+
+### Installing 🧑‍💻
+
+```bash
+dart pub global activate sarus_cli
+```
+
+### Creating a Project ✨
+
+Use the `sarus create` command to create a new Sarus project:
+
+```bash
+sarus create my_project
+```
+
+This will create a new directory called `my_project` with the basic structure of a Sarus project.
+
+### Running the Project
+
+To run your Sarus project, navigate to the project directory and use the `dart run` command:
+
+```bash
+cd my_project
+dart run bin/main.dart
+```
+
+The `cd` command changes the directory you're working with. In order to work with your newly created Sarus project, you'll need to navigate the terminal there.
+
+The `dart run bin/main.dart` command builds your project locally and serves it through a development server, ready for you to view at http://localhost:8080/greeting.
+
+### Building for Production ⚙️
+
+This project come with docker support, so you can build your project for production using Docker.
+
+## Uninstalling 🗑️
+
+To Uninstalled Sarus globally via Pub, you need to run this command:
+
+```bash
+dart pub global deactivate sarus_cli
+```
+
