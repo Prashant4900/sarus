@@ -265,7 +265,7 @@ README.md
 {
   "buildTime": "${buildInfo['buildTime']}",
   "buildType": "${buildInfo['buildType']}",
-  "dartVersion": "${buildInfo['dartVersion']}",
+  "dartVersion": ${buildInfo['dartVersion']},
   "platform": "${buildInfo['platform']}"
 }
 ''');
