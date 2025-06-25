@@ -1,31 +1,44 @@
 ---
-sidebar_position: 5
+sidebar_position: 4
 ---
 
-# Deploy your site
+# Deployment Guide
 
-Docusaurus is a **static-site-generator** (also called **[Jamstack](https://jamstack.org/)**).
+Sarus is a **Dart server framework** designed for production-ready backend applications.
 
-It builds your site as simple **static HTML, JavaScript and CSS files**.
+It provides a simple command to build your app and generate all necessary files for Docker deployment.
 
-## Build your site
+## Build your server
 
-Build your site **for production**:
+Create a **production build**:
 
 ```bash
-npm run build
+sarus build
 ```
 
-The static files are generated in the `build` folder.
+This will:
+- Generate a `build` folder containing your server code.
+- Create a `Dockerfile` for easy deployment.
+- Compile your Dart server to a native executable
 
-## Deploy your site
+## Run locally (development mode)
 
 Test your production build locally:
 
 ```bash
-npm run serve
+sarus dev
 ```
 
-The `build` folder is now served at [http://localhost:3000/](http://localhost:3000/).
+The `build` folder is now served at [http://localhost:8080/](http://localhost:8080/).
 
-You can now deploy the `build` folder **almost anywhere** easily, **for free** or very small cost (read the **[Deployment Guide](https://docusaurus.io/docs/deployment)**).
+## Deploy your server
+
+Once you have the `build/` directory, you can test and deploy with Docker:
+
+### Testing Locally with Docker
+
+```bash
+cd build
+docker-compose up --build
+```
+
