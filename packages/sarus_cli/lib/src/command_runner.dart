@@ -61,6 +61,12 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
       ),
     );
     addCommand(
+      BuildCommand(
+        logger: _logger,
+        mixpanelService: _mixpanelService,
+      ),
+    );
+    addCommand(
       UpdateCommand(
         logger: _logger,
         pubUpdater: _pubUpdater,
