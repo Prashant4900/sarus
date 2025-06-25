@@ -12,12 +12,6 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     },
     {
-      "path": "{{name}}/.dockerignore",
-      "data":
-          "LmRvY2tlcmlnbm9yZQpEb2NrZXJmaWxlCmJ1aWxkLwouZGFydF90b29sLwouZ2l0LwouZ2l0aHViLwouZ2l0aWdub3JlCi5pZGVhLwoucGFja2FnZXMK",
-      "type": "text"
-    },
-    {
       "path": "{{name}}/.gitignore",
       "data":
           "IyBodHRwczovL2RhcnQuZGV2L2d1aWRlcy9saWJyYXJpZXMvcHJpdmF0ZS1maWxlcwojIENyZWF0ZWQgYnkgYGRhcnQgcHViYAouZGFydF90b29sLwouZW52",
@@ -35,21 +29,9 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     },
     {
-      "path": "{{name}}/bin/main.dart",
+      "path": "{{name}}/bin/server.dart",
       "data":
           "aW1wb3J0ICdwYWNrYWdlOnt7bmFtZX19L3NhcnVzX2FwcGxpY2F0aW9uLmRhcnQnOwoKdm9pZCBtYWluKExpc3Q8U3RyaW5nPiBhcmdzKSBhc3luYyB7CiAgLy8gQ3JlYXRlIGFuIGluc3RhbmNlIG9mIHRoZSBTYXJ1c0FwcGxpY2F0aW9uCiAgZmluYWwgYXBwbGljYXRpb24gPSBTYXJ1c0FwcGxpY2F0aW9uKCk7CgogIC8vIFNldCB1cCB0aGUgYXBwbGljYXRpb24KICBhd2FpdCBhcHBsaWNhdGlvbi5zZXR1cCgpOwoKICAvLyBTdGFydCB0aGUgc2VydmVyCiAgZmluYWwgc2VydmVyID0gYXdhaXQgYXBwbGljYXRpb24ucnVuKCk7CgogIC8vIEVuYWJsZSBjb250ZW50IGNvbXByZXNzaW9uCiAgc2VydmVyLmF1dG9Db21wcmVzcyA9IHRydWU7CgogIHByaW50KCdTZXJ2ZXIgbGlzdGVuaW5nIG9uIHBvcnQgJHtzZXJ2ZXIucG9ydH0nKTsKfQo=",
-      "type": "text"
-    },
-    {
-      "path": "{{name}}/docker-compose.yml",
-      "data":
-          "dmVyc2lvbjogJzMuOCcKCnNlcnZpY2VzOgogIHNlcnZlcjoKICAgIGJ1aWxkOgogICAgICBjb250ZXh0OiAuCiAgICBwb3J0czoKICAgICAgLSAiODA4MDo4MDgwIg==",
-      "type": "text"
-    },
-    {
-      "path": "{{name}}/Dockerfile",
-      "data":
-          "IyBVc2UgbGF0ZXN0IHN0YWJsZSBjaGFubmVsIFNESy4KRlJPTSBkYXJ0OnN0YWJsZSBBUyBidWlsZAoKIyBSZXNvbHZlIGFwcCBkZXBlbmRlbmNpZXMuCldPUktESVIgL2FwcApDT1BZIHB1YnNwZWMuKiAuLwpSVU4gZGFydCBwdWIgZ2V0CgojIENvcHkgYXBwIHNvdXJjZSBjb2RlIChleGNlcHQgYW55dGhpbmcgaW4gLmRvY2tlcmlnbm9yZSkgYW5kIEFPVCBjb21waWxlIGFwcC4KQ09QWSAuIC4KUlVOIGRhcnQgY29tcGlsZSBleGUgYmluL3NlcnZlci5kYXJ0IC1vIGJpbi9zZXJ2ZXIKCiMgQnVpbGQgbWluaW1hbCBzZXJ2aW5nIGltYWdlIGZyb20gQU9ULWNvbXBpbGVkIGAvc2VydmVyYAojIGFuZCB0aGUgcHJlLWJ1aWx0IEFPVC1ydW50aW1lIGluIHRoZSBgL3J1bnRpbWUvYCBkaXJlY3Rvcnkgb2YgdGhlIGJhc2UgaW1hZ2UuCkZST00gc2NyYXRjaApDT1BZIC0tZnJvbT1idWlsZCAvcnVudGltZS8gLwpDT1BZIC0tZnJvbT1idWlsZCAvYXBwL2Jpbi9zZXJ2ZXIgL2FwcC9iaW4vCgojIFN0YXJ0IHNlcnZlci4KRVhQT1NFIDgwODAKQ01EIFsiL2FwcC9iaW4vc2VydmVyIl0K",
       "type": "text"
     },
     {
