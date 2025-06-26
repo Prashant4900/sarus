@@ -4,7 +4,7 @@ A fast, minimalistic backend framework for Dart.
 
 ## Documentation 📝
 
-For detailed documentation, please visit the [Sarus documentation](https://sarus.dev/docs).
+For detailed documentation, please visit the [Sarus documentation](https://sarus-docs.vercel.app/).
 
 ## Quick Start 💻
 
@@ -27,7 +27,7 @@ sarus create my_project
 This will create a new directory called `my_project` with the basic structure of a Sarus project.
 
 ### Running the Project 🚀
-To run your Sarus project, navigate to the project directory and use the `dart run` command:
+To run your Sarus project, navigate to the project directory and use the `sarus dev` command:
 
 ```bash
 cd my_project
