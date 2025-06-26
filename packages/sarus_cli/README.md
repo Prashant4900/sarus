@@ -15,7 +15,9 @@ Global options:
     --[no-]verbose    Noisy logging, including all shell commands executed.
 
 Available commands:
+  build    Create a production build ready for Docker deployment.
   create   Create a new sarus project.
+  dev      Run the Sarus server locally in development mode.
   module   Create a new module inside the Sarus project.
   update   Update the CLI.
 

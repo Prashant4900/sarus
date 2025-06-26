@@ -4,8 +4,8 @@ sarus:
 
 .PHONY: bricks
 bricks:
-	mason bundle -s path /Volumes/Personal/projects/sarus/bricks/project -o packages/sarus_cli/lib/templates/ -t dart
-	mason bundle -s path /Volumes/Personal/projects/sarus/bricks/module -o packages/sarus_cli/lib/templates/ -t dart
+	mason bundle -s path /Users/prashantnigam/Desktop/sarus/bricks/project -o packages/sarus_cli/lib/templates/ -t dart
+	mason bundle -s path /Users/prashantnigam/Desktop/sarus/bricks/module -o packages/sarus_cli/lib/templates/ -t dart
 	cd packages/sarus_cli && dart format .
 
 .PHONY: sarus-cli

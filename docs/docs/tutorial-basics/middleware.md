@@ -8,9 +8,7 @@ Middleware in Sarus builds on top of the Shelf pipeline allows you to execute co
 
 ## Creating Middleware
 
-Create a file at `blog/2021-02-28-greetings.md`:
-
-```ts
+```ts title="middleware.dart"
 import 'package:sarus/sarus.dart';
 
 final Middleware greetingMiddleware = createMiddleware(
@@ -19,7 +17,4 @@ final Middleware greetingMiddleware = createMiddleware(
     return null;
   },
 );
-
 ```
-
-A new blog post is now available at [http://localhost:3000/blog/greetings](http://localhost:3000/blog/greetings).

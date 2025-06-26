@@ -2,7 +2,11 @@
 
 A fast, minimalistic backend framework for Dart.
 
-## Installation 💻
+## Documentation 📝
+
+For detailed documentation, please visit the [Sarus documentation](https://sarus.dev/docs).
+
+## Quick Start 💻
 
 ### Prerequisites 📝 
 In order to use Sarus you must have the [Dart SDK](https://dart.dev/get-dart) installed on your machine.
@@ -27,9 +31,13 @@ To run your Sarus project, navigate to the project directory and use the `dart r
 
 ```bash
 cd my_project
-dart run bin/main.dart
+sarus dev
 ```
 
 ### Building for Production ⚙️
 
-This project come with `docker` support, so you can build your project for production using Docker.
+To create a production build of your Sarus project, use the `sarus build` command:
+
+```bash
+sarus build
+```
