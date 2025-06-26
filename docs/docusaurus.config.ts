@@ -71,7 +71,7 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/docusaurus.png',
+    image: 'img/docusaurus-social-card.png',
     navbar: {
       title: 'Sarus',
       logo: {
