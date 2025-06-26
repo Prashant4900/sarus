@@ -1,3 +1,4 @@
+import Translate, { translate } from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
@@ -9,38 +10,56 @@ type FeatureItem = {
   description: ReactNode;
 };
 
-const FeatureList: FeatureItem[] = [
+const FeatureList = [
   {
-    title: 'Easy to Use',
+    title: translate({
+      message: 'Fast development',
+      description: 'First feature title'
+    }),
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
-      <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
-      </>
+      <Translate
+        id="homepage.features.speed.description"
+        description="Quick to build and iterate"
+      >
+        Build endpoints quickly with Dart’s power. Our framework lets you
+        focus on features, not boilerplate, so you can ship faster.
+      </Translate>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: translate({
+      message: 'Free & open source',
+      description: 'Second feature title'
+    }),
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
-      </>
+      <Translate
+        id="homepage.features.simple.description"
+        description="Small and focused core"
+      >
+        Sarus is free, open-source, and constantly improving. You can host your server anywhere you can run Dart.
+      </Translate>
     ),
   },
   {
-    title: 'Powered by React',
+    title: translate({
+      message: 'Powered by Dart',
+      description: 'Fourth feature title'
+    }),
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
-      <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
-      </>
+      <Translate
+        id="homepage.features.poweredbydart.description"
+        description="Dart ecosystem benefits"
+      >
+        Take advantage of Dart’s modern language features, type safety, fast
+        compilation, and rich tooling.
+      </Translate>
     ),
   },
 ];
+
 
 function Feature({ title, Svg, description }: FeatureItem) {
   return (
