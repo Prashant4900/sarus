@@ -7,11 +7,7 @@ environment:
   sdk: ^3.7.0
 
 dependencies:
-  sarus:
-    git:
-      url: https://github.com/Prashant4900/sarus.git
-      path: packages/sarus
-      ref: main
+  sarus: ^0.0.1-alpha.6
 
 dev_dependencies:
   build_runner: ^2.4.15
