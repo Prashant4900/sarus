@@ -1,3 +1,7 @@
+/// The `Router` class in Dart provides a robust implementation for handling routes with error logging,
+/// validation, and middleware support.
+library;
+
 import 'package:sarus/src/endpoint/endpoint.dart';
 import 'package:sarus/src/router/router_config.dart';
 import 'package:shelf/shelf.dart';
@@ -37,23 +41,25 @@ class Router {
           );
         }
 
-        // Apply middleware to the controller handler if defined
-        var handlerWithMiddleware = route.endpoints.handler;
+        for (final endpoint in route.endpoints) {
+          // Apply middleware to the controller handler if defined
+          var handlerWithMiddleware = endpoint.handler;
 
-        // Apply route-specific middleware first (if any)
-        if (route.middlewares.isNotEmpty) {
-          for (final middleware in route.middlewares) {
+          // Apply route-specific middleware first (if any)
+          if (route.middlewares.isNotEmpty) {
+            for (final middleware in route.middlewares) {
+              handlerWithMiddleware = middleware(handlerWithMiddleware);
+            }
+          }
+
+          // Then apply global middleware
+          for (final middleware in globalMiddleware) {
             handlerWithMiddleware = middleware(handlerWithMiddleware);
           }
-        }
 
-        // Then apply global middleware
-        for (final middleware in globalMiddleware) {
-          handlerWithMiddleware = middleware(handlerWithMiddleware);
+          // Mount the controller with its middleware
+          router.mount(route.prefix, handlerWithMiddleware);
         }
-
-        // Mount the controller with its middleware
-        router.mount(route.prefix, handlerWithMiddleware);
       } catch (e) {
         rethrow;
       }
@@ -80,19 +86,21 @@ class Router {
   void addRoute(Route route) {
     routes.add(route);
     try {
-      var handlerWithMiddleware = route.endpoints.handler;
+      for (final endpoint in route.endpoints) {
+        var handlerWithMiddleware = endpoint.handler;
 
-      // Apply route-specific middleware
-      for (final middleware in route.middlewares) {
-        handlerWithMiddleware = middleware(handlerWithMiddleware);
+        // Apply route-specific middleware
+        for (final middleware in route.middlewares) {
+          handlerWithMiddleware = middleware(handlerWithMiddleware);
+        }
+
+        // Apply global middleware
+        for (final middleware in globalMiddleware) {
+          handlerWithMiddleware = middleware(handlerWithMiddleware);
+        }
+
+        router.mount(route.prefix, handlerWithMiddleware);
       }
-
-      // Apply global middleware
-      for (final middleware in globalMiddleware) {
-        handlerWithMiddleware = middleware(handlerWithMiddleware);
-      }
-
-      router.mount(route.prefix, handlerWithMiddleware);
     } catch (e) {
       rethrow;
     }
@@ -120,7 +128,7 @@ class Route {
     }
   }
 
-  final Endpoints endpoints;
+  final List<Endpoints> endpoints;
   final String prefix;
   final List<Middleware> middlewares;
   final String? name;
