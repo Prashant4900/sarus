@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/bricks/module/hooks/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/bricks/module/hooks/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/bricks/module/hooks/build" />
+      <excludeFolder url="file://$MODULE_DIR$/bricks/project/__brick__/{{name}}/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/bricks/project/__brick__/{{name}}/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/bricks/project/__brick__/{{name}}/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/sarus/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/sarus/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/sarus/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/sarus/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/sarus/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/sarus/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/sarus/example/build/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/sarus/example/build/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/sarus/example/build/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/sarus_cli/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/sarus_cli/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/sarus_cli/build" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
