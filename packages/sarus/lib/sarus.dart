@@ -2,7 +2,7 @@
 library sarus;
 
 export 'package:shelf/shelf.dart';
-export 'package:shelf_hotreload/shelf_hotreload.dart';
+export 'package:shelf_static/shelf_static.dart';
 
 // Configuration
 export 'src/configurations/annotations.dart';

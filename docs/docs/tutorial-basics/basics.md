@@ -85,7 +85,9 @@ import 'package:sarus/sarus.dart';
 
 final router = Router(
   globalMiddleware: [logRequests()],
-  routes: [Route(endpoints: GreetingEndpoints())],
+  routes: [
+    Route(endpoints: [GreetingEndpoints()])
+  ],
 );
 ```
 
