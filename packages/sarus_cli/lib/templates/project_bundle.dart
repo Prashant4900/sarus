@@ -67,7 +67,7 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "{{name}}/README.md",
       "data":
-          "QSBzYW1wbGUgY29tbWFuZC1saW5lIGFwcGxpY2F0aW9uIHdpdGggYW4gZW50cnlwb2ludCBpbiBgYmluL2AsIGxpYnJhcnkgY29kZQppbiBgbGliL2AsIGFuZCBleGFtcGxlIHVuaXQgdGVzdCBpbiBgdGVzdC9gLgo=",
+          "IyB7e25hbWUucGFzY2FsQ2FzZSgpfX0KCkFuIGV4YW1wbGUgYXBwbGljYXRpb24gYnVpbHQgd2l0aCBbU2FydXNdKGh0dHBzOi8vc2FydXMtZG9jcy52ZXJjZWwuYXBwLyku",
       "type": "text"
     },
     {

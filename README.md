@@ -23,11 +23,11 @@ sarus create my_project
 This will create a new directory called `my_project` with the basic structure of a Sarus project.
 
 ### Running the Project 🚀
-To run your Sarus project, navigate to the project directory and use the `dart run` command:
-
+To run your Sarus project, navigate to the project directory and use the `sarus dev` command:
+    
 ```bash
 cd my_project
-dart run bin/main.dart
+sarus dev
 ```
 
 ### Building for Production ⚙️
