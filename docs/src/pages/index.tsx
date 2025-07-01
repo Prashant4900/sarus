@@ -46,7 +46,7 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title="Sarus"
-      description="Description will go into a meta tag in <head />">
+      description="A fast, minimalistic backend for Dart.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
