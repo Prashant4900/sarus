@@ -12,7 +12,7 @@ In order to use Sarus you must have the [Dart SDK](https://dart.dev/get-dart) in
 
 :::info Info
 
-Sarus requires Dart `>=3.0.0 <4.0.0`
+Sarus requires Dart `>=3.5.0 <4.0.0`
 
 :::
 
@@ -47,11 +47,15 @@ The `sarus dev` command builds your project locally and serves it through a deve
 
 ### Building for Production ⚙️
 
-This project come with docker support, so you can build your project for production using Docker.
+To build your Sarus project for production, use the `sarus build` command:
+
+```bash
+sarus build
+```
 
 ## Uninstalling 🗑️
 
-To Uninstalled Sarus globally via Pub, you need to run this command:
+To Uninstall Sarus globally via Pub, you need to run this command:
 
 ```bash
 dart pub global deactivate sarus_cli
