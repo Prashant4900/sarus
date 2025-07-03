@@ -69,6 +69,15 @@ const config: Config = {
     ],
   ],
 
+  scripts: [
+    {
+      src: 'https://umami-nine-tawny.vercel.app/script.js',
+      async: true,
+      defer: true,
+      'data-website-id': '44eabedb-6d9f-4f0c-b1af-67822fb5e25e',
+    },
+  ],
+
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
