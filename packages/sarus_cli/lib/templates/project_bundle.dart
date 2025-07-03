@@ -35,6 +35,12 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     },
     {
+      "path": "{{name}}/config.yaml",
+      "data":
+          "cHJvamVjdDoKICBuYW1lOiB7e25hbWV9fQogIGRlc2NyaXB0aW9uOiBBIGZhc3QsIG1pbmltYWxpc3RpYyBiYWNrZW5kIGZyYW1ld29yayBmb3IgRGFydC4KCiMgZW52OgojICAgZGVmYXVsdDogZGV2ZWxvcG1lbnQKCiMgICBmbGF2b3JzOgojICAgICBkZXZlbG9wbWVudDogLmVudgojICAgICBzdGFnaW5nOiAuZW52LnN0YWdpbmcKIyAgICAgcHJvZHVjdGlvbjogLmVudi5wcm9kCg==",
+      "type": "text"
+    },
+    {
       "path": "{{name}}/lib/config/router.dart",
       "data":
           "aW1wb3J0ICdwYWNrYWdlOnNhcnVzL3NhcnVzLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6e3tuYW1lfX0vZ3JlZXRpbmcvZW5kcG9pbnRzLmRhcnQnOwoKZmluYWwgcm91dGVyID0gUm91dGVyKAogIGdsb2JhbE1pZGRsZXdhcmU6IFtsb2dSZXF1ZXN0cygpXSwKICByb3V0ZXM6IFsKICAgIFJvdXRlKGVuZHBvaW50czogW0dyZWV0aW5nRW5kcG9pbnRzKCldKSwKICBdLAopOwo=",

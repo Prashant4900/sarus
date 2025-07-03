@@ -10,6 +10,8 @@ export 'src/configurations/annotations.dart';
 export 'src/core/serve.dart';
 // Controllers
 export 'src/endpoint/endpoint.dart';
+// Env
+export 'src/env/sarus_env.dart';
 // Router
 export 'src/router/annotations.dart';
 export 'src/router/router.dart';

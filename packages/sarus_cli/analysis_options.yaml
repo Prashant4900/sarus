@@ -7,3 +7,4 @@ linter:
 analyzer:
   errors:
     cascade_invocations: ignore
+    lines_longer_than_80_chars: ignore
