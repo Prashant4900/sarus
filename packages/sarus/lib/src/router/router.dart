@@ -2,7 +2,7 @@
 /// validation, and middleware support.
 library;
 
-import 'package:sarus/src/endpoint/endpoint.dart';
+import 'package:sarus/src/core/endpoint.dart';
 import 'package:sarus/src/router/router_config.dart';
 import 'package:shelf/shelf.dart';
 

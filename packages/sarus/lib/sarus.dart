@@ -5,11 +5,11 @@ export 'package:shelf/shelf.dart';
 export 'package:shelf_static/shelf_static.dart';
 
 // Configuration
-export 'src/configurations/annotations.dart';
+export 'src/core/application.dart';
+// Controllers
+export 'src/core/endpoint.dart';
 // Core
 export 'src/core/serve.dart';
-// Controllers
-export 'src/endpoint/endpoint.dart';
 // Env
 export 'src/env/sarus_env.dart';
 // Router

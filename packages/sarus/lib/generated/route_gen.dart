@@ -95,7 +95,7 @@ class RouteGenerator extends GeneratorForAnnotation<Endpoint> {
     return formatter.format(buffer.toString());
   }
 
-  ConstantReader? _getAnnotationOfType<T>(MethodElement method) {
+  ConstantReader? _getAnnotationOfType<T>(Element method) {
     final annotations = TypeChecker.fromRuntime(T)
         .annotationsOf(method, throwOnUnresolved: false);
 
