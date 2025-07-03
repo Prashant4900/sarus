@@ -24,11 +24,6 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     },
     {
-      "path": "{{name}}/application.yaml",
-      "data": "bmFtZToge3tuYW1lfX0KCm1vZHVsZXM6CiAgLSAiZ3JlZXRpbmci",
-      "type": "text"
-    },
-    {
       "path": "{{name}}/bin/server.dart",
       "data":
           "aW1wb3J0ICdwYWNrYWdlOnt7bmFtZX19L3NhcnVzX2FwcGxpY2F0aW9uLmRhcnQnOwoKdm9pZCBtYWluKExpc3Q8U3RyaW5nPiBhcmdzKSBhc3luYyB7CiAgLy8gQ3JlYXRlIGFuIGluc3RhbmNlIG9mIHRoZSBTYXJ1c0FwcGxpY2F0aW9uCiAgZmluYWwgYXBwbGljYXRpb24gPSBTYXJ1c0FwcGxpY2F0aW9uKCk7CgogIC8vIFNldCB1cCB0aGUgYXBwbGljYXRpb24KICBhd2FpdCBhcHBsaWNhdGlvbi5zZXR1cCgpOwoKICAvLyBTdGFydCB0aGUgc2VydmVyCiAgZmluYWwgc2VydmVyID0gYXdhaXQgYXBwbGljYXRpb24ucnVuKCk7CgogIC8vIEVuYWJsZSBjb250ZW50IGNvbXByZXNzaW9uCiAgc2VydmVyLmF1dG9Db21wcmVzcyA9IHRydWU7CgogIHByaW50KCdTZXJ2ZXIgbGlzdGVuaW5nIG9uIHBvcnQgJHtzZXJ2ZXIucG9ydH0nKTsKfQo=",

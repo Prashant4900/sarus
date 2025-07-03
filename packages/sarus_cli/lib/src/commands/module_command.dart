@@ -7,8 +7,6 @@ import 'package:mason/mason.dart';
 import 'package:sarus_cli/analytics/analytics_manager.dart';
 import 'package:sarus_cli/src/commands/commands.dart';
 import 'package:sarus_cli/templates/module_bundle.dart';
-import 'package:yaml/yaml.dart';
-import 'package:yaml_writer/yaml_writer.dart';
 
 final RegExp _identifierRegExp = RegExp(r'^[a-z_][a-z0-9_]*$');
 
@@ -57,7 +55,7 @@ class CreateModuleCommand extends Command<int> {
       await generateModule(module);
 
       // Update application.yml
-      await updateSarusConfig(module);
+      // await updateSarusConfig(module);
 
       final duration = DateTime.now().difference(startTime);
       await _mixpanelService?.trackEvent(
@@ -119,43 +117,43 @@ class CreateModuleCommand extends Command<int> {
     }
   }
 
-  /// Updates the `application.yaml` file by adding the new module.
-  Future<void> updateSarusConfig(String module) async {
-    final file = File('application.yaml');
+  // /// Updates the `application.yaml` file by adding the new module.
+  // Future<void> updateSarusConfig(String module) async {
+  //   final file = File('application.yaml');
 
-    if (!file.existsSync()) {
-      _logger.err('Error: application.yaml not found in the project root.');
-      exit(1);
-    }
+  //   if (!file.existsSync()) {
+  //     _logger.err('Error: application.yaml not found in the project root.');
+  //     exit(1);
+  //   }
 
-    try {
-      final content = file.readAsStringSync();
-      final yaml = loadYaml(content) as Map;
+  //   try {
+  //     final content = file.readAsStringSync();
+  //     final yaml = loadYaml(content) as Map;
 
-      // Create a mutable copy of the original YAML content
-      final mutableYaml = <String, dynamic>{};
-      yaml.forEach((key, value) {
-        mutableYaml[key.toString()] = value;
-      });
+  //     // Create a mutable copy of the original YAML content
+  //     final mutableYaml = <String, dynamic>{};
+  //     yaml.forEach((key, value) {
+  //       mutableYaml[key.toString()] = value;
+  //     });
 
-      // Handle modules list
-      final modules = (mutableYaml['modules'] as List<dynamic>? ?? []).toList();
+  //     // Handle modules list
+  //     final modules = (mutableYaml['modules'] as List<dynamic>? ?? []).toList();
 
-      // Avoid duplicates
-      if (!modules.contains(module)) {
-        modules.add(module);
-      }
+  //     // Avoid duplicates
+  //     if (!modules.contains(module)) {
+  //       modules.add(module);
+  //     }
 
-      // Update only the modules key
-      mutableYaml['modules'] = modules;
+  //     // Update only the modules key
+  //     mutableYaml['modules'] = modules;
 
-      // Write back to YAML file
-      final yamlWriter = YamlWriter();
-      file.writeAsStringSync(yamlWriter.write(mutableYaml));
+  //     // Write back to YAML file
+  //     final yamlWriter = YamlWriter();
+  //     file.writeAsStringSync(yamlWriter.write(mutableYaml));
 
-      _logger.info('Added module "$module" to application.yaml.');
-    } catch (e) {
-      _logger.err('Error updating application.yaml: $e');
-    }
-  }
+  //     _logger.info('Added module "$module" to application.yaml.');
+  //   } catch (e) {
+  //     _logger.err('Error updating application.yaml: $e');
+  //   }
+  // }
 }
