@@ -2,13 +2,13 @@
 library sarus;
 
 export 'package:shelf/shelf.dart';
-export 'package:shelf_static/shelf_static.dart';
 
-// Configuration
-export 'src/core/application.dart';
-// Controllers
-export 'src/core/endpoint.dart';
+// Generated
+export 'generated/route_gen.dart';
 // Core
+export 'src/core/application.dart';
+export 'src/core/dto.dart';
+export 'src/core/endpoint.dart';
 export 'src/core/serve.dart';
 // Env
 export 'src/env/sarus_env.dart';

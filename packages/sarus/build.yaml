@@ -7,6 +7,14 @@ builders:
     build_to: cache
     applies_builders: ["source_gen|combining_builder"]  # Re-enable combiner
 
+  dto_builder:
+    import: "package:sarus/builder.dart"
+    builder_factories: ["dtoBuilder"]
+    build_extensions: {".dart": [".dto.g.part"]}  # Explicit part files
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]  # Re-enable combiner
+
 targets:
   $default:
     builders:

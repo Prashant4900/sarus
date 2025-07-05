@@ -2,3 +2,4 @@ analyzer:
   exclude:
     - README.md
     - ./bricks/**
+    - bricks/**
