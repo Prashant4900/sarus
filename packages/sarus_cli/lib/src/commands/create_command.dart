@@ -161,17 +161,13 @@ class CreateCommand extends Command<int> {
 
   /// Generates a new Sarus project using Mason templates.
   ///
-  /// This method handles the complete project generation process:
-  /// 1. Initializes the Mason generator from the project bundle
-  /// 2. Creates the project directory structure
-  /// 3. Generates routes using build_runner
-  /// 4. Installs dependencies with dart pub get
-  /// 5. Applies code quality fixes with dart fix
-  /// 6. Tracks each step for performance monitoring
+  /// This method handles the complete project generation process with clean,
+  /// user-friendly output similar to other popular CLI tools.
   ///
-  /// The generation process is broken into 6 distinct steps, each with
-  /// progress reporting and individual analytics tracking. If any step
-  /// fails, detailed error information is logged and tracked.
+  /// The generation process shows:
+  /// 1. Creating project spinner
+  /// 2. Installing dependencies spinner
+  /// 3. Success message with next steps
   ///
   /// Variables passed to the template:
   /// - `name`: The validated project name for use in generated files
@@ -181,16 +177,11 @@ class CreateCommand extends Command<int> {
   /// - Various exceptions from subprocess execution (dart commands)
   Future<void> generateBrick() async {
     try {
-      _logger
-        ..info('Starting Sarus project generation process...')
-        ..progress('Step 1/6: Initializing project generator...');
+      // Show creating project progress
+      final createProgress = _logger.progress('Creating $projectName');
 
       // Initialize Mason generator from project bundle
       final generator = await _generator(projectBundle);
-
-      _logger
-        ..detail('Project generator initialized successfully.')
-        ..progress('Step 2/6: Creating project structure...');
 
       // Generate project files in current directory
       final target = DirectoryGeneratorTarget(Directory.current);
@@ -201,7 +192,20 @@ class CreateCommand extends Command<int> {
         vars: {'name': projectName},
       );
 
-      _logger.success('Project "$projectName" structure created successfully.');
+      // Set up project working directory for subsequent operations
+      final workingDir = Directory('${Directory.current.path}/$projectName');
+
+      // Verify project directory was created successfully
+      if (!workingDir.existsSync()) {
+        createProgress.fail('Project directory creation failed');
+        throw Exception('Project directory creation failed');
+      }
+
+      // Run build_runner to generate routes and other generated code
+      await _runBuildRunner(workingDir);
+
+      // Complete the creation step
+      createProgress.complete('Creating $projectName');
 
       // Track successful project structure creation
       await _mixpanelService?.trackEvent(
@@ -211,49 +215,29 @@ class CreateCommand extends Command<int> {
         },
       );
 
-      // Set up project working directory for subsequent operations
-      final workingDir = Directory('${Directory.current.path}/$projectName');
-
-      _logger
-        ..detail('Project working directory: ${workingDir.path}')
-        ..progress('Step 3/6: Verifying project directory...');
-
-      // Verify project directory was created successfully
-      if (!workingDir.existsSync()) {
-        _logger.err('Project directory not found at: ${workingDir.path}');
-        throw Exception('Project directory creation failed');
-      }
-
-      _logger
-        ..detail('Project directory verified successfully.')
-        ..progress('Step 4/6: Generate routes...');
-
-      // Run build_runner to generate routes and other generated code
-      await _runBuildRunner(workingDir);
-
-      _logger
-        ..detail('Routes generation completed.')
-        ..progress('Step 5/6: Running dart pub get...');
+      // Show installing dependencies progress
+      final installProgress = _logger.progress('Installing dependencies');
 
       // Install project dependencies
       await _runPubGet(workingDir);
 
-      _logger
-        ..detail('Dependencies installed successfully.')
-        ..progress('Step 6/6: Applying Dart fixes...');
-
       // Apply code quality fixes and formatting
       await _runDartFix(workingDir);
 
+      // Complete the installation step
+      installProgress.complete('Installing dependencies');
+
+      // Show success message and next steps
       _logger
-        ..info('Project generation completed successfully!')
-        ..detail('Your new Sarus project is ready at: ${workingDir.path}');
+        ..info('')
+        ..success('Created $projectName at ./$projectName.')
+        ..info('')
+        ..info('Get started by typing:')
+        ..info('')
+        ..info('cd ./$projectName')
+        ..info('sarus dev');
     } catch (e) {
-      _logger
-        ..err('Error generating project: $e')
-        ..detail(
-          'Project generation failed. Please check the error message above.',
-        );
+      _logger.err('Error creating project: $e');
 
       // Track generation failure with detailed error information
       await _mixpanelService?.trackEvent(
@@ -272,14 +256,10 @@ class CreateCommand extends Command<int> {
   /// Runs build_runner to generate routes and other generated code.
   ///
   /// This method executes `dart run build_runner build --delete-conflicting-outputs`
-  /// in the project directory to generate route definitions and other
-  /// code-generated files required by the Sarus framework.
+  /// in the project directory silently, only logging errors if they occur.
   ///
   /// Parameters:
   /// - [workingDir]: The project directory where build_runner should execute
-  ///
-  /// The build process is timed and tracked for performance monitoring.
-  /// Both success and failure scenarios are logged with detailed information.
   Future<void> _runBuildRunner(Directory workingDir) async {
     final buildStartTime = DateTime.now();
     final resultBuilder = Process.runSync(
@@ -296,7 +276,6 @@ class CreateCommand extends Command<int> {
     final buildDuration = DateTime.now().difference(buildStartTime);
 
     if (resultBuilder.exitCode == 0) {
-      _logger.detail('Routes generated successfully.');
       await _mixpanelService?.trackEvent(
         'build_runner_success',
         properties: {
@@ -314,20 +293,17 @@ class CreateCommand extends Command<int> {
           'error': resultBuilder.stderr.toString(),
         },
       );
+      throw Exception('Route generation failed');
     }
   }
 
   /// Runs dart pub get to install project dependencies.
   ///
-  /// This method executes `dart pub get` in the project directory to
-  /// download and install all dependencies specified in pubspec.yaml.
-  /// This is essential for the project to compile and run properly.
+  /// This method executes `dart pub get` in the project directory silently,
+  /// only logging errors if they occur.
   ///
   /// Parameters:
   /// - [workingDir]: The project directory where pub get should execute
-  ///
-  /// The installation process is timed and tracked for performance monitoring.
-  /// Both success and failure scenarios are logged with detailed information.
   Future<void> _runPubGet(Directory workingDir) async {
     final pubGetStartTime = DateTime.now();
     final result = Process.runSync(
@@ -339,7 +315,6 @@ class CreateCommand extends Command<int> {
     final pubGetDuration = DateTime.now().difference(pubGetStartTime);
 
     if (result.exitCode == 0) {
-      _logger.detail('dart pub get executed successfully.');
       await _mixpanelService?.trackEvent(
         'pub_get_success',
         properties: {
@@ -348,7 +323,7 @@ class CreateCommand extends Command<int> {
         },
       );
     } else {
-      _logger.err('Failed to run dart pub get: ${result.stderr}');
+      _logger.err('Failed to install dependencies: ${result.stderr}');
       await _mixpanelService?.trackEvent(
         'pub_get_failed',
         properties: {
@@ -357,25 +332,18 @@ class CreateCommand extends Command<int> {
           'error': result.stderr.toString(),
         },
       );
+      throw Exception('Dependency installation failed');
     }
   }
 
   /// Runs dart fix to apply code quality improvements.
   ///
-  /// This method executes `dart fix --apply` in the project directory to
-  /// automatically apply code quality improvements, formatting fixes, and
-  /// lint rule corrections. This ensures the generated project follows
-  /// best practices and coding standards.
+  /// This method executes `dart fix --apply` in the project directory silently,
+  /// only logging errors if they occur.
   ///
   /// Parameters:
   /// - [workingDir]: The project directory where dart fix should execute
-  ///
-  /// The fix process is timed and tracked for performance monitoring.
-  /// Both success and failure scenarios are logged with detailed information.
-  /// Failures in this step are logged but don't prevent project creation.
   Future<void> _runDartFix(Directory workingDir) async {
-    _logger.detail('Running dart fix to improve code quality...');
-
     final fixStartTime = DateTime.now();
     final resultFix = Process.runSync(
       'dart',
@@ -386,9 +354,6 @@ class CreateCommand extends Command<int> {
     final fixDuration = DateTime.now().difference(fixStartTime);
 
     if (resultFix.exitCode == 0) {
-      _logger
-        ..success('Dart fixes applied successfully.')
-        ..detail('Code linting and formatting completed.');
       await _mixpanelService?.trackEvent(
         'dart_fix_success',
         properties: {
@@ -397,9 +362,7 @@ class CreateCommand extends Command<int> {
         },
       );
     } else {
-      _logger
-        ..err('Failed to run dart fix --apply: ${resultFix.stderr}')
-        ..detail('Error code: ${resultFix.exitCode}');
+      _logger.err('Failed to apply code fixes: ${resultFix.stderr}');
       await _mixpanelService?.trackEvent(
         'dart_fix_failed',
         properties: {
@@ -409,24 +372,14 @@ class CreateCommand extends Command<int> {
           'exit_code': resultFix.exitCode,
         },
       );
+      // Don't throw here - code fixes are not critical for project creation
     }
   }
 
   /// Verifies that the Dart SDK is installed and accessible.
   ///
-  /// This method runs `dart --version` to check if the Dart SDK is properly
-  /// installed and available in the system PATH. This is a prerequisite for
-  /// project creation since all subsequent operations depend on Dart tools.
-  ///
-  /// The verification process:
-  /// 1. Attempts to run `dart --version`
-  /// 2. Checks the exit code for success
-  /// 3. Logs warnings for missing SDK
-  /// 4. Tracks the verification result for analytics
-  /// 5. Exits with code 1 if critical errors occur
-  ///
-  /// This check helps prevent project creation failures due to missing
-  /// prerequisites and provides clear feedback to users.
+  /// This method runs `dart --version` silently to check if the Dart SDK is
+  /// properly installed. Only critical errors are shown to the user.
   Future<void> checkDart() async {
     try {
       // Check for Dart SDK availability by running version command
@@ -434,20 +387,23 @@ class CreateCommand extends Command<int> {
 
       // Verify Dart SDK is properly installed
       if (result.exitCode != 0) {
-        _logger.warn('Dart SDK is not installed.');
+        _logger.err(
+            'Dart SDK is not installed. Please install Dart from https://dart.dev/get-dart');
         await _mixpanelService?.trackEvent(
           'dart_sdk_check_failed',
           properties: {
             'exit_code': result.exitCode,
           },
         );
+        exit(1);
       } else {
         // Track successful SDK verification
         await _mixpanelService?.trackEvent('dart_sdk_check_success');
       }
     } catch (e) {
       // Handle critical errors like missing dart command
-      _logger.err('Error checking Dart SDK installation: $e');
+      _logger.err(
+          'Dart SDK is not installed. Please install Dart from https://dart.dev/get-dart');
       await _mixpanelService?.trackEvent(
         'dart_sdk_check_error',
         properties: {
