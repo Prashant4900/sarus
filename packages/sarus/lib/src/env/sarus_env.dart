@@ -58,7 +58,7 @@ class SarusEnv {
         _isLoaded = true;
 
         print(
-          '🌍 Sarus Environment loaded: ${_envVars.length} variables from $_currentFlavor flavor',
+          'Sarus Environment loaded: ${_envVars.length} variables from $_currentFlavor flavor',
         );
       } catch (e) {
         print('⚠️  Warning: Failed to load .dart_tool/sarus/env.json: $e');

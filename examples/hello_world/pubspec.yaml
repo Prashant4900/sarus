@@ -1,4 +1,4 @@
-name: {{name}}
+name: hello_world
 description: A fast, minimalistic backend framework for Dart.
 version: 1.0.0
 publish_to: none
@@ -7,7 +7,8 @@ environment:
   sdk: ^3.7.0
 
 dependencies:
-  sarus: ^0.0.1-alpha.12
+  sarus:
+    path: ../../packages/sarus
 
 dev_dependencies:
   build_runner: ^2.4.15

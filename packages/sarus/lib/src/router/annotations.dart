@@ -33,7 +33,8 @@ abstract class HttpRoute {
 /// Future<Response> details(Request req) async => ...
 /// ```
 class Get extends HttpRoute {
-  const Get();
+  // const Get();
+  const Get({super.path});
 }
 
 /// Annotation to define an HTTP POST route.
@@ -46,7 +47,7 @@ class Get extends HttpRoute {
 /// Future<Response> create(Request req) async => ...
 /// ```
 class Post extends HttpRoute {
-  const Post();
+  const Post({super.path});
 }
 
 /// Annotation to define an HTTP PUT route.
@@ -59,7 +60,7 @@ class Post extends HttpRoute {
 /// Future<Response> update(Request req) async => ...
 /// ```
 class Put extends HttpRoute {
-  const Put();
+  const Put({super.path});
 }
 
 /// Annotation to define an HTTP DELETE route.
@@ -72,7 +73,46 @@ class Put extends HttpRoute {
 /// Future<Response> delete(Request req) async => ...
 /// ```
 class Delete extends HttpRoute {
-  const Delete();
+  const Delete({super.path});
+}
+
+/// Annotation to define an HTTP PATCH route.
+///
+/// Marks a method as a handler for PATCH requests within an `@Endpoint()` class.
+///
+/// Example:
+/// ```dart
+/// @Patch()
+/// Future<Response> patch(Request req) async => ...
+/// ```
+class Patch extends HttpRoute {
+  const Patch({super.path});
+}
+
+/// Annotation to define an HTTP HEAD route.
+///
+/// Marks a method as a handler for HEAD requests within an `@Endpoint()` class.
+///
+/// Example:
+/// ```dart
+/// @Head()
+/// Future<Response> head(Request req) async => ...
+/// ```
+class Head extends HttpRoute {
+  const Head({super.path});
+}
+
+/// Annotation to define an HTTP OPTIONS route.
+///
+/// Marks a method as a handler for OPTIONS requests within an `@Endpoint()` class.
+///
+/// Example:
+/// ```dart
+/// @Options()
+/// Future<Response> options(Request req) async => ...
+/// ```
+class Options extends HttpRoute {
+  const Options({super.path});
 }
 
 /// Annotation to define a base path for a group of HTTP routes.
@@ -100,4 +140,52 @@ class Endpoint {
 
   /// Base path prefix for the endpoint class.
   final String path;
+}
+
+/// Annotation to define a query parameter for an HTTP route.
+///
+/// Used to extract query parameters from the request URL.
+/// Example:
+/// ```dart
+/// @Get(path: '/search')
+/// Future<Response> search(Request req, @QueryParam('q') String query) async => ...
+/// ```
+class QueryParam {
+  const QueryParam(this.name, {this.defaultValue});
+
+  /// The name of the query parameter.
+  final String name;
+
+  /// Optional default value if the parameter is not provided.
+  final String? defaultValue;
+}
+
+/// Annotation to define a path parameter for an HTTP route.
+///
+/// Used to extract path parameters from the request URL.
+///
+/// Example:
+/// ```dart
+/// @Get(path: '/users/<id>')
+/// Future<Response> getUser(Request req, @PathParam('id') String userId) async => ...
+/// ```
+class PathParam {
+  const PathParam(this.name, {this.defaultValue});
+
+  /// The name of the path parameter.
+  final String name;
+
+  final String? defaultValue;
+}
+
+/// Annotation to define a request body for an HTTP route.
+//////
+/// Used to extract the body of a request, typically for POST or PUT methods.
+////// Example:
+/// ```dart
+/// @Post(path: '/create')
+/// Future<Response> createUser(Request req, @Body User user) async => ...
+/// ```
+class Body {
+  const Body();
 }

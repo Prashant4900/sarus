@@ -1,0 +1,312 @@
+---
+sidebar_position: 3
+---
+
+# Tutorials
+
+:::info Info
+
+**Dificulty**: Beginner <br/>
+**Length**: 5 minutes
+
+Before you start, make sure you have the [Dart SDK](https://dart.dev/get-dart) installed on your machine.
+
+:::
+
+## Overview
+
+Sarus is a lightweight backend framework for Dart, built on top of Shelf with a modular approach. It provides a simple and efficient way to create web applications and APIs.
+
+When we say `modular`, we mean that Sarus allows you to build your application in a modular way, where each module can be developed, tested, and maintained independently. This makes it easier to manage large applications and promotes code reuse.
+
+## Creating a Project
+
+To create a new Sarus project, you can use the `sarus create` command. This command will generate a new project structure with the necessary files and directories.
+
+```bash
+sarus create hello_world
+```
+
+This will create a new directory called `hello_world` with the following structure:
+
+```bash title="Hello World"
+├── bin
+│   └── server.dart
+├── lib
+│   ├── config
+│   │   └── router.dart
+│   ├── greeting
+│   │   ├── endpoints.dart
+│   │   ├── endpoints.g.dart
+│   │   └── middlewares.dart
+│   └── sarus_application.dart
+├── test
+│   └── hello_world_test.dart
+├── analysis_options.yaml
+├── config.yaml
+├── .gitignore
+├── pubspec.yaml
+└── README.md
+```
+
+## Running the Project
+To run the project, navigate to the project directory and use the `sarus dev` command:
+
+```bash
+cd hello_world
+sarus dev
+```
+
+This will start the development server, and you can access your application at [http://localhost:8080/greeting](http://localhost:8080/greeting).
+
+```bash
+Loading configuration...
+Starting Sarus server...
+Server listening on port 8080
+```
+
+Make sure it's running by opening your browser and navigating to [http://localhost:8080/greeting](http://localhost:8080/greeting). You should see a response like this:
+
+```json
+{
+"message": "Hello from GreetingEndpoint"
+}
+```
+
+## Creating a Module
+To create a new module, you can use the `sarus create module` command. This command will generate a new module structure with the necessary files and directories.
+
+```bash
+sarus module hello
+```
+This will create a new directory called `hello` with the following structure:
+
+```bash title="Hello Module"
+├── endpoints.dart
+├── endpoints.g.dart
+└── middlewares.dart
+```
+
+You can then add your endpoints and middlewares to the `endpoints.dart` and `middlewares.dart` files, respectively.
+
+## Adding an Endpoint
+To add an endpoint to your module, you can define a function that returns a `Response` object. For example, in the `endpoints.dart` file of the `hello` module, you can add the following code:
+
+```tsx title="lib/hello/endpoints.dart"
+import 'dart:convert';
+
+import 'package:hello_world/hello/middlewares.dart';
+import 'package:sarus/sarus.dart';
+
+part 'endpoints.g.dart';
+
+@Endpoint(path: '/hello')
+class HelloEndpoints extends Endpoints {
+  HelloEndpoints() : super();
+
+  @Get()
+  Future<Response> index(
+    Request request,
+    @QueryParam('name') String name,
+  ) async {
+    return Response.ok(
+      jsonEncode({
+        'message': 'Hello, World! from $name',
+      }),
+    );
+  }
+
+  @override
+  RouterConfig get router => _$helloEndpointsRouterConfig(this);
+
+  @override
+  Handler get handler =>
+      const Pipeline().addMiddleware(helloMiddleware).addHandler(router.call);
+}
+```
+
+This code defines an endpoint at `/hello` that responds with a JSON object containing a greeting message. The `@QueryParam` annotation allows you to pass a query parameter called `name` to the endpoint.
+
+Similarly, you can add more endpoints to the `HelloEndpoints` class by defining more methods with the appropriate HTTP method annotations (`@Get()`, `@Post()`, etc.). You can also use the `@PathParam` annotation to extract path parameters from the request URL.
+
+## Adding a Middleware
+To add a middleware to your module, you can define a function that takes a `Handler` and returns a `Handler`. For example, in the `middlewares.dart` file of the `hello` module, you can add the following code:
+
+```dart title="lib/hello/middlewares.dart"
+import 'package:sarus/sarus.dart';
+
+Middleware helloMiddleware = createMiddleware(
+  requestHandler: (request) {
+    print('Hello Request: ${request.method} ${request.requestedUri}');
+    return null;
+  },
+);
+```
+
+This code defines a middleware that logs the request method and URL to the console. You can add this middleware to your endpoint by using the `addMiddleware` method on the `Pipeline` class.
+
+## Add the endpoint to the Router
+To add the `HelloEndpoints` to the router, you can modify the `router.dart` file in the `config` directory. You can import the `HelloEndpoints` class and add it to the router configuration.
+
+```dart title="lib/config/router.dart"
+import 'package:hello_world/greeting/endpoints.dart';
+import 'package:hello_world/hello/endpoints.dart';
+import 'package:sarus/sarus.dart';
+
+final router = Router(
+  globalMiddleware: [logRequests()],
+  routes: [
+    Route(
+      endpoints: [GreetingEndpoints()],
+    ),
+    Route(
+      endpoints: [HelloEndpoints()],
+    ),
+  ],
+);
+```
+
+Note: Each `Route` can have multiple endpoints, and you can add as many routes as you need. The `globalMiddleware` is applied to all routes.
+
+## Running the Project Again
+After making these changes, you can run the project again using the `sarus dev` command:
+
+```bash
+sarus dev
+```
+
+You can now access the new endpoint at [http://localhost:8080/hello?name=YourName](http://localhost:8080/hello?name=YourName). You should see a response like this:
+
+```json
+{
+  "message": "Hello, World! from YourName"
+}
+```
+
+## Pass Request Body to Endpoint
+To pass a request body to an endpoint, you can use the `@Body` annotation. For example, you can modify the `HelloEndpoints` class to include a new endpoint that accepts a JSON body:
+
+First, we need to create a model class to represent the request body. Create a new file called `models.dart` in the `hello` module:
+
+```tsx title="lib/hello/models.dart"
+import 'package:sarus/sarus.dart';
+
+part 'models.g.dart';
+
+@DTO()
+class UserModel {
+  UserModel({
+    required this.firstName,
+    required this.lastName,
+    this.email,
+    this.age,
+  });
+
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
+
+  @JsonKey(name: 'first_name', includeIfNull: false)
+  final String firstName;
+  @JsonKey(name: 'last_name', includeIfNull: false)
+  final String lastName;
+  final String? email;
+  final int? age;
+
+  Map<String, dynamic> toJson() => _$UserModelToJson(this);
+}
+```
+
+Note: The `@DTO()` annotation is used to generate the serialization and deserialization code for the model class. The `part` directive is used to include the generated code. Each DTO class must have `fromJson` method to deserialize the JSON data and a `toJson` method to serialize the object back to JSON.
+
+Now, Run the following command to generate the serialization code:
+
+```bash
+dart run build_runner build --delete-conflicting-outputs
+```
+
+This will generate a file called `models.g.dart` in the same directory as the `models.dart` file.
+
+Next, modify the `HelloEndpoints` class to include a new endpoint that accepts a JSON body:
+
+```tsx title="lib/hello/endpoints.dart"
+import 'dart:convert';
+
+import 'package:hello_world/hello/middlewares.dart';
+import 'package:hello_world/hello/models.dart';
+import 'package:sarus/sarus.dart';
+
+part 'endpoints.g.dart';
+
+@Endpoint(path: '/hello')
+class HelloEndpoints extends Endpoints {
+  HelloEndpoints() : super();
+
+  @Post(path: '/<id>')
+  Future<Response> index(
+    Request request,
+    @QueryParam('name') String name,
+    @PathParam('id') String id,
+    @Body() UserModel user,
+  ) async {
+    return Response.ok(
+      jsonEncode({
+        'message': 'Hello, World! from $name',
+        'id': id,
+        'user': user.toJson(),
+      }),
+    );
+  }
+
+  @override
+  RouterConfig get router => _$helloEndpointsRouterConfig(this);
+
+  @override
+  Handler get handler =>
+      const Pipeline().addMiddleware(helloMiddleware).addHandler(router.call);
+}
+```
+This code defines a new endpoint at `/hello/<id>` that accepts a POST request with a JSON body. The `@Body()` annotation is used to extract the request body and deserialize it into a `UserModel` object.
+
+Again, you need to run the build runner to generate the necessary code for the `HelloEndpoints` class:
+
+```bash
+dart run build_runner build --delete-conflicting-outputs
+```
+
+or you can use the `watch` command to automatically regenerate the code whenever you make changes:
+
+```bash
+dart run build_runner watch --delete-conflicting-outputs
+```
+
+Now, you can test the new endpoint by sending a POST request with a JSON body. You can use a tool like Postman or cURL to send the request. Here's an example using cURL:
+
+```bash
+curl -X POST http://localhost:8080/hello/123?name=YourName \
+-H "Content-Type: application/json" \
+-d '{"first_name": "John", "last_name": "Doe", "email": "email@example.com", "age": 30}'
+```
+
+You should see a response like this:
+
+```json
+{
+    "message": "Hello, World! from YourName",
+    "id": "123",
+    "user": {
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "email@example.com",
+        "age": 30
+    }
+}
+```
+
+This response includes the `id` from the URL path and the `user` object from the request body. You can modify the `UserModel` class to include any additional fields you need, and Sarus will handle the serialization and deserialization for you.
+
+## Congratulations!
+You have successfully created a Sarus project, added a module, created an endpoint, and added a middleware. You can now continue to build your application by adding more modules, endpoints, and middlewares as needed.
+
+## Conclusion
+
+In this tutorial, you learned how to create a Sarus project, run it, create a module, add an endpoint, and add a middleware. Sarus provides a simple and efficient way to build web applications and APIs in Dart, allowing you to focus on your application's logic without worrying about the underlying infrastructure.
