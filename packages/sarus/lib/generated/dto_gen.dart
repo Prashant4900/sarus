@@ -33,8 +33,8 @@ import 'package:source_gen/source_gen.dart';
 ///
 /// This will generate:
 /// ```dart
-/// User $UserFromJson(Map<String, dynamic> json) { ... }
-/// Map<String, dynamic> $UserToJson(User instance) { ... }
+/// User $userFromJson(Map<String, dynamic> json) { ... }
+/// Map<String, dynamic> $userToJson(User instance) { ... }
 /// ```
 class DTOGenerator extends GeneratorForAnnotation<DTO> {
   /// Generates serialization code for the annotated class element.
@@ -111,7 +111,7 @@ class DTOGenerator extends GeneratorForAnnotation<DTO> {
   /// and custom JsonKey mappings.
   ///
   /// The generated method signature follows the pattern:
-  /// `ClassName $ClassNameFromJson(Map<String, dynamic> json)`
+  /// `ClassName $classNameFromJson(Map<String, dynamic> json)`
   ///
   /// [buffer] The string buffer to write the generated code to
   /// [className] The name of the class being processed
@@ -123,7 +123,7 @@ class DTOGenerator extends GeneratorForAnnotation<DTO> {
   ) {
     // Generate method signature
     buffer.writeln(
-      '$className \$${className}FromJson(Map<String, dynamic> json) {',
+      '$className \$${className.toCamelCase()}FromJson(Map<String, dynamic> json) {',
     );
     buffer.writeln('  return $className(');
 
@@ -174,7 +174,7 @@ class DTOGenerator extends GeneratorForAnnotation<DTO> {
   /// and handles null value inclusion based on the `includeIfNull` setting.
   ///
   /// The generated method signature follows the pattern:
-  /// `Map<String, dynamic> $ClassNameToJson(ClassName instance)`
+  /// `Map<String, dynamic> $classNameToJson(ClassName instance)`
   ///
   /// [buffer] The string buffer to write the generated code to
   /// [className] The name of the class being processed
@@ -186,7 +186,7 @@ class DTOGenerator extends GeneratorForAnnotation<DTO> {
   ) {
     // Generate method signature
     buffer.writeln(
-      'Map<String, dynamic> \$${className}ToJson($className instance) {',
+      'Map<String, dynamic> \$${className.toCamelCase()}ToJson($className instance) {',
     );
     buffer.writeln('  final val = <String, dynamic>{};');
     buffer.writeln();
@@ -296,5 +296,28 @@ class DTOGenerator extends GeneratorForAnnotation<DTO> {
       // This ensures the generator doesn't break due to formatting issues
       return code;
     }
+  }
+}
+
+extension CamelCaseExtension on String {
+  String toCamelCase() {
+    final words = replaceAllMapped(
+      RegExp('([a-z])([A-Z])'),
+      (m) => '${m[1]} ${m[2]}',
+    )
+        .replaceAll(RegExp(r'[_\-\s]+'), ' ')
+        .trim()
+        .split(' ')
+        .where((word) => word.isNotEmpty)
+        .toList();
+
+    if (words.isEmpty) return '';
+
+    final first = words.first.toLowerCase();
+    final rest = words
+        .skip(1)
+        .map((w) => w[0].toUpperCase() + w.substring(1).toLowerCase());
+
+    return [first, ...rest].join();
   }
 }

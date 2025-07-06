@@ -1,6 +1,5 @@
+import 'package:hello_world/sarus_application.g.dart';
 import 'package:sarus/sarus.dart';
-
-part 'models.g.dart';
 
 @DTO()
 class UserModel {
@@ -12,7 +11,7 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
+      $userModelFromJson(json);
 
   @JsonKey(name: 'first_name', includeIfNull: false)
   final String firstName;
@@ -21,5 +20,5 @@ class UserModel {
   final String? email;
   final int? age;
 
-  Map<String, dynamic> toJson() => _$UserModelToJson(this);
+  Map<String, dynamic> toJson() => $userModelToJson(this);
 }
