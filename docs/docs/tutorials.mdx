@@ -74,14 +74,14 @@ Make sure it's running by opening your browser and navigating to [http://localho
 ```
 
 ## Creating a Module
-To create a new module, you can use the `sarus module` command. This command will generate a new module structure with the necessary files and directories.
+To create a new module, you can use the `sarus module hello` command. This command will generate a new module structure with the necessary files and directories.
 
 ```bash
 sarus module hello
 ```
 This will create a new directory called `hello` with the following structure:
 
-```bash title="Hello Module"
+```tsx title="Hello Module"
 ├── endpoints.dart
 ├── endpoints.g.dart
 └── middlewares.dart
@@ -132,7 +132,7 @@ Similarly, you can add more endpoints to the `HelloEndpoints` class by defining 
 ## Adding a Middleware
 To add a middleware to your module, you can define a function that takes a `Handler` and returns a `Handler`. For example, in the `middlewares.dart` file of the `hello` module, you can add the following code:
 
-```dart title="lib/hello/middlewares.dart"
+```tsx title="lib/hello/middlewares.dart"
 import 'package:sarus/sarus.dart';
 
 Middleware helloMiddleware = createMiddleware(
@@ -148,7 +148,7 @@ This code defines a middleware that logs the request method and URL to the conso
 ## Add the endpoint to the Router
 To add the `HelloEndpoints` to the router, you can modify the `router.dart` file in the `config` directory. You can import the `HelloEndpoints` class and add it to the router configuration.
 
-```dart title="lib/config/router.dart"
+```tsx title="lib/config/router.dart"
 import 'package:hello_world/greeting/endpoints.dart';
 import 'package:hello_world/hello/endpoints.dart';
 import 'package:sarus/sarus.dart';
@@ -281,7 +281,7 @@ dart run build_runner watch --delete-conflicting-outputs
 
 Now, you can test the new endpoint by sending a POST request with a JSON body. You can use a tool like Postman or cURL to send the request. Here's an example using cURL:
 
-```bash
+```tsx
 curl -X POST http://localhost:8080/hello/123?name=YourName \
 -H "Content-Type: application/json" \
 -d '{"first_name": "John", "last_name": "Doe", "email": "email@example.com", "age": 30}'
