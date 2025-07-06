@@ -38,13 +38,13 @@ import 'package:source_gen/source_gen.dart';
 /// ## Generated Output
 ///
 /// ```dart
-/// RouterConfig _$userEndpointsRouterConfig(UserEndpoints endpoints) {
+/// RouterConfig $userEndpointsRouterConfig(UserEndpoints endpoints) {
 ///   // Generated router configuration with type-safe parameter handling
 /// }
 /// ```
 class RouteGenerator extends GeneratorForAnnotation<Endpoint> {
   // Constants for naming conventions
-  static const String _generatedFunctionPrefix = r'_$';
+  static const String _generatedFunctionPrefix = r'$';
   static const String _routerConfigSuffix = 'RouterConfig';
 
   @override
@@ -108,8 +108,8 @@ class RouteGenerator extends GeneratorForAnnotation<Endpoint> {
   /// Generates a camelCase function name from the class name.
   ///
   /// Examples:
-  /// - `UserEndpoints` -> `_$userEndpointsRouterConfig`
-  /// - `ApiController` -> `_$apiControllerRouterConfig`
+  /// - `UserEndpoints` -> `$userEndpointsRouterConfig`
+  /// - `ApiController` -> `$apiControllerRouterConfig`
   String _generateFunctionName(String className) {
     final formattedClassName = className.isNotEmpty
         ? className[0].toLowerCase() + className.substring(1)
