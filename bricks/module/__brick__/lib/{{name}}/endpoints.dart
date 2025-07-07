@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:sarus/sarus.dart';
 import './middlewares.dart';
 
-part 'endpoints.g.dart';
-
 @Endpoint(path: '/{{name.paramCase()}}')
 class {{name.pascalCase()}}Endpoints extends Endpoints {
   {{name.pascalCase()}}Endpoints() : super();
