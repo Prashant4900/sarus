@@ -1,19 +1,11 @@
 builders:
-  route_builder:
+  sarus_application_builder:
     import: "package:sarus/builder.dart"
-    builder_factories: ["routeBuilder"]
-    build_extensions: {".dart": [".routes.g.part"]}  # Explicit part files
-    auto_apply: dependents
-    build_to: cache
-    applies_builders: ["source_gen|combining_builder"]  # Re-enable combiner
-
-  dto_builder:
-    import: "package:sarus/builder.dart"
-    builder_factories: ["dtoBuilder"]
-    build_extensions: {".dart": [".dto.g.part"]}  # Explicit part files
-    auto_apply: dependents
-    build_to: cache
-    applies_builders: ["source_gen|combining_builder"]  # Re-enable combiner
+    builder_factories: ["sarusApplicationBuilder"]
+    build_extensions: {".dart": ["lib/sarus_application.g.dart"]}
+    auto_apply: root_package
+    build_to: source
+    runs_before: ["source_gen|combining_builder"]
 
 targets:
   $default:
