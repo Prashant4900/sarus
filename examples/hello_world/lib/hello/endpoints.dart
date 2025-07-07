@@ -2,9 +2,8 @@ import 'dart:convert';
 
 import 'package:hello_world/hello/middlewares.dart';
 import 'package:hello_world/hello/models.dart';
+import 'package:hello_world/sarus_application.g.dart';
 import 'package:sarus/sarus.dart';
-
-part 'endpoints.g.dart';
 
 @Endpoint(path: '/hello')
 class HelloEndpoints extends Endpoints {
@@ -27,7 +26,7 @@ class HelloEndpoints extends Endpoints {
   }
 
   @override
-  RouterConfig get router => _$helloEndpointsRouterConfig(this);
+  RouterConfig get router => $helloEndpointsRouterConfig(this);
 
   @override
   Handler get handler =>
