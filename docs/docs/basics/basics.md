@@ -13,7 +13,7 @@ my_sarus_project/
 ├── lib/
 │   ├── config/                   # Application configuration files (e.g., routings, settings)
 │   ├── greeting/                 # Your application module (endpoints, middlewares, etc)
-│   └── sarus_application.dart    # Generated file by vaden_class_scanner
+│   └── sarus_application.dart    
 └── pubspec.yaml                  # Project dependency manager
 ```
 
