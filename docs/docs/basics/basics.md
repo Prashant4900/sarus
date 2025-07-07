@@ -103,8 +103,6 @@ import 'dart:convert';
 import 'package:example/greeting/middlewares.dart';
 import 'package:sarus/sarus.dart';
 
-part '../tutorial-basics/endpoints.g.dart';
-
 @Endpoint(path: '/greeting')
 class GreetingEndpoints extends Endpoints {
   GreetingEndpoints() : super();
