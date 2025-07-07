@@ -37,9 +37,9 @@ This will create a new directory called `hello_world` with the following structu
 │   │   └── router.dart
 │   ├── greeting
 │   │   ├── endpoints.dart
-│   │   ├── endpoints.g.dart
 │   │   └── middlewares.dart
 │   └── sarus_application.dart
+│   └── sarus_application.g.dart
 ├── test
 │   └── hello_world_test.dart
 ├── analysis_options.yaml
@@ -83,7 +83,6 @@ This will create a new directory called `hello` with the following structure:
 
 ```tsx title="Hello Module"
 ├── endpoints.dart
-├── endpoints.g.dart
 └── middlewares.dart
 ```
 
@@ -97,8 +96,6 @@ import 'dart:convert';
 
 import 'package:hello_world/hello/middlewares.dart';
 import 'package:sarus/sarus.dart';
-
-part 'endpoints.g.dart';
 
 @Endpoint(path: '/hello')
 class HelloEndpoints extends Endpoints {
@@ -191,8 +188,6 @@ First, we need to create a model class to represent the request body. Create a n
 ```tsx title="lib/hello/models.dart"
 import 'package:sarus/sarus.dart';
 
-part 'models.g.dart';
-
 @DTO()
 class UserModel {
   UserModel({
@@ -203,7 +198,7 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
+      _$userModelFromJson(json);
 
   @JsonKey(name: 'first_name', includeIfNull: false)
   final String firstName;
@@ -212,7 +207,7 @@ class UserModel {
   final String? email;
   final int? age;
 
-  Map<String, dynamic> toJson() => _$UserModelToJson(this);
+  Map<String, dynamic> toJson() => _$userModelToJson(this);
 }
 ```
 
@@ -234,8 +229,6 @@ import 'dart:convert';
 import 'package:hello_world/hello/middlewares.dart';
 import 'package:hello_world/hello/models.dart';
 import 'package:sarus/sarus.dart';
-
-part 'endpoints.g.dart';
 
 @Endpoint(path: '/hello')
 class HelloEndpoints extends Endpoints {
