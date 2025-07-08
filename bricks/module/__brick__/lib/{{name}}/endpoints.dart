@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:sarus/sarus.dart';
-import 'package:{{name}}/sarus_application.g.dart';
+import '../sarus_application.g.dart';
 import './middlewares.dart';
 
 @Endpoint(path: '/{{name.paramCase()}}')
