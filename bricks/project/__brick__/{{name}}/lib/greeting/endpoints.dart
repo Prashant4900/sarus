@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:sarus/sarus.dart';
 import 'package:{{name}}/greeting/middlewares.dart';
+import 'package:{{name}}/sarus_application.g.dart';
 
 @Endpoint(path: '/greeting')
 class GreetingEndpoints extends Endpoints {
@@ -13,7 +14,7 @@ class GreetingEndpoints extends Endpoints {
   }
 
   @override
-  RouterConfig get router => _$greetingEndpointsRouterConfig(this);
+  RouterConfig get router => $greetingEndpointsRouterConfig(this);
 
   @override
   Handler get handler => const Pipeline()

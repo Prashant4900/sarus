@@ -24,6 +24,15 @@
       <excludeFolder url="file://$MODULE_DIR$/sarus_example/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/sarus_example/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/sarus_example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/dart_frog_example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/dart_frog_example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/dart_frog_example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/hello_world/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/hello_world/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/hello_world/build" />
+      <excludeFolder url="file://$MODULE_DIR$/vaden_example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/vaden_example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/vaden_example/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

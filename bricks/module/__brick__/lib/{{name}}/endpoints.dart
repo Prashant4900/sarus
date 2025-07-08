@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:sarus/sarus.dart';
+import 'package:{{name}}/sarus_application.g.dart';
 import './middlewares.dart';
 
 @Endpoint(path: '/{{name.paramCase()}}')
@@ -13,7 +14,7 @@ class {{name.pascalCase()}}Endpoints extends Endpoints {
   }
 
   @override
-  RouterConfig get router => _${{name.camelCase()}}EndpointsRouterConfig(this);
+  RouterConfig get router => ${{name.camelCase()}}EndpointsRouterConfig(this);
 
   @override
   Handler get handler => const Pipeline()
