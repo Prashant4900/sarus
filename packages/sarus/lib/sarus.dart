@@ -3,8 +3,6 @@ library;
 
 export 'package:shelf/shelf.dart';
 
-// Generated
-export 'generated/route_gen.dart';
 // Core
 export 'src/core/application.dart';
 export 'src/core/dto.dart';
@@ -17,3 +15,5 @@ export 'src/router/annotations.dart';
 export 'src/router/router.dart';
 export 'src/router/router_config.dart';
 export 'src/router/router_entry.dart';
+// Utils
+export 'utils/parse.dart';
