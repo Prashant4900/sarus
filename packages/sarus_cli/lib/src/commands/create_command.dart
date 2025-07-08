@@ -388,7 +388,8 @@ class CreateCommand extends Command<int> {
       // Verify Dart SDK is properly installed
       if (result.exitCode != 0) {
         _logger.err(
-            'Dart SDK is not installed. Please install Dart from https://dart.dev/get-dart');
+          'Dart SDK is not installed. Please install Dart from https://dart.dev/get-dart',
+        );
         await _mixpanelService?.trackEvent(
           'dart_sdk_check_failed',
           properties: {
@@ -403,7 +404,8 @@ class CreateCommand extends Command<int> {
     } catch (e) {
       // Handle critical errors like missing dart command
       _logger.err(
-          'Dart SDK is not installed. Please install Dart from https://dart.dev/get-dart');
+        'Dart SDK is not installed. Please install Dart from https://dart.dev/get-dart',
+      );
       await _mixpanelService?.trackEvent(
         'dart_sdk_check_error',
         properties: {

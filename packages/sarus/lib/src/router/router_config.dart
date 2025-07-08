@@ -1,5 +1,6 @@
 import 'dart:collection' show UnmodifiableMapView;
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:http_methods/http_methods.dart' show isHttpMethod;
 import 'package:meta/meta.dart' show sealed;
@@ -7,7 +8,8 @@ import 'package:sarus/src/router/router_entry.dart' show RouterEntry;
 import 'package:shelf/shelf.dart' as shelf;
 
 /// Pre-allocated empty parameters map to avoid repeated allocations
-final _emptyParams = UnmodifiableMapView(<String, String>{});
+final UnmodifiableMapView<String, String> _emptyParams =
+    UnmodifiableMapView(<String, String>{});
 
 /// Extension to add parameter extraction functionality to shelf.Request
 extension RouterParams on shelf.Request {
@@ -29,7 +31,7 @@ extension RouterParams on shelf.Request {
 
 /// Middleware that removes the response body and sets content-length to 0.
 /// Used internally for HEAD request handling to comply with HTTP specifications.
-final _removeBody = shelf.createMiddleware(
+final shelf.Middleware _removeBody = shelf.createMiddleware(
   responseHandler: (r) {
     if (r.headers.containsKey('content-length')) {
       r = r.change(headers: {'content-length': '0'});
@@ -213,7 +215,7 @@ class _RouteNotFoundResponse extends shelf.Response {
   _RouteNotFoundResponse() : super.notFound(_message);
 
   static const _message = 'Route not found';
-  static final _messageBytes = utf8.encode(_message);
+  static final Uint8List _messageBytes = utf8.encode(_message);
 
   /// Override read() to return a fresh stream each time
   /// This allows the response to be used multiple times

@@ -1,7 +1,3 @@
-/// The `Router` class in Dart provides a robust implementation for handling routes with error logging,
-/// validation, and middleware support.
-library;
-
 import 'package:sarus/src/core/endpoint.dart';
 import 'package:sarus/src/router/router_config.dart';
 import 'package:shelf/shelf.dart';
