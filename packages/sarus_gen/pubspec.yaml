@@ -1,5 +1,5 @@
 name: sarus_gen
-description: A starting point for Dart libraries or applications.
+description: Official code generater for Sarus backend framework.
 version: 0.0.1-alpha.1
 homepage: https://github.com/Prashant4900/sarus
 repository: https://github.com/Prashant4900/sarus
