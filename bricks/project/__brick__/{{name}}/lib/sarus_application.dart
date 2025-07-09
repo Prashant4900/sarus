@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:sarus/sarus.dart';
-import 'package:{{name}}/config/router.dart';
+
+import 'config/router.dart';
 
 class SarusApplication implements Application {
   @override

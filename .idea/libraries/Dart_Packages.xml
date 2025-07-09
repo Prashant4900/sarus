@@ -12,8 +12,8 @@
         <entry key="analyzer">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-7.5.2/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-7.5.5/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-7.5.2/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-7.5.4/lib" />
             </list>
           </value>
@@ -485,7 +485,22 @@
         <entry key="sarus">
           <value>
             <list>
+              <option value="$USER_HOME$/.pub-cache/git/sarus-c993e1e77beceefdbf14c4d9a712f44bf09291ac/packages/sarus/lib" />
               <option value="$USER_HOME$/.pub-cache/git/sarus-740c9d7be90769ac26c963b016e82fabd0489746/packages/sarus/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="sarus_gen">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/git/sarus-c993e1e77beceefdbf14c4d9a712f44bf09291ac/packages/sarus_gen/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="sarus_lint">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/git/sarus-c993e1e77beceefdbf14c4d9a712f44bf09291ac/packages/sarus_lint/lib" />
             </list>
           </value>
         </entry>
@@ -759,6 +774,9 @@
     </properties>
     <CLASSES>
       <root url="file://$USER_HOME$/.pub-cache/git/sarus-740c9d7be90769ac26c963b016e82fabd0489746/packages/sarus/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/git/sarus-c993e1e77beceefdbf14c4d9a712f44bf09291ac/packages/sarus/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/git/sarus-c993e1e77beceefdbf14c4d9a712f44bf09291ac/packages/sarus_gen/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/git/sarus-c993e1e77beceefdbf14c4d9a712f44bf09291ac/packages/sarus_lint/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/_fe_analyzer_shared-85.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-7.5.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-7.5.4/lib" />
