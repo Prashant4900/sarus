@@ -4,7 +4,7 @@ version: 0.0.1-alpha.1
 homepage: https://github.com/Prashant4900/sarus
 repository: https://github.com/Prashant4900/sarus
 issue_tracker: https://github.com/Prashant4900/sarus/issues
-topics: [server, backend, lints, shelf, sarus, cli]
+topics: [server, backend, lints, shelf, sarus]
 
 environment:
   sdk: ^3.8.1
