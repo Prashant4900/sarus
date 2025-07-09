@@ -37,6 +37,7 @@ Future<HttpServer> serve(
           backlog: backlog,
           shared: shared,
         ));
+
   serveRequests(server, handler, poweredByHeader: poweredByHeader);
   return server;
 }
