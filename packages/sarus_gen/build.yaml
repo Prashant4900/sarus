@@ -1,6 +1,6 @@
 builders:
   sarus_application_builder:
-    import: "package:sarus/builder.dart"
+    import: "package:sarus_gen/builder.dart"
     builder_factories: ["sarusApplicationBuilder"]
     build_extensions: {".dart": ["lib/sarus_application.g.dart"]}
     auto_apply: root_package

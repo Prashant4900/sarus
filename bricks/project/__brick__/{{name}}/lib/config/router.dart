@@ -1,5 +1,6 @@
 import 'package:sarus/sarus.dart';
-import 'package:{{name}}/greeting/endpoints.dart';
+
+import '../greeting/endpoints.dart';
 
 final router = Router(
   globalMiddleware: [logRequests()],

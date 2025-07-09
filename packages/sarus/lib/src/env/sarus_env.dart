@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -56,19 +54,8 @@ class SarusEnv {
 
         _lastLoaded = DateTime.now();
         _isLoaded = true;
-
-        print(
-          'Sarus Environment loaded: ${_envVars.length} variables from $_currentFlavor flavor',
-        );
-      } catch (e) {
-        print('⚠️  Warning: Failed to load .dart_tool/sarus/env.json: $e');
-        print('   Falling back to system environment variables only');
-      }
-    } else {
-      print(
-        '📝 No .dart_tool/sarus/env.json found, using system environment variables only',
-      );
-    }
+      } catch (e) {}
+    } else {}
 
     _isLoaded = true;
   }

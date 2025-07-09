@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:build/build.dart';
 import 'package:glob/glob.dart';
-import 'package:sarus/generated/dto_gen.dart';
 import 'package:sarus/sarus.dart';
+import 'package:sarus_gen/generated/dto_gen.dart';
+import 'package:sarus_gen/generated/route_gen.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// A code generation builder for the Sarus framework that generates application code
@@ -45,8 +46,9 @@ class SarusApplicationBuilder implements Builder {
     await writeAnnotatedImports(buildStep, output);
 
     // Find all Dart files in the lib directory for processing
-    final inputAssets =
-        await buildStep.findAssets(Glob('lib/**.dart')).toList();
+    final inputAssets = await buildStep
+        .findAssets(Glob('lib/**.dart'))
+        .toList();
 
     // Process each Dart file to find and generate code for annotated elements
     for (final input in inputAssets) {
@@ -54,8 +56,9 @@ class SarusApplicationBuilder implements Builder {
       final reader = LibraryReader(library);
 
       // Process all @Endpoint annotated elements
-      for (final element
-          in reader.annotatedWith(const TypeChecker.fromRuntime(Endpoint))) {
+      for (final element in reader.annotatedWith(
+        const TypeChecker.fromRuntime(Endpoint),
+      )) {
         final routerCode = RouteGenerator().generateForAnnotatedElement(
           element.element,
           element.annotation,
@@ -65,8 +68,9 @@ class SarusApplicationBuilder implements Builder {
       }
 
       // Process all @DTO annotated elements
-      for (final element
-          in reader.annotatedWith(const TypeChecker.fromRuntime(DTO))) {
+      for (final element in reader.annotatedWith(
+        const TypeChecker.fromRuntime(DTO),
+      )) {
         final dtoCode = DTOGenerator().generateForAnnotatedElement(
           element.element,
           element.annotation,
@@ -77,8 +81,10 @@ class SarusApplicationBuilder implements Builder {
     }
 
     // Write the complete generated code to the output file
-    final assetId =
-        AssetId(buildStep.inputId.package, 'lib/sarus_application.g.dart');
+    final assetId = AssetId(
+      buildStep.inputId.package,
+      'lib/sarus_application.g.dart',
+    );
     await buildStep.writeAsString(assetId, output.toString());
   }
 
@@ -95,8 +101,9 @@ class SarusApplicationBuilder implements Builder {
     StringBuffer output,
   ) async {
     // Find all Dart files in the lib directory
-    final inputAssets =
-        await buildStep.findAssets(Glob('lib/**.dart')).toList();
+    final inputAssets = await buildStep
+        .findAssets(Glob('lib/**.dart'))
+        .toList();
 
     // Use a Set to avoid duplicate imports
     final imports = <String>{};
@@ -113,8 +120,9 @@ class SarusApplicationBuilder implements Builder {
           .isNotEmpty;
 
       // Check if the file contains @DTO annotations
-      final hasDTOHere =
-          reader.annotatedWith(const TypeChecker.fromRuntime(DTO)).isNotEmpty;
+      final hasDTOHere = reader
+          .annotatedWith(const TypeChecker.fromRuntime(DTO))
+          .isNotEmpty;
 
       // Add import for files containing either annotation type
       if (hasEndpoint || hasDTOHere) {

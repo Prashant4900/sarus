@@ -3,7 +3,7 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
-import 'package:sarus/src/core/dto.dart';
+import 'package:sarus/sarus.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// A code generator that automatically creates JSON serialization methods
@@ -140,13 +140,15 @@ class DTOGenerator extends GeneratorForAnnotation<DTO> {
 
       // Generate type-specific deserialization code
       if (fieldType.isDartCoreString) {
-        buffer
-            .writeln("json['$jsonKeyName'] as String${isNullable ? '?' : ''},");
+        buffer.writeln(
+          "json['$jsonKeyName'] as String${isNullable ? '?' : ''},",
+        );
       } else if (fieldType.isDartCoreInt) {
         buffer.writeln("json['$jsonKeyName'] as int${isNullable ? '?' : ''},");
       } else if (fieldType.isDartCoreDouble) {
-        buffer
-            .writeln("json['$jsonKeyName'] as double${isNullable ? '?' : ''},");
+        buffer.writeln(
+          "json['$jsonKeyName'] as double${isNullable ? '?' : ''},",
+        );
       } else if (fieldType.isDartCoreBool) {
         buffer.writeln("json['$jsonKeyName'] as bool${isNullable ? '?' : ''},");
       } else if (fieldType.isDartCoreList) {
@@ -226,10 +228,7 @@ class DTOGenerator extends GeneratorForAnnotation<DTO> {
   /// - `includeIfNull`: Whether to include null values in JSON (defaults to true)
   Map<String, dynamic> _getJsonKeyInfo(FieldElement field) {
     // Default configuration values
-    final defaultInfo = {
-      'name': null,
-      'includeIfNull': true,
-    };
+    final defaultInfo = {'name': null, 'includeIfNull': true};
 
     // Search for JsonKey annotation in field metadata
     ElementAnnotation? jsonKeyAnnotation;
@@ -246,8 +245,9 @@ class DTOGenerator extends GeneratorForAnnotation<DTO> {
     try {
       final reader = ConstantReader(jsonKeyAnnotation.computeConstantValue());
       return {
-        'name':
-            reader.read('name').isNull ? null : reader.read('name').stringValue,
+        'name': reader.read('name').isNull
+            ? null
+            : reader.read('name').stringValue,
         'includeIfNull': reader.read('includeIfNull').boolValue,
       };
     } catch (e) {
@@ -271,8 +271,9 @@ class DTOGenerator extends GeneratorForAnnotation<DTO> {
   /// - `List` returns `"dynamic"`
   String _getListElementType(DartType listType) {
     if (listType is ParameterizedType && listType.typeArguments.isNotEmpty) {
-      return listType.typeArguments.first
-          .getDisplayString(withNullability: false);
+      return listType.typeArguments.first.getDisplayString(
+        withNullability: false,
+      );
     }
     return 'dynamic';
   }
@@ -301,15 +302,13 @@ class DTOGenerator extends GeneratorForAnnotation<DTO> {
 
 extension CamelCaseExtension on String {
   String toCamelCase() {
-    final words = replaceAllMapped(
-      RegExp('([a-z])([A-Z])'),
-      (m) => '${m[1]} ${m[2]}',
-    )
-        .replaceAll(RegExp(r'[_\-\s]+'), ' ')
-        .trim()
-        .split(' ')
-        .where((word) => word.isNotEmpty)
-        .toList();
+    final words =
+        replaceAllMapped(RegExp('([a-z])([A-Z])'), (m) => '${m[1]} ${m[2]}')
+            .replaceAll(RegExp(r'[_\-\s]+'), ' ')
+            .trim()
+            .split(' ')
+            .where((word) => word.isNotEmpty)
+            .toList();
 
     if (words.isEmpty) return '';
 

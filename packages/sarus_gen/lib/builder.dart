@@ -1,5 +1,5 @@
 import 'package:build/build.dart';
-import 'package:sarus/generated/sarus_application_builder.dart';
+import 'package:sarus_gen/generated/sarus_application_builder.dart';
 
 /// Factory function that creates and returns a SarusApplicationBuilder instance.
 ///
