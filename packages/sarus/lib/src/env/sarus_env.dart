@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 /// Environment variable manager for Sarus applications.
@@ -217,32 +218,32 @@ class SarusEnv {
     bool maskSensitive = true,
   }) {
     if (!_isLoaded) {
-      print('SarusEnv: Not loaded yet. Call await SarusEnv.load() first.');
+      log('SarusEnv: Not loaded yet. Call await SarusEnv.load() first.');
       return;
     }
 
-    print('🔍 SarusEnv Debug Information:');
-    print('   Flavor: ${_currentFlavor ?? 'none'}');
-    print('   Last loaded: ${_lastLoaded ?? 'never'}');
-    print('   Variables from env.json: ${_envVars.length}');
+    log('🔍 SarusEnv Debug Information:');
+    log('   Flavor: ${_currentFlavor ?? 'none'}');
+    log('   Last loaded: ${_lastLoaded ?? 'never'}');
+    log('   Variables from env.json: ${_envVars.length}');
 
     if (_envVars.isNotEmpty) {
-      print('   📄 Variables from .dart_tool/sarus/env.json:');
+      log('   📄 Variables from .dart_tool/sarus/env.json:');
       _envVars.forEach((key, value) {
         final displayValue =
             maskSensitive && _isSensitiveKey(key) ? '***masked***' : value;
-        print('      $key = $displayValue');
+        log('      $key = $displayValue');
       });
     }
 
     if (includeSystemVars) {
-      print(
+      log(
         '   🖥️  System environment variables: ${Platform.environment.length}',
       );
       Platform.environment.forEach((key, value) {
         final displayValue =
             maskSensitive && _isSensitiveKey(key) ? '***masked***' : value;
-        print('      $key = $displayValue');
+        log('      $key = $displayValue');
       });
     }
   }

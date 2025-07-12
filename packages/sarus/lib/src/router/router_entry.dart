@@ -90,6 +90,14 @@ class RouterEntry {
     // Create final regex pattern for route matching
     final routePattern = RegExp('^$patternBuffer\$');
 
+    // Pre-compute optimization flags
+    final hasParams = params.isNotEmpty;
+    final isShelfHandler = handler is shelf.Handler;
+
+    // Pre-allocate fixed-size list for parameters if we have them
+    final fixedParams =
+        hasParams ? List<String>.filled(params.length, '') : null;
+
     return RouterEntry._(
       verb,
       route,
@@ -97,6 +105,9 @@ class RouterEntry {
       middleware,
       routePattern,
       params,
+      hasParams,
+      isShelfHandler,
+      fixedParams,
     );
   }
 
@@ -109,6 +120,9 @@ class RouterEntry {
     this._middleware,
     this._routePattern,
     this._params,
+    this._hasParams,
+    this._isShelfHandler,
+    this._fixedParams,
   );
 
   /// Regular expression for parsing route patterns.
@@ -143,6 +157,15 @@ class RouterEntry {
   /// Corresponds to capture groups in _routePattern.
   final List<String> _params;
 
+  /// Pre-computed flag to avoid checking _params.isEmpty on every request
+  final bool _hasParams;
+
+  /// Pre-computed flag to avoid type checking on every request
+  final bool _isShelfHandler;
+
+  /// Pre-allocated fixed-size list for parameter values to avoid allocations
+  late final List<String>? _fixedParams;
+
   /// Returns a copy of parameter names for this route.
   /// Useful for introspection and debugging.
   List<String> get params => _params.toList();
@@ -163,7 +186,13 @@ class RouterEntry {
       return null;
     }
 
+    // Fast path: no parameters
+    if (!_hasParams) {
+      return const <String, String>{};
+    }
+
     // Extract parameter values from regex capture groups
+    // Use pre-sized map to avoid resizing
     final params = <String, String>{};
     for (var i = 0; i < _params.length; i++) {
       // Skip group 0 (full match), use groups 1+ for parameters
@@ -194,15 +223,21 @@ class RouterEntry {
 
     // Apply middleware and invoke handler
     return await _middleware((request) async {
-      // Handle simple shelf.Handler or routes without parameters
-      if (_handler is shelf.Handler || _params.isEmpty) {
+      // Fast path: Handle simple shelf.Handler or routes without parameters
+      if (_isShelfHandler || !_hasParams) {
         return await _handler(request) as shelf.Response;
       }
 
       // Handle parameterized handlers by passing parameters as individual arguments
+      // Use pre-allocated list to avoid repeated allocations
+      final paramValues = _fixedParams!;
+      for (var i = 0; i < _params.length; i++) {
+        paramValues[i] = params[_params[i]]!;
+      }
+
       return await Function.apply(_handler, [
         request,
-        ..._params.map((paramName) => params[paramName]),
+        ...paramValues,
       ]) as shelf.Response;
     })(modifiedRequest);
   }

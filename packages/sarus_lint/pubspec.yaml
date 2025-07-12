@@ -7,7 +7,7 @@ issue_tracker: https://github.com/Prashant4900/sarus/issues
 topics: [server, backend, lints, shelf, sarus]
 
 environment:
-  sdk: ^3.8.1
+  sdk: ">=3.0.0 <4.0.0"
 
 dev_dependencies:
   lints: ^5.0.0

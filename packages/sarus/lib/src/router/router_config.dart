@@ -11,6 +11,9 @@ import 'package:shelf/shelf.dart' as shelf;
 final UnmodifiableMapView<String, String> _emptyParams =
     UnmodifiableMapView(<String, String>{});
 
+/// Cache for common HTTP methods to avoid repeated string operations
+final Map<String, String> _httpMethodCache = <String, String>{};
+
 /// Extension to add parameter extraction functionality to shelf.Request
 extension RouterParams on shelf.Request {
   /// Extract URL parameters captured by the RouterConfig during route matching.
@@ -40,6 +43,38 @@ final shelf.Middleware _removeBody = shelf.createMiddleware(
   },
 );
 
+/// Optimized route lookup structure for better performance
+class _RouteIndex {
+  /// Routes organized by HTTP method for O(1) method lookup
+  final Map<String, List<RouterEntry>> _routesByMethod = {};
+
+  /// Routes that accept ALL methods
+  final List<RouterEntry> _allRoutes = [];
+
+  /// Cache for compiled route patterns to avoid recompilation
+  final Map<String, RegExp> _patternCache = {};
+
+  /// Add a route to the index
+  void add(RouterEntry route) {
+    if (route.verb == 'ALL') {
+      _allRoutes.add(route);
+    } else {
+      _routesByMethod.putIfAbsent(route.verb, () => []).add(route);
+    }
+  }
+
+  /// Get routes for a specific HTTP method
+  List<RouterEntry> getRoutes(String method) {
+    final methodRoutes = _routesByMethod[method] ?? const [];
+    return [...methodRoutes, ..._allRoutes];
+  }
+
+  /// Get or create a compiled regex pattern for a route
+  RegExp getPattern(String route) {
+    return _patternCache.putIfAbsent(route, () => RegExp(route));
+  }
+}
+
 /// A HTTP request router that matches incoming requests to registered handlers
 /// based on HTTP method and route patterns.
 ///
@@ -52,6 +87,7 @@ final shelf.Middleware _removeBody = shelf.createMiddleware(
 /// - Route parameter extraction (e.g., '/users/<id>')
 /// - Route mounting for sub-applications
 /// - Customizable 404 handling
+/// - Optimized route lookup with method-based indexing
 @sealed
 class RouterConfig {
   /// Creates a new RouterConfig instance.
@@ -61,11 +97,16 @@ class RouterConfig {
   RouterConfig({shelf.Handler notFoundHandler = _defaultNotFound})
       : _notFoundHandler = notFoundHandler;
 
-  /// Internal list storing all registered routes in order of registration
-  final List<RouterEntry> _routes = [];
+  /// Optimized route index for faster lookups
+  final _RouteIndex _routeIndex = _RouteIndex();
 
   /// Handler called when no routes match the incoming request
   final shelf.Handler _notFoundHandler;
+
+  /// Cache for normalized HTTP methods to avoid repeated string operations
+  String _normalizeMethod(String method) {
+    return _httpMethodCache.putIfAbsent(method, () => method.toUpperCase());
+  }
 
   /// Register a handler for a specific HTTP method and route pattern.
   ///
@@ -77,15 +118,18 @@ class RouterConfig {
   /// - Automatically registers a HEAD handler that returns the same response
   ///   but with an empty body (HTTP specification requirement)
   void add(String verb, String route, Function handler) {
-    if (!isHttpMethod(verb)) {
+    final normalizedVerb = _normalizeMethod(verb);
+
+    if (!isHttpMethod(normalizedVerb)) {
       throw ArgumentError.value(verb, 'verb', 'expected a valid HTTP method');
     }
 
     // HTTP specification requires HEAD support for all GET endpoints
-    if (verb.toUpperCase() == 'GET') {
-      _routes.add(RouterEntry('HEAD', route, handler, middleware: _removeBody));
+    if (normalizedVerb == 'GET') {
+      _routeIndex
+          .add(RouterEntry('HEAD', route, handler, middleware: _removeBody));
     }
-    _routes.add(RouterEntry(verb, route, handler));
+    _routeIndex.add(RouterEntry(normalizedVerb, route, handler));
   }
 
   /// Register a handler that responds to ALL HTTP methods for the given route.
@@ -93,7 +137,7 @@ class RouterConfig {
   /// [route] - Route pattern supporting parameters
   /// [handler] - Function to handle requests with any HTTP method
   void all(String route, Function handler) {
-    _routes.add(RouterEntry('ALL', route, handler));
+    _routeIndex.add(RouterEntry('ALL', route, handler));
   }
 
   /// Mount a sub-handler under a URL prefix.
@@ -135,20 +179,20 @@ class RouterConfig {
   /// Main request handler - routes incoming requests to registered handlers.
   ///
   /// This method makes RouterConfig instances usable as shelf.Handler.
-  /// It iterates through registered routes in order and returns the response
-  /// from the first matching route.
+  /// It uses method-based indexing for faster route lookup.
   ///
   /// Returns 404 response if no routes match.
   Future<shelf.Response> call(shelf.Request request) async {
-    // Iterate through routes in registration order
-    for (final route in _routes) {
-      // Check if HTTP method matches (or route accepts ALL methods)
-      if (route.verb != request.method.toUpperCase() && route.verb != 'ALL') {
-        continue;
-      }
+    final method = _normalizeMethod(request.method);
+    final path = '/${request.url.path}';
 
+    // Get routes for this specific method (includes ALL routes)
+    final routes = _routeIndex.getRoutes(method);
+
+    // Iterate through relevant routes only
+    for (final route in routes) {
       // Attempt to match the route pattern against request path
-      final params = route.match('/${request.url.path}');
+      final params = route.match(path);
       if (params != null) {
         // Route matched - invoke the handler
         final response = await route.invoke(request, params);
