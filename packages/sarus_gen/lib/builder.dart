@@ -16,5 +16,11 @@ import 'package:sarus_gen/generated/sarus_application_builder.dart';
 ///
 /// Returns a new instance of [SarusApplicationBuilder] that will handle
 /// the code generation process for @Endpoint and @DTO annotated classes.
+
 Builder sarusApplicationBuilder(BuilderOptions options) =>
     SarusApplicationBuilder();
+
+// Builder sarusAnnotationBuilder(BuilderOptions options) =>
+//     SarusAnnotationBuilder();
+
+// Builder sarusRouterBuilder(BuilderOptions options) => SarusRouterBuilder();

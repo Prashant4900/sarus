@@ -12,6 +12,12 @@ import 'package:shelf/shelf.dart';
 /// This abstraction encourages modular, testable route definitions,
 /// and allows you to extend functionality per group.
 abstract class Endpoints {
+  /// The base route path for this endpoint group.
+  ///
+  /// By default, returns an empty string, but can be overridden
+  /// to add a common prefix to all routes in the group.
+  String get path => '';
+
   /// The HTTP handler used by this route group.
   ///
   /// By default, delegates to the [router] method, but can be overridden

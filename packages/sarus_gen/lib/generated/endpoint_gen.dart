@@ -42,7 +42,7 @@ import 'package:source_gen/source_gen.dart';
 ///   // Generated router configuration with type-safe parameter handling
 /// }
 /// ```
-class RouteGenerator extends GeneratorForAnnotation<Endpoint> {
+class EndpointGenerator extends GeneratorForAnnotation<Endpoint> {
   // Constants for naming conventions
   static const String _generatedFunctionPrefix = r'$';
   static const String _routerConfigSuffix = 'RouterConfig';

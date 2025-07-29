@@ -8,6 +8,9 @@ import 'package:sarus/sarus.dart';
 class GreetingEndpoints extends Endpoints {
   GreetingEndpoints() : super();
 
+  @override
+  String get path => '/greeting';
+
   @Get()
   Future<Response> index(Request request) async {
     return Response.ok(jsonEncode({'message': 'Hello from GreetingEndpoint'}));

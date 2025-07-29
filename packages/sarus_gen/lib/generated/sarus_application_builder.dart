@@ -4,148 +4,295 @@ import 'package:build/build.dart';
 import 'package:glob/glob.dart';
 import 'package:sarus/sarus.dart';
 import 'package:sarus_gen/generated/dto_gen.dart';
-import 'package:sarus_gen/generated/route_gen.dart';
+import 'package:sarus_gen/generated/endpoint_gen.dart';
+import 'package:sarus_gen/generated/router_gen.dart';
 import 'package:source_gen/source_gen.dart';
 
-/// A code generation builder for the Sarus framework that generates application code
-/// by scanning for annotated classes and generating corresponding router and DTO code.
+/// A comprehensive code generation builder for the Sarus framework.
 ///
-/// This builder processes files containing @Endpoint and @DTO annotations and generates
-/// a single output file `lib/sarus_application.g.dart` containing all the generated code.
+/// This builder orchestrates the entire code generation process by:
+/// - Scanning for @Endpoint and @DTO annotated classes
+/// - Generating router configuration code
+/// - Generating DTO serialization/deserialization code
+/// - Creating a consolidated routes list
+/// - Producing a single output file with all generated code
+///
+/// The generated file (`lib/sarus_application.g.dart`) serves as the central
+/// hub for all framework-generated code, making it easy to integrate with
+/// the main application.
 class SarusApplicationBuilder implements Builder {
-  /// Defines the build extensions mapping.
-  ///
-  /// Maps the package root to the generated output file location.
-  /// The generated file will be created at `lib/sarus_application.g.dart`.
-  @override
-  final buildExtensions = const {
-    r'$package$': ['lib/sarus_application.g.dart'],
+  /// File patterns to exclude from processing
+  static const _excludedFilePatterns = {
+    '.g.dart',
+    '.freezed.dart',
+    '.gr.dart',
   };
 
-  /// Main build method that orchestrates the code generation process.
+  /// Standard imports required for generated code
+  static const _baseImports = [
+    "import 'package:sarus/sarus.dart';",
+  ];
+
+  /// The output file path relative to the package root
+  static const _outputFile = 'lib/sarus_application.g.dart';
+
+  /// Glob pattern for finding Dart files in lib/
+  static const _libGlobPattern = 'lib/**.dart';
+
+  /// Centralized set to collect all imports needed for the generated file
+  final Set<String> _allImports = <String>{};
+
+  /// Build extensions mapping package root to output file
+  @override
+  final buildExtensions = const {
+    r'$package$': [_outputFile],
+  };
+
+  /// Main build orchestration method.
   ///
-  /// This method:
-  /// 1. Creates the output file header
-  /// 2. Adds necessary imports
-  /// 3. Scans all Dart files for annotations
-  /// 4. Generates code for @Endpoint and @DTO annotated elements
-  /// 5. Writes the final generated code to the output file
-  ///
-  /// [buildStep] The current build step providing access to assets and resolver
+  /// Coordinates the entire code generation process:
+  /// 1. Collects all imports from various sources
+  /// 2. Generates all code sections
+  /// 3. Assembles final output with imports at top
   @override
   Future<void> build(BuildStep buildStep) async {
-    final output = StringBuffer();
+    // Clear imports for fresh build
+    _allImports.clear();
 
-    // Write file header with generation warning
-    output.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
+    // Add base imports
+    _allImports.addAll(_baseImports);
 
-    // Always include the base Sarus import as it's required for generated code
-    output.writeln("import 'package:sarus/sarus.dart';");
+    // Collect all imports and generate all code sections
+    await _collectImportInformation(buildStep);
+    final annotatedCode = await _generateAnnotatedCode(buildStep);
+    final routerCode = await _generateRouterCodeAndImports(buildStep);
 
-    // Add imports for files containing annotated classes
-    await writeAnnotatedImports(buildStep, output);
+    // Assemble final output
+    final finalOutput = _assembleFinalOutput(annotatedCode, routerCode);
 
-    // Find all Dart files in the lib directory for processing
-    final inputAssets = await buildStep
-        .findAssets(Glob('lib/**.dart'))
-        .toList();
-
-    // Process each Dart file to find and generate code for annotated elements
-    for (final input in inputAssets) {
-      final library = await buildStep.resolver.libraryFor(input);
-      final reader = LibraryReader(library);
-
-      // Process all @Endpoint annotated elements
-      for (final element in reader.annotatedWith(
-        const TypeChecker.fromRuntime(Endpoint),
-      )) {
-        final routerCode = RouteGenerator().generateForAnnotatedElement(
-          element.element,
-          element.annotation,
-          buildStep,
-        );
-        output.writeln(routerCode);
-      }
-
-      // Process all @DTO annotated elements
-      for (final element in reader.annotatedWith(
-        const TypeChecker.fromRuntime(DTO),
-      )) {
-        final dtoCode = DTOGenerator().generateForAnnotatedElement(
-          element.element,
-          element.annotation,
-          buildStep,
-        );
-        output.writeln(dtoCode);
-      }
-    }
-
-    // Write the complete generated code to the output file
-    final assetId = AssetId(
-      buildStep.inputId.package,
-      'lib/sarus_application.g.dart',
-    );
-    await buildStep.writeAsString(assetId, output.toString());
+    // Write the final generated file
+    await _writeOutputFile(buildStep, finalOutput);
   }
 
-  /// Scans all Dart files and generates import statements for files containing
-  /// @Endpoint or @DTO annotations.
-  ///
-  /// This method also conditionally adds the `dart:convert` import if any DTO
-  /// annotations are found, as DTOs typically require JSON serialization.
-  ///
-  /// [buildStep] The current build step for asset discovery
-  /// [output] The string buffer to write import statements to
-  Future<void> writeAnnotatedImports(
-    BuildStep buildStep,
-    StringBuffer output,
-  ) async {
-    // Find all Dart files in the lib directory
-    final inputAssets = await buildStep
-        .findAssets(Glob('lib/**.dart'))
-        .toList();
+  /// Writes the standard file header with generation warning.
+  void _writeFileHeader(StringBuffer buffer) {
+    buffer.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
+    buffer.writeln('// This file was generated by the Sarus code generator.');
+    buffer.writeln();
+  }
 
-    // Use a Set to avoid duplicate imports
-    final imports = <String>{};
+  /// Checks if a file should be skipped during processing.
+  bool _shouldSkipFile(AssetId assetId) {
+    return _excludedFilePatterns.any(
+      (pattern) => assetId.path.endsWith(pattern),
+    );
+  }
+
+  /// Checks if a library contains a specific annotation type.
+  bool _hasAnnotation(LibraryReader reader, Type annotationType) {
+    return reader
+        .annotatedWith(TypeChecker.fromRuntime(annotationType))
+        .isNotEmpty;
+  }
+
+  /// Collects all import-related information in a single pass.
+  ///
+  /// This optimization reduces the number of file scans and collects
+  /// all import information needed for the generated file.
+  Future<void> _collectImportInformation(BuildStep buildStep) async {
+    final dartFiles =
+        await buildStep.findAssets(Glob(_libGlobPattern)).toList();
     var hasDTO = false;
 
-    // Scan each file for relevant annotations
-    for (final input in inputAssets) {
-      final library = await buildStep.resolver.libraryFor(input);
-      final reader = LibraryReader(library);
+    for (final assetId in dartFiles) {
+      if (_shouldSkipFile(assetId)) continue;
 
-      // Check if the file contains @Endpoint annotations
-      final hasEndpoint = reader
-          .annotatedWith(const TypeChecker.fromRuntime(Endpoint))
-          .isNotEmpty;
+      try {
+        final library = await buildStep.resolver.libraryFor(assetId);
+        final reader = LibraryReader(library);
 
-      // Check if the file contains @DTO annotations
-      final hasDTOHere = reader
-          .annotatedWith(const TypeChecker.fromRuntime(DTO))
-          .isNotEmpty;
+        final hasEndpoint = _hasAnnotation(reader, Endpoint);
+        final hasDTOInFile = _hasAnnotation(reader, DTO);
 
-      // Add import for files containing either annotation type
-      if (hasEndpoint || hasDTOHere) {
-        imports.add("import '${input.uri}';");
-      }
+        // Collect imports for files with annotations
+        if (hasEndpoint || hasDTOInFile) {
+          _allImports.add("import '${assetId.uri}';");
+        }
 
-      // Track if any DTO annotations were found across all files
-      if (hasDTOHere) {
-        hasDTO = true;
+        // Track DTO presence globally
+        if (hasDTOInFile) {
+          hasDTO = true;
+        }
+      } catch (_) {
+        // Skip files that can't be analyzed
+        continue;
       }
     }
 
-    // Add dart:convert import if DTOs are present (needed for JSON operations)
+    // Add conditional imports to central collection
     if (hasDTO) {
-      output.writeln("import 'dart:convert';");
+      _allImports.add("import 'dart:convert';");
+    }
+  }
+
+  /// Generates all annotated code (Endpoints and DTOs) and returns as string.
+  ///
+  /// Processes @Endpoint and @DTO annotations and generates the
+  /// corresponding router and DTO code using specialized generators.
+  Future<String> _generateAnnotatedCode(BuildStep buildStep) async {
+    final codeBuffer = StringBuffer();
+    final dartFiles =
+        await buildStep.findAssets(Glob(_libGlobPattern)).toList();
+
+    for (final assetId in dartFiles) {
+      if (_shouldSkipFile(assetId)) continue;
+
+      try {
+        final library = await buildStep.resolver.libraryFor(assetId);
+        final reader = LibraryReader(library);
+
+        // Process @Endpoint annotations
+        await _processEndpointAnnotations(reader, buildStep, codeBuffer);
+
+        // Process @DTO annotations
+        await _processDTOAnnotations(reader, buildStep, codeBuffer);
+      } catch (_) {
+        // Skip files that can't be processed
+        continue;
+      }
     }
 
-    // Write all collected imports in sorted order for consistency
-    for (final import in imports.toList()..sort()) {
-      output.writeln(import);
-    }
+    return codeBuffer.toString();
+  }
 
-    // Add blank line after imports section for better readability
-    output.writeln();
+  /// Processes @Endpoint annotated elements and generates router code.
+  Future<void> _processEndpointAnnotations(
+    LibraryReader reader,
+    BuildStep buildStep,
+    StringBuffer buffer,
+  ) async {
+    final endpointElements = reader.annotatedWith(
+      const TypeChecker.fromRuntime(Endpoint),
+    );
+
+    for (final annotatedElement in endpointElements) {
+      try {
+        final routerCode = EndpointGenerator().generateForAnnotatedElement(
+          annotatedElement.element,
+          annotatedElement.annotation,
+          buildStep,
+        );
+        buffer.writeln(routerCode);
+      } catch (error) {
+        // Log error but continue processing other elements
+        log.warning(
+          'Failed to generate router code for ${annotatedElement.element.name}: $error',
+        );
+      }
+    }
+  }
+
+  /// Processes @DTO annotated elements and generates serialization code.
+  Future<void> _processDTOAnnotations(
+    LibraryReader reader,
+    BuildStep buildStep,
+    StringBuffer buffer,
+  ) async {
+    final dtoElements = reader.annotatedWith(
+      const TypeChecker.fromRuntime(DTO),
+    );
+
+    for (final annotatedElement in dtoElements) {
+      try {
+        final dtoCode = DTOGenerator().generateForAnnotatedElement(
+          annotatedElement.element,
+          annotatedElement.annotation,
+          buildStep,
+        );
+        buffer.writeln(dtoCode);
+      } catch (error) {
+        // Log error but continue processing other elements
+        log.warning(
+          'Failed to generate DTO code for ${annotatedElement.element.name}: $error',
+        );
+      }
+    }
+  }
+
+  /// Generates router discovery code and collects router imports.
+  ///
+  /// Creates the consolidated `$routes` list and adds necessary
+  /// imports to the central import collection.
+  Future<String> _generateRouterCodeAndImports(BuildStep buildStep) async {
+    try {
+      final routerGenerator = RouterGenerator();
+      final routerCode = await routerGenerator.generateRouterCode(buildStep);
+
+      // Add router imports to central collection
+      final routerImports = routerGenerator.getImports();
+      if (routerImports.isNotEmpty) {
+        // Parse the imports string and add each import line
+        final importLines = routerImports
+            .split('\n')
+            .where((line) => line.trim().isNotEmpty)
+            .map((line) => line.trim());
+        _allImports.addAll(importLines);
+      }
+
+      return routerCode;
+    } catch (error) {
+      log.severe('Failed to generate router discovery code: $error');
+      // Generate fallback empty routes list
+      return r'final List<Route> $routes = [];';
+    }
+  }
+
+  /// Assembles the final output with imports at the top and all code sections.
+  ///
+  /// Creates the complete generated file content with:
+  /// 1. File header
+  /// 2. All imports (sorted and deduplicated)
+  /// 3. Generated annotated code
+  /// 4. Router discovery code
+  String _assembleFinalOutput(String annotatedCode, String routerCode) {
+    final output = StringBuffer();
+
+    // Write file header
+    _writeFileHeader(output);
+
+    // Write all imports (sorted and deduplicated)
+    _writeAllImports(output);
+
+    // Write generated code sections
+    output.write(annotatedCode);
+    output.write(routerCode);
+
+    return output.toString();
+  }
+
+  /// Writes all collected imports to the buffer.
+  ///
+  /// Outputs all imports that have been collected during the build process,
+  /// sorted alphabetically and deduplicated.
+  void _writeAllImports(StringBuffer buffer) {
+    // Convert to list, sort, and write
+    final sortedImports = _allImports.toList()..sort();
+    for (final import in sortedImports) {
+      buffer.writeln(import);
+    }
+    buffer.writeln(); // Add spacing after imports
+  }
+
+  /// Writes the final generated code to the output file.
+  Future<void> _writeOutputFile(BuildStep buildStep, String content) async {
+    final outputAssetId = AssetId(
+      buildStep.inputId.package,
+      _outputFile,
+    );
+
+    await buildStep.writeAsString(outputAssetId, content);
+
+    // Log successful generation
+    log.info('Generated $_outputFile with ${content.split('\n').length} lines');
   }
 }
