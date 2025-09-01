@@ -61,7 +61,7 @@ class RouteGenerator extends GeneratorForAnnotation<Endpoint> {
       );
     }
 
-    final className = element.name;
+    final className = element.name ?? '';
     final endpointPath = annotation.read('path').stringValue;
     final buffer = StringBuffer();
 
@@ -191,7 +191,7 @@ class EndpointMethodProcessor {
             entry.key,
             routePath,
             endpointPath,
-            method.name,
+            method.name ?? '',
           );
         }
       }
@@ -218,12 +218,12 @@ class EndpointMethodProcessor {
   /// - @Body annotated parameters
   /// - Request type parameters
   bool _methodRequiresParameterProcessing(MethodElement method) {
-    return method.parameters.any(
+    return method.typeParameters.any(
       (param) =>
           _getAnnotationOfType<PathParam>(param) != null ||
           _getAnnotationOfType<QueryParam>(param) != null ||
-          _getAnnotationOfType<Body>(param) != null ||
-          param.type.getDisplayString(withNullability: false) == 'Request',
+          _getAnnotationOfType<Body>(param) != null,
+      // param.getDisplayString(withNullability: false) == 'Request',
     );
   }
 
@@ -272,7 +272,7 @@ class EndpointMethodProcessor {
 
   /// Gets an annotation of a specific type from an element.
   ConstantReader? _getAnnotationOfType<T>(Element element) {
-    final annotations = TypeChecker.fromRuntime(
+    final annotations = TypeChecker.typeNamed(
       T,
     ).annotationsOf(element, throwOnUnresolved: false);
 
@@ -361,7 +361,7 @@ class ParameterExtractor {
     final buffer = StringBuffer();
     final callArgs = <String>[];
 
-    for (final param in method.parameters) {
+    for (final param in method.typeParameters) {
       final result = _processParameter(param);
       if (result.extractionCode.isNotEmpty) {
         buffer.writeln(result.extractionCode);
@@ -383,13 +383,13 @@ class ParameterExtractor {
   /// - @Body: Extracts and deserializes from request body
   /// - Request: Passes the request object directly
   /// - Unannotated: Passes null
-  ParameterResult _processParameter(ParameterElement param) {
+  ParameterResult _processParameter(TypeParameterElement param) {
     final pathParam = _getAnnotationOfType<PathParam>(param);
     final queryParam = _getAnnotationOfType<QueryParam>(param);
     final bodyParam = _getAnnotationOfType<Body>(param);
 
     // Handle Request type parameters
-    if (param.type.getDisplayString(withNullability: false) == 'Request') {
+    if (param.bound?.getDisplayString(withNullability: false) == 'Request') {
       return const ParameterResult(extractionCode: '', callArg: 'req');
     }
 
@@ -420,20 +420,22 @@ class ParameterExtractor {
   /// 3. Converts the string to the appropriate type
   /// 4. Handles nullable parameters and default values
   ParameterResult _generateParameterExtraction(
-    ParameterElement param,
+    TypeParameterElement param,
     ConstantReader annotation, {
     required bool isPath,
   }) {
     final name = annotation.read('name').stringValue;
     final defaultVal = annotation.peek('defaultValue')?.stringValue;
-    final isNullable = param.type.nullabilitySuffix.name == 'question';
-    final paramType = param.type.getDisplayString(withNullability: false);
+    final isNullable = param.bound?.nullabilitySuffix.name == 'question';
+    // final isNullable = param.type.nullabilitySuffix.name == 'question';
+    final paramType = param.bound?.getDisplayString(withNullability: false);
+    // final paramType = param.type.getDisplayString(withNullability: false);
 
     final typeConverter = TypeConverter();
     final extractionCode = typeConverter.generateExtractionCode(
-      paramName: param.name,
+      paramName: param.name ?? '',
       sourceName: name,
-      paramType: paramType,
+      paramType: paramType ?? '',
       isNullable: isNullable,
       defaultValue: defaultVal,
       isPath: isPath,
@@ -441,7 +443,7 @@ class ParameterExtractor {
 
     return ParameterResult(
       extractionCode: extractionCode,
-      callArg: param.name,
+      callArg: param.name ?? '',
     );
   }
 
@@ -453,23 +455,31 @@ class ParameterExtractor {
   /// 3. Validates the JSON structure
   /// 4. Deserializes to the target type using fromJson
   /// 5. Handles nullable body parameters
-  ParameterResult _generateBodyExtraction(ParameterElement param) {
-    final isNullable = param.type.nullabilitySuffix.name == 'question';
-    final paramType = param.type.getDisplayString(withNullability: false);
+  ParameterResult _generateBodyExtraction(TypeParameterElement param) {
+    final isNullable = param.bound?.nullabilitySuffix.name == 'question';
+    final paramType = param.bound?.getDisplayString(withNullability: false);
     final buffer = StringBuffer();
 
     buffer.writeln('      // Extract and parse request body');
     buffer.writeln('      final bodyString = await req.readAsString();');
 
     if (isNullable) {
-      _generateNullableBodyExtraction(buffer, param.name, paramType);
+      _generateNullableBodyExtraction(
+        buffer,
+        param.name ?? '',
+        paramType ?? '',
+      );
     } else {
-      _generateRequiredBodyExtraction(buffer, param.name, paramType);
+      _generateRequiredBodyExtraction(
+        buffer,
+        param.name ?? '',
+        paramType ?? '',
+      );
     }
 
     return ParameterResult(
       extractionCode: buffer.toString(),
-      callArg: param.name,
+      callArg: param.name ?? '',
     );
   }
 
@@ -528,7 +538,7 @@ class ParameterExtractor {
 
   /// Gets an annotation of a specific type from an element.
   ConstantReader? _getAnnotationOfType<T>(Element element) {
-    final annotations = TypeChecker.fromRuntime(
+    final annotations = TypeChecker.typeNamed(
       T,
     ).annotationsOf(element, throwOnUnresolved: false);
 

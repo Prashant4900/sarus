@@ -65,7 +65,7 @@ class DTOGenerator extends GeneratorForAnnotation<DTO> {
       );
     }
 
-    final className = element.name;
+    final className = element.name ?? '';
     final buffer = StringBuffer();
 
     // Generate the serialization methods for the class
@@ -233,7 +233,7 @@ class DTOGenerator extends GeneratorForAnnotation<DTO> {
     // Search for JsonKey annotation in field metadata
     ElementAnnotation? jsonKeyAnnotation;
     try {
-      jsonKeyAnnotation = field.metadata.firstWhere(
+      jsonKeyAnnotation = field.metadata.annotations.firstWhere(
         (annotation) => annotation.element?.displayName == 'JsonKey',
       );
     } catch (e) {

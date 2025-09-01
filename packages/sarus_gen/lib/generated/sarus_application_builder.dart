@@ -57,7 +57,7 @@ class SarusApplicationBuilder implements Builder {
 
       // Process all @Endpoint annotated elements
       for (final element in reader.annotatedWith(
-        const TypeChecker.fromRuntime(Endpoint),
+        const TypeChecker.typeNamed(Endpoint),
       )) {
         final routerCode = RouteGenerator().generateForAnnotatedElement(
           element.element,
@@ -69,7 +69,7 @@ class SarusApplicationBuilder implements Builder {
 
       // Process all @DTO annotated elements
       for (final element in reader.annotatedWith(
-        const TypeChecker.fromRuntime(DTO),
+        const TypeChecker.typeNamed(DTO),
       )) {
         final dtoCode = DTOGenerator().generateForAnnotatedElement(
           element.element,
@@ -116,12 +116,12 @@ class SarusApplicationBuilder implements Builder {
 
       // Check if the file contains @Endpoint annotations
       final hasEndpoint = reader
-          .annotatedWith(const TypeChecker.fromRuntime(Endpoint))
+          .annotatedWith(const TypeChecker.typeNamed(Endpoint))
           .isNotEmpty;
 
       // Check if the file contains @DTO annotations
       final hasDTOHere = reader
-          .annotatedWith(const TypeChecker.fromRuntime(DTO))
+          .annotatedWith(const TypeChecker.typeNamed(DTO))
           .isNotEmpty;
 
       // Add import for files containing either annotation type

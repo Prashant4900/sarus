@@ -11,7 +11,7 @@ example:
   - example/lib/sarus_application.dart
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.9.0
 
 dependencies:
   http_methods: ^1.1.1
