@@ -2,9 +2,9 @@ project:
   name: {{name}}
   description: A fast, minimalistic backend framework for Dart.
 
-# env:
-#   default: development
-
+env:
+  default: development
+# 
 #   flavors:
 #     development: .env
 #     staging: .env.staging
