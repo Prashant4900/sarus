@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/sarus.iml" filepath="$PROJECT_DIR$/.idea/sarus.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/sarus/melos_sarus.iml" filepath="$PROJECT_DIR$/packages/sarus/melos_sarus.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/sarus_cli/melos_sarus_cli.iml" filepath="$PROJECT_DIR$/packages/sarus_cli/melos_sarus_cli.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/sarus_gen/melos_sarus_gen.iml" filepath="$PROJECT_DIR$/packages/sarus_gen/melos_sarus_gen.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/sarus_lint/melos_sarus_lint.iml" filepath="$PROJECT_DIR$/packages/sarus_lint/melos_sarus_lint.iml" />
+<module fileurl="file://$PROJECT_DIR$/melos_my_workspace.iml" filepath="$PROJECT_DIR$/melos_my_workspace.iml" />
     </modules>
   </component>
 </project>

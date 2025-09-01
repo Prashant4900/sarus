@@ -1,0 +1,17 @@
+name: my_workspace
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+workspace:
+  - packages/sarus
+  - packages/sarus_cli
+  - packages/sarus_gen
+  - packages/sarus_lint
+
+dev_dependencies:
+  melos: ^7.1.0
+
+melos:
+  # Scripts

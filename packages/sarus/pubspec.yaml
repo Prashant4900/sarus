@@ -5,6 +5,7 @@ homepage: https://github.com/Prashant4900/sarus/
 repository: https://github.com/Prashant4900/sarus/
 issue_tracker: https://github.com/Prashant4900/sarus/issues
 topics: [server, backend, shelf, sarus, cli]
+resolution: workspace
 
 example:
   - example/lib/sarus_application.dart
