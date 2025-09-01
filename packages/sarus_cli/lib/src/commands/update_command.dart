@@ -16,9 +16,9 @@ class UpdateCommand extends Command<int> {
     required Logger logger,
     PubUpdater? pubUpdater,
     MixpanelService? mixpanelService,
-  })  : _logger = logger,
-        _pubUpdater = pubUpdater ?? PubUpdater(),
-        _mixpanelService = mixpanelService;
+  }) : _logger = logger,
+       _pubUpdater = pubUpdater ?? PubUpdater(),
+       _mixpanelService = mixpanelService;
 
   final Logger _logger;
   final PubUpdater _pubUpdater;
@@ -42,9 +42,7 @@ class UpdateCommand extends Command<int> {
 
       await _mixpanelService?.trackEvent(
         'update_command_started',
-        properties: {
-          'timestamp': startTime.toIso8601String(),
-        },
+        properties: {'timestamp': startTime.toIso8601String()},
       );
 
       latestVersion = await _pubUpdater.getLatestVersion(packageName);
@@ -56,9 +54,7 @@ class UpdateCommand extends Command<int> {
         _logger.info('CLI is already at the latest version.');
         await _mixpanelService?.trackEvent(
           'update_command_no_update_needed',
-          properties: {
-            'current_version': packageVersion,
-          },
+          properties: {'current_version': packageVersion},
         );
 
         return ExitCode.success.code;
@@ -90,9 +86,7 @@ class UpdateCommand extends Command<int> {
 
       await _mixpanelService?.trackEvent(
         'update_command_completed',
-        properties: {
-          'new_version': latestVersion,
-        },
+        properties: {'new_version': latestVersion},
       );
 
       return ExitCode.success.code;

@@ -42,9 +42,9 @@ class CreateModuleCommand extends Command<int> {
     required Logger logger,
     GeneratorBuilder? generator,
     MixpanelService? mixpanelService,
-  })  : _logger = logger,
-        _generator = generator ?? MasonGenerator.fromBundle,
-        _mixpanelService = mixpanelService;
+  }) : _logger = logger,
+       _generator = generator ?? MasonGenerator.fromBundle,
+       _mixpanelService = mixpanelService;
 
   @override
   String get description => 'Create a new module inside the Sarus project.';
@@ -166,10 +166,7 @@ class CreateModuleCommand extends Command<int> {
       final target = DirectoryGeneratorTarget(Directory.current);
 
       // Generate module files with the provided name
-      await generator.generate(
-        target,
-        vars: {'name': module},
-      );
+      await generator.generate(target, vars: {'name': module});
 
       // Execute post-generation hooks for additional setup
       await generator.hooks.postGen(

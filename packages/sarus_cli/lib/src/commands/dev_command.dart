@@ -62,11 +62,9 @@ class DevCommand extends Command<int> {
   ///
   /// [logger] The logger instance for output messaging
   /// [mixpanelService] Optional analytics service for tracking development metrics
-  DevCommand({
-    required Logger logger,
-    MixpanelService? mixpanelService,
-  })  : _logger = logger,
-        _mixpanelService = mixpanelService {
+  DevCommand({required Logger logger, MixpanelService? mixpanelService})
+    : _logger = logger,
+      _mixpanelService = mixpanelService {
     argParser.addOption(
       'flavor',
       abbr: 'f',
@@ -131,10 +129,7 @@ class DevCommand extends Command<int> {
   Future<void> _trackCommandStart(DateTime startTime) async {
     await _mixpanelService?.trackEvent(
       'dev_started',
-      properties: {
-        'command': name,
-        'timestamp': startTime.toIso8601String(),
-      },
+      properties: {'command': name, 'timestamp': startTime.toIso8601String()},
     );
   }
 
@@ -181,11 +176,10 @@ class DevCommand extends Command<int> {
   Future<int> _startServer() async {
     _logger.info('Starting Sarus server...');
 
-    final process = await Process.start(
-      'dart',
-      ['run', 'bin/server.dart'],
-      mode: ProcessStartMode.inheritStdio,
-    );
+    final process = await Process.start('dart', [
+      'run',
+      'bin/server.dart',
+    ], mode: ProcessStartMode.inheritStdio);
 
     final exitCode = await process.exitCode;
     _logger.info('Server stopped with exit code $exitCode');

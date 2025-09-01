@@ -24,10 +24,10 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
     Logger? logger,
     PubUpdater? pubUpdater,
     MixpanelService? mixpanelService,
-  })  : _logger = logger ?? Logger(),
-        _pubUpdater = pubUpdater ?? PubUpdater(),
-        _mixpanelService = mixpanelService ?? MixpanelService(),
-        super(executableName, description) {
+  }) : _logger = logger ?? Logger(),
+       _pubUpdater = pubUpdater ?? PubUpdater(),
+       _mixpanelService = mixpanelService ?? MixpanelService(),
+       super(executableName, description) {
     // Add root options and flags
     argParser
       ..addFlag(
@@ -49,29 +49,15 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
 
     // Add sub commands - pass mixpanel service to commands that need it
     addCommand(
-      CreateCommand(
-        logger: _logger,
-        mixpanelService: _mixpanelService,
-      ),
+      CreateCommand(logger: _logger, mixpanelService: _mixpanelService),
     );
     addCommand(
-      CreateModuleCommand(
-        logger: _logger,
-        mixpanelService: _mixpanelService,
-      ),
+      CreateModuleCommand(logger: _logger, mixpanelService: _mixpanelService),
     );
     addCommand(
-      BuildCommand(
-        logger: _logger,
-        mixpanelService: _mixpanelService,
-      ),
+      BuildCommand(logger: _logger, mixpanelService: _mixpanelService),
     );
-    addCommand(
-      DevCommand(
-        logger: _logger,
-        mixpanelService: _mixpanelService,
-      ),
-    );
+    addCommand(DevCommand(logger: _logger, mixpanelService: _mixpanelService));
     addCommand(
       UpdateCommand(
         logger: _logger,
@@ -236,11 +222,9 @@ class SarusCliCommandRunner extends CompletionCommandRunner<int> {
 
         _logger
           ..info('')
-          ..info(
-            '''
+          ..info('''
 ${lightYellow.wrap('Update available!')} ${lightCyan.wrap(packageVersion)} \u2192 ${lightCyan.wrap(latestVersion)}
-Run ${lightCyan.wrap('$executableName update')} to update''',
-          );
+Run ${lightCyan.wrap('$executableName update')} to update''');
       }
     } catch (_) {}
   }

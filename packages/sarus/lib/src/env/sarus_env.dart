@@ -80,8 +80,9 @@ class SarusEnv {
     // Ensure load() has been called
     if (!_isLoaded) {
       throw StateError(
-          'SarusEnv.load() must be called before accessing environment variables. '
-          "Call await SarusEnv.load() in your app's main() function.");
+        'SarusEnv.load() must be called before accessing environment variables. '
+        "Call await SarusEnv.load() in your app's main() function.",
+      );
     }
 
     // Priority 1: Check loaded env.json variables
@@ -229,8 +230,9 @@ class SarusEnv {
     if (_envVars.isNotEmpty) {
       print('   📄 Variables from .dart_tool/sarus/env.json:');
       _envVars.forEach((key, value) {
-        final displayValue =
-            maskSensitive && _isSensitiveKey(key) ? '***masked***' : value;
+        final displayValue = maskSensitive && _isSensitiveKey(key)
+            ? '***masked***'
+            : value;
         print('      $key = $displayValue');
       });
     }
@@ -240,8 +242,9 @@ class SarusEnv {
         '   🖥️  System environment variables: ${Platform.environment.length}',
       );
       Platform.environment.forEach((key, value) {
-        final displayValue =
-            maskSensitive && _isSensitiveKey(key) ? '***masked***' : value;
+        final displayValue = maskSensitive && _isSensitiveKey(key)
+            ? '***masked***'
+            : value;
         print('      $key = $displayValue');
       });
     }

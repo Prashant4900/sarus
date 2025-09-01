@@ -8,8 +8,9 @@ import 'package:sarus/src/router/router_entry.dart' show RouterEntry;
 import 'package:shelf/shelf.dart' as shelf;
 
 /// Pre-allocated empty parameters map to avoid repeated allocations
-final UnmodifiableMapView<String, String> _emptyParams =
-    UnmodifiableMapView(<String, String>{});
+final UnmodifiableMapView<String, String> _emptyParams = UnmodifiableMapView(
+  <String, String>{},
+);
 
 /// Extension to add parameter extraction functionality to shelf.Request
 extension RouterParams on shelf.Request {
@@ -59,7 +60,7 @@ class RouterConfig {
   /// [notFoundHandler] - Custom handler for unmatched requests.
   /// Defaults to returning a simple 404 "Route not found" response.
   RouterConfig({shelf.Handler notFoundHandler = _defaultNotFound})
-      : _notFoundHandler = notFoundHandler;
+    : _notFoundHandler = notFoundHandler;
 
   /// Internal list storing all registered routes in order of registration
   final List<RouterEntry> _routes = [];

@@ -33,11 +33,9 @@ class BuildCommand extends Command<int> {
   /// Parameters:
   /// - [logger]: Required logger instance for build output and progress reporting
   /// - [mixpanelService]: Optional analytics service for tracking build metrics
-  BuildCommand({
-    required Logger logger,
-    MixpanelService? mixpanelService,
-  })  : _logger = logger,
-        _mixpanelService = mixpanelService;
+  BuildCommand({required Logger logger, MixpanelService? mixpanelService})
+    : _logger = logger,
+      _mixpanelService = mixpanelService;
 
   /// Logger instance for build output, progress reporting, and error messages
   final Logger _logger;
@@ -74,10 +72,7 @@ class BuildCommand extends Command<int> {
       // Track analytics for build initiation
       await _mixpanelService?.trackEvent(
         'build_started',
-        properties: {
-          'command': name,
-          'timestamp': startTime.toIso8601String(),
-        },
+        properties: {'command': name, 'timestamp': startTime.toIso8601String()},
       );
 
       // Execute the main build process

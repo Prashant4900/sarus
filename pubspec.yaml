@@ -14,16 +14,20 @@ dev_dependencies:
   melos: ^7.1.0
 
 melos:
+  scripts:
+    sarus_cli:
+      description: Install sarus_cli globally from local source
+      run: |
+        dart pub global deactivate sarus_cli
+        dart pub global activate --source path ./packages/sarus_cli
+      exec:
+        concurrency: 4
 
-  sarus_cli:
-    description: Install sarus_cli globally from local source
-    command: |
-      dart pub global deactivate sarus_cli
-      dart pub global activate --source path ./packages/sarus_cli
-
-  bricks:
-    description: Install bricks globally from local source
-    command: |
-      mason bundle -s path ./bricks/project -o packages/sarus_cli/lib/templates/ -t dart
-      mason bundle -s path ./bricks/module -o packages/sarus_cli/lib/templates/ -t dart
-      dart format .
+    bricks:
+      description: Install bricks globally from local source
+      run: |
+        mason bundle -s path /Volumes/Personal/projects/sarus/bricks/project -o packages/sarus_cli/lib/templates/ -t dart
+        mason bundle -s path /Volumes/Personal/projects/sarus/bricks/module -o packages/sarus_cli/lib/templates/ -t dart
+        dart format .
+      exec:
+        concurrency: 4

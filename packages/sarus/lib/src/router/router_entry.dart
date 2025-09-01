@@ -201,9 +201,10 @@ class RouterEntry {
 
       // Handle parameterized handlers by passing parameters as individual arguments
       return await Function.apply(_handler, [
-        request,
-        ..._params.map((paramName) => params[paramName]),
-      ]) as shelf.Response;
+            request,
+            ..._params.map((paramName) => params[paramName]),
+          ])
+          as shelf.Response;
     })(modifiedRequest);
   }
 }
