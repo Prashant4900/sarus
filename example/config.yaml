@@ -1,6 +1,11 @@
 project:
   name: example
   description: A fast, minimalistic backend framework for Dart.
+  version: 1.0.0
+
+# modules:
+#   - name: greeting
+#     prefix: /greeting
 
 env:
   default: development

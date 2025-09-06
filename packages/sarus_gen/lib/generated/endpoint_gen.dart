@@ -122,23 +122,25 @@ class EndpointGen extends Generator {
       );
     }
 
-    final output = StringBuffer()
-      ..writeln('      final bodyString = await req.readAsString();')
-      ..writeln('      if (bodyString.isEmpty) {')
-      ..writeln('        return Response.badRequest(')
-      ..writeln(
-        '          body: jsonEncode({"error": "Empty body", "status": 400}),',
-      )
-      ..writeln('        );')
-      ..writeln('      }');
+    final output = StringBuffer();
 
     for (final parameter in parameters) {
       // Handle @Body
       if (_checkAnnotation(parameter.metadata.annotations, 'Body')) {
-        output.writeln(
-          '      final request = ${parameter.type.getDisplayString()}.fromJson(jsonDecode(bodyString));',
-        );
+        output
+          ..writeln('      final bodyString = await req.readAsString();')
+          ..writeln('      if (bodyString.isEmpty) {')
+          ..writeln('        return Response.badRequest(')
+          ..writeln(
+            '          body: jsonEncode({"error": "Empty body", "status": 400}),',
+          )
+          ..writeln('        );')
+          ..writeln('      }')
+          ..writeln(
+            '      final request = ${parameter.type.getDisplayString()}.fromJson(jsonDecode(bodyString));',
+          );
         types.add('request');
+
         _imports.add(importsPaths[parameter.type.getDisplayString()]!);
       }
 

@@ -1,4 +1,5 @@
 import 'package:build/build.dart';
+import 'package:sarus_gen/generated/application_gen.dart';
 import 'package:sarus_gen/generated/endpoint_gen.dart';
 import 'package:sarus_gen/generated/model_gen.dart';
 import 'package:source_gen/source_gen.dart';
@@ -18,3 +19,6 @@ Builder modelBuilder(BuilderOptions options) =>
 /// endpoint classes that extend `Endpoints`.
 Builder endpointBuilder(BuilderOptions options) =>
     LibraryBuilder(EndpointGen(), generatedExtension: '.endpoints.g.dart');
+
+Builder applicationBuilder(BuilderOptions options) =>
+    LibraryBuilder(ApplicationGen());

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:sarus/sarus.dart';
 
-import 'config/router.dart';
+import 'sarus_application.g.dart';
 
 class SarusApplication implements Application {
   @override
@@ -10,7 +10,7 @@ class SarusApplication implements Application {
     try {
       final handler = const Pipeline()
           .addMiddleware(logRequests())
-          .addHandler(router.handler);
+          .addHandler($router.call);
 
       return await serve(handler, InternetAddress.anyIPv4, 8080);
     } catch (e) {

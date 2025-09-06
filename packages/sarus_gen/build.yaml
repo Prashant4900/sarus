@@ -1,11 +1,11 @@
 builders:
-  # sarus_application_builder:
-  #   import: "package:sarus_gen/builder.dart"
-  #   builder_factories: ["sarusApplicationBuilder"]
-  #   build_extensions: {".dart": ["lib/sarus_application.g.dart"]}
-  #   auto_apply: root_package
-  #   build_to: source
-  #   runs_before: ["source_gen|combining_builder"]
+  sarus_application_builder:
+    import: "package:sarus_gen/builder.dart"
+    builder_factories: ["applicationBuilder"]
+    build_extensions: {".dart": [".g.dart"]}
+    auto_apply: dependents
+    build_to: source
+    # runs_before: ["source_gen|combining_builder"]
 
   model_builder:
     import: "package:sarus_gen/builder.dart"
@@ -22,9 +22,3 @@ builders:
     auto_apply: dependents
     build_to: source
     # runs_before: ["source_gen|combining_builder"]
-
-# targets:
-#   $default:
-#     builders:
-#       build_test:test_bootstrap:
-#         enabled: false

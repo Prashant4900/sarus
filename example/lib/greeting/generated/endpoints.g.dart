@@ -14,12 +14,6 @@ RouterConfig $greetingEndpointsRouterConfig(GreetingEndpoints endpoints) {
 
   routerConfig.get('/greeting', (Request req) async {
     try {
-      final bodyString = await req.readAsString();
-      if (bodyString.isEmpty) {
-        return Response.badRequest(
-          body: jsonEncode({"error": "Empty body", "status": 400}),
-        );
-      }
 
       return endpoints.index(req);
     } catch (e) {
@@ -35,12 +29,6 @@ RouterConfig $greetingEndpointsRouterConfig(GreetingEndpoints endpoints) {
 
   routerConfig.get('/greeting/hello', (Request req) async {
     try {
-      final bodyString = await req.readAsString();
-      if (bodyString.isEmpty) {
-        return Response.badRequest(
-          body: jsonEncode({"error": "Empty body", "status": 400}),
-        );
-      }
 
       final message = req.url.queryParameters["message"];
       if (message == null) {

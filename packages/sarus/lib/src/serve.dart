@@ -1,7 +1,4 @@
-import 'dart:io';
-
-import 'package:shelf/shelf.dart';
-import 'package:shelf/shelf_io.dart';
+part of '_internal.dart';
 
 /// Starts an [HttpServer] that listens on the specified [address] and
 /// [port] and sends requests to [handler].
