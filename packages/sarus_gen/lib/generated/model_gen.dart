@@ -4,100 +4,140 @@ import 'dart:io';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:path/path.dart' as path;
+import 'package:sarus/sarus.dart' show JsonKey;
 import 'package:source_gen/source_gen.dart';
 
+/// A source_gen [Generator] that generates `toJson` and `fromJson`
+/// serialization functions for classes extending `Model<T>`.
+///
+/// Supports [JsonKey] annotation for customizing field names
+/// and null-handling in generated JSON.
 class ModelGen extends Generator {
   @override
   FutureOr<String?> generate(LibraryReader library, BuildStep buildStep) async {
-    final models = generateModels(library);
+    // Collect models from the current library
+    final models = _collectModels(library);
+    if (models.isEmpty) return null; // Skip if no models found
 
-    if (models.isEmpty) return null; // Skip generation if no models found
-
-    // Get the source file path
+    // Input file path (e.g., lib/models/user.dart)
     final inputPath = buildStep.inputId.path;
 
-    // Create the generated folder path
+    // Build the output file path (e.g., lib/models/generated/user.g.dart)
     final sourceDir = path.dirname(inputPath);
     final generatedDir = path.join(sourceDir, 'generated');
     final fileName = path.basenameWithoutExtension(inputPath);
     final outputFileName = '$fileName.g.dart';
     final outputPath = path.join(generatedDir, outputFileName);
 
-    // Create the generated directory if it doesn't exist
+    // Ensure the `generated/` directory exists
     final generatedDirectory = Directory(generatedDir);
     if (!generatedDirectory.existsSync()) {
       await generatedDirectory.create(recursive: true);
     }
 
-    final output = StringBuffer();
+    // Build the generated output
+    final output = StringBuffer()
+      ..writeln('// GENERATED CODE - DO NOT MODIFY BY HAND')
+      ..writeln()
+      ..writeln('import "../$fileName.dart";')
+      ..writeln();
 
-    output.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
-    output.writeln();
-
-    output.writeln('import "../$fileName.dart";');
-    output.writeln();
-
+    // Add serializers for each model class
     for (final model in models) {
-      output.writeln(generateModelCode(model));
+      output.writeln(_generateModelSerializer(model));
     }
 
-    // Write the file to the generated folder
+    // Write the generated file
     final outputFile = File(outputPath);
     await outputFile.writeAsString(output.toString());
 
-    // Return null to prevent build_runner from creating its own file
+    // Return null to avoid build_runner writing its own file
     return null;
   }
 
-  String generateModelCode(ClassElement model) {
+  /// Generates both `toJson` and `fromJson` functions for a given [model].
+  ///
+  /// Respects [JsonKey] annotations on fields.
+  String _generateModelSerializer(ClassElement model) {
     final className = model.name;
     final variableName =
         '${className?[0].toLowerCase()}${className?.substring(1)}';
 
-    final fields = model.fields
-        .where((f) => !f.isStatic && f.isPublic)
-        .map((f) => f)
-        .toList();
+    // Collect only non-static, public fields
+    final fields = model.fields.where((f) => !f.isStatic && f.isPublic);
 
     final buffer = StringBuffer();
 
-    // toJson
+    // Generate toJson
     buffer.writeln(
       'Map<String, dynamic> \$${variableName}ToJson($className instance) {',
     );
-    buffer.writeln('  return {');
-    for (final field in fields) {
-      buffer.writeln("    '${field.name}': instance.${field.name},");
-    }
-    buffer.writeln('  };');
-    buffer.writeln('}');
-    buffer.writeln();
+    buffer.writeln('  final val = <String, dynamic>{};');
 
-    // fromJson
+    for (final field in fields) {
+      final annotation = _readJsonKey(field);
+      final jsonKey = annotation.name ?? field.name;
+      final includeIfNull = annotation.includeIfNull;
+      final isNullable =
+          field.type.nullabilitySuffix.name == 'question'; // `?` check
+
+      if (isNullable && !includeIfNull) {
+        // Nullable field with includeIfNull = false → conditional
+        buffer.writeln(
+          "  if (instance.${field.name} != null) { val['$jsonKey'] = instance.${field.name}; }",
+        );
+      } else {
+        // Always included (non-nullable OR includeIfNull = true)
+        buffer.writeln("  val['$jsonKey'] = instance.${field.name};");
+      }
+    }
+
+    buffer.writeln('  return val;');
+    buffer.writeln('}\n');
+
+    // Generate fromJson
     buffer.writeln(
       '$className \$${variableName}FromJson(Map<String, dynamic> json) {',
     );
     buffer.writeln('  return $className(');
+
     for (final field in fields) {
+      final annotation = _readJsonKey(field);
+      final jsonKey = annotation.name ?? field.name;
       final typeStr = field.type.getDisplayString();
-      buffer.writeln("    ${field.name}: json['${field.name}'] as $typeStr,");
+
+      buffer.writeln(
+        "    ${field.name}: json['$jsonKey'] as $typeStr,",
+      );
     }
+
     buffer.writeln('  );');
-    buffer.writeln('}');
-    buffer.writeln();
+    buffer.writeln('}\n');
 
     return buffer.toString();
   }
 
-  /// Returns an iterable of [ClassElement] that extend `Model<T>`
-  Iterable<ClassElement> generateModels(LibraryReader library) {
-    return library.classes.where(
-      (element) {
-        final className = element.name ?? '';
-        return element.allSupertypes.any(
-          (supertype) => supertype.getDisplayString() == 'Model<$className>',
-        );
-      },
-    );
+  /// Collects all classes in the library that extend `Model<T>`.
+  Iterable<ClassElement> _collectModels(LibraryReader library) {
+    return library.classes.where((element) {
+      final className = element.name ?? '';
+      return element.allSupertypes.any(
+        (supertype) => supertype.getDisplayString() == 'Model<$className>',
+      );
+    });
+  }
+
+  /// Reads a [JsonKey] annotation from a field, or returns defaults.
+  ({String? name, bool includeIfNull}) _readJsonKey(FieldElement field) {
+    for (final annotation in field.metadata.annotations) {
+      final constantValue = annotation.computeConstantValue();
+      if (constantValue?.type?.getDisplayString() == 'JsonKey') {
+        final name = constantValue?.getField('name')?.toStringValue();
+        final includeIfNull =
+            constantValue?.getField('includeIfNull')?.toBoolValue() ?? false;
+        return (name: name, includeIfNull: includeIfNull);
+      }
+    }
+    return (name: null, includeIfNull: false);
   }
 }

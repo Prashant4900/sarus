@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 import "dart:convert";
-
 import "package:sarus/sarus.dart";
 
 import "../endpoints.dart";
@@ -89,7 +88,7 @@ RouterConfig $greetingEndpointsRouterConfig(GreetingEndpoints endpoints) {
       }
       
 
-      return endpoints.helloPost(req, request, id, name);
+      return endpoints.createGreeting(req, request, id, name);
     } catch (e) {
       if (e is ArgumentError) {
         return Response.badRequest(body: e.message);

@@ -3,7 +3,8 @@ import 'package:sarus/sarus.dart';
 import 'generated/models.g.dart';
 
 class UserRequest extends Model<UserRequest> {
-  final String firstName;
+  @JsonKey(name: 'first_name', includeIfNull: false)
+  final String? firstName;
   final String lastName;
 
   UserRequest({required this.firstName, required this.lastName});
