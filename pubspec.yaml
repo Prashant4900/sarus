@@ -19,7 +19,7 @@ melos:
       description: Install sarus_cli globally from local source
       run: |
         dart pub global deactivate sarus_cli
-        dart pub global activate --source path ./packages/sarus_cli
+        dart pub global activate --source path /Volumes/Personal/projects/sarus/packages/sarus_cli
       exec:
         concurrency: 4
 

@@ -26,10 +26,12 @@ doc/api/
 .flutter-plugins
 .flutter-plugins-dependencies
 
-serverpod_example/
+server_pod/
 sarus_example/
 shelf_example/
 dart_frog_example/
 vaden_example/
 
 .DS_Store
+
+venia/

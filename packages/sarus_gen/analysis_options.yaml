@@ -5,3 +5,4 @@ analyzer:
     lines_longer_than_80_chars: ignore
     cascade_invocations: ignore
     avoid_catches_without_on_clauses: ignore
+    public_member_api_docs: ignore

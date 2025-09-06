@@ -1,20 +1,20 @@
 import 'package:build/build.dart';
-import 'package:sarus_gen/generated/sarus_application_builder.dart';
+import 'package:sarus_gen/generated/endpoint_gen.dart';
+import 'package:sarus_gen/generated/model_gen.dart';
+import 'package:source_gen/source_gen.dart';
 
-/// Factory function that creates and returns a SarusApplicationBuilder instance.
+/// Factory function that creates and returns a ModelBuilder instance.
 ///
-/// This function serves as the entry point for the Sarus code generation system.
-/// It is typically called by the build system (build_runner) to instantiate
-/// the builder that will generate Sarus application code.
+/// This function is the entry point for the model code generation system.
+/// It creates a LibraryBuilder that uses the ModelGen generator to process
+/// model classes that extend `Models<T>`.
+Builder modelBuilder(BuilderOptions options) =>
+    LibraryBuilder(ModelGen(), generatedExtension: '.models.g.dart');
+
+/// Factory function that creates and returns an EndpointBuilder instance.
 ///
-/// The function follows the standard builder factory pattern required by
-/// the Dart build system, where builder factories must accept BuilderOptions
-/// and return a Builder instance.
-///
-/// [options] Build configuration options passed by the build system.
-///           Currently unused but required by the builder factory interface.
-///
-/// Returns a new instance of [SarusApplicationBuilder] that will handle
-/// the code generation process for @Endpoint and @DTO annotated classes.
-Builder sarusApplicationBuilder(BuilderOptions options) =>
-    SarusApplicationBuilder();
+/// This function is the entry point for the endpoint code generation system.
+/// It creates a LibraryBuilder that uses the EndpointGen generator to process
+/// endpoint classes that extend `Endpoints`.
+Builder endpointBuilder(BuilderOptions options) =>
+    LibraryBuilder(EndpointGen(), generatedExtension: '.endpoints.g.dart');
