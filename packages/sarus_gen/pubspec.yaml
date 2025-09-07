@@ -6,7 +6,6 @@ repository: https://github.com/Prashant4900/sarus
 issue_tracker: https://github.com/Prashant4900/sarus/issues
 topics: [server, backend, generated, shelf, sarus]
 resolution: workspace
-publish_to: none
 
 environment:
   sdk: ^3.9.0
