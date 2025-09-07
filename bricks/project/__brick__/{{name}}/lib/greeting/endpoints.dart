@@ -2,12 +2,13 @@ import 'dart:convert';
 
 import 'package:sarus/sarus.dart';
 
-import '../sarus_application.g.dart';
-import './middlewares.dart';
+import 'generated/endpoints.g.dart';
+import 'middlewares.dart';
 
-@Endpoint(path: '/greeting')
 class GreetingEndpoints extends Endpoints {
   GreetingEndpoints() : super();
+
+  static const String prefix = '/greeting';
 
   @Get()
   Future<Response> index(Request request) async {

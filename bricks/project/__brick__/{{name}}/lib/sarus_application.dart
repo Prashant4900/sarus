@@ -8,7 +8,9 @@ class SarusApplication implements Application {
   @override
   Future<HttpServer> run() async {
     try {
-      final handler = const Pipeline().addHandler(router.handler);
+      final handler = const Pipeline()
+          .addMiddleware(logRequests())
+          .addHandler($router.call);
 
       return await serve(handler, InternetAddress.anyIPv4, 8080);
     } catch (e) {

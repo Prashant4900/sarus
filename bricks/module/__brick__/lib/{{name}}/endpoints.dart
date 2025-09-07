@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:sarus/sarus.dart';
 
-import '../sarus_application.g.dart';
-import './middlewares.dart';
+import 'generated/endpoints.g.dart';
+import 'middlewares.dart';
 
-@Endpoint(path: '/{{name.paramCase()}}')
+
 class {{name.pascalCase()}}Endpoints extends Endpoints {
   {{name.pascalCase()}}Endpoints() : super();
+
+  const String prefix = '/{{name.paramCase()}}';
 
   @Get()
   Future<Response> index(Request request) async {

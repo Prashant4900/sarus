@@ -1,0 +1,9 @@
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    directives_ordering: true
+
+analyzer:
+  errors:
+    deprecated_member_use: ignore
