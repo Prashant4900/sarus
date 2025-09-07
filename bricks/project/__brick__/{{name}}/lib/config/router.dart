@@ -4,7 +4,7 @@ import '../greeting/endpoints.dart';
 
 final router = Router(
   globalMiddleware: [logRequests()],
-  routes: [
+  endpoints: [
     Route(endpoints: [GreetingEndpoints()]),
   ],
 );

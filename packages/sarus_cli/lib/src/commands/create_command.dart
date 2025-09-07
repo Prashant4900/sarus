@@ -55,9 +55,9 @@ class CreateCommand extends Command<int> {
     required Logger logger,
     GeneratorBuilder? generator,
     MixpanelService? mixpanelService,
-  })  : _logger = logger,
-        _generator = generator ?? MasonGenerator.fromBundle,
-        _mixpanelService = mixpanelService;
+  }) : _logger = logger,
+       _generator = generator ?? MasonGenerator.fromBundle,
+       _mixpanelService = mixpanelService;
 
   @override
   String get description => 'Create a new sarus project.';
@@ -210,9 +210,7 @@ class CreateCommand extends Command<int> {
       // Track successful project structure creation
       await _mixpanelService?.trackEvent(
         'project_structure_created',
-        properties: {
-          'project_name': projectName,
-        },
+        properties: {'project_name': projectName},
       );
 
       // Show installing dependencies progress
@@ -262,16 +260,12 @@ class CreateCommand extends Command<int> {
   /// - [workingDir]: The project directory where build_runner should execute
   Future<void> _runBuildRunner(Directory workingDir) async {
     final buildStartTime = DateTime.now();
-    final resultBuilder = Process.runSync(
-      'dart',
-      [
-        'run',
-        'build_runner',
-        'build',
-        '--delete-conflicting-outputs',
-      ],
-      workingDirectory: workingDir.path,
-    );
+    final resultBuilder = Process.runSync('dart', [
+      'run',
+      'build_runner',
+      'build',
+      '--delete-conflicting-outputs',
+    ], workingDirectory: workingDir.path);
 
     final buildDuration = DateTime.now().difference(buildStartTime);
 
@@ -306,11 +300,10 @@ class CreateCommand extends Command<int> {
   /// - [workingDir]: The project directory where pub get should execute
   Future<void> _runPubGet(Directory workingDir) async {
     final pubGetStartTime = DateTime.now();
-    final result = Process.runSync(
-      'dart',
-      ['pub', 'get'],
-      workingDirectory: workingDir.path,
-    );
+    final result = Process.runSync('dart', [
+      'pub',
+      'get',
+    ], workingDirectory: workingDir.path);
 
     final pubGetDuration = DateTime.now().difference(pubGetStartTime);
 
@@ -345,11 +338,10 @@ class CreateCommand extends Command<int> {
   /// - [workingDir]: The project directory where dart fix should execute
   Future<void> _runDartFix(Directory workingDir) async {
     final fixStartTime = DateTime.now();
-    final resultFix = Process.runSync(
-      'dart',
-      ['fix', '--apply'],
-      workingDirectory: workingDir.path,
-    );
+    final resultFix = Process.runSync('dart', [
+      'fix',
+      '--apply',
+    ], workingDirectory: workingDir.path);
 
     final fixDuration = DateTime.now().difference(fixStartTime);
 
@@ -392,9 +384,7 @@ class CreateCommand extends Command<int> {
         );
         await _mixpanelService?.trackEvent(
           'dart_sdk_check_failed',
-          properties: {
-            'exit_code': result.exitCode,
-          },
+          properties: {'exit_code': result.exitCode},
         );
         exit(1);
       } else {
@@ -408,9 +398,7 @@ class CreateCommand extends Command<int> {
       );
       await _mixpanelService?.trackEvent(
         'dart_sdk_check_error',
-        properties: {
-          'error': e.toString(),
-        },
+        properties: {'error': e.toString()},
       );
       exit(1);
     }

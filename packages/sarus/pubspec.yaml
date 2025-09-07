@@ -5,12 +5,13 @@ homepage: https://github.com/Prashant4900/sarus/
 repository: https://github.com/Prashant4900/sarus/
 issue_tracker: https://github.com/Prashant4900/sarus/issues
 topics: [server, backend, shelf, sarus, cli]
+resolution: workspace
 
 example:
   - example/lib/sarus_application.dart
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.9.0
 
 dependencies:
   http_methods: ^1.1.1

@@ -1,0 +1,33 @@
+name: my_workspace
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+workspace:
+  - packages/sarus
+  - packages/sarus_cli
+  - packages/sarus_gen
+  - packages/sarus_lint
+
+dev_dependencies:
+  melos: ^7.1.0
+
+melos:
+  scripts:
+    sarus_cli:
+      description: Install sarus_cli globally from local source
+      run: |
+        dart pub global deactivate sarus_cli
+        dart pub global activate --source path /Volumes/Personal/projects/sarus/packages/sarus_cli
+      exec:
+        concurrency: 4
+
+    bricks:
+      description: Install bricks globally from local source
+      run: |
+        mason bundle -s path /Volumes/Personal/projects/sarus/bricks/project -o packages/sarus_cli/lib/templates/ -t dart
+        mason bundle -s path /Volumes/Personal/projects/sarus/bricks/module -o packages/sarus_cli/lib/templates/ -t dart
+        dart format .
+      exec:
+        concurrency: 4

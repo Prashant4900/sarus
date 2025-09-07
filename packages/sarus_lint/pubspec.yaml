@@ -5,9 +5,10 @@ homepage: https://github.com/Prashant4900/sarus
 repository: https://github.com/Prashant4900/sarus
 issue_tracker: https://github.com/Prashant4900/sarus/issues
 topics: [server, backend, lints, shelf, sarus]
+resolution: workspace
 
 environment:
-  sdk: ^3.8.1
+  sdk: ^3.9.0
 
 dev_dependencies:
-  lints: ^5.0.0
+  lints: ^6.0.0

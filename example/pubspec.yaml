@@ -1,0 +1,19 @@
+name: example
+description: A fast, minimalistic backend framework for Dart.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  sarus:
+    path: ../packages/sarus
+
+dev_dependencies:
+  build_runner: ^2.7.0
+  lints: ^6.0.0
+  sarus_gen:
+    path: ../packages/sarus_gen
+  sarus_lint:
+    path: ../packages/sarus_lint

@@ -19,7 +19,9 @@ class SarusApplication implements Application {
 
   @override
   Future<void> setup() async {
-    try {} catch (e) {
+    try {
+      await SarusEnv.load();
+    } catch (e) {
       print('Failed to setup dependencies injection: $e');
     }
   }

@@ -10,9 +10,8 @@ const String _mixpanelToken = 'e8f959f7c72641b182c366a4d9616f01';
 
 /// Service for tracking events with Mixpanel including geolocation
 class MixpanelService {
-  MixpanelService({
-    http.Client? httpClient,
-  }) : _httpClient = httpClient ?? http.Client();
+  MixpanelService({http.Client? httpClient})
+    : _httpClient = httpClient ?? http.Client();
   static const String _mixpanelUrl = 'https://api.mixpanel.com/track';
 
   final http.Client _httpClient;
@@ -26,7 +25,8 @@ class MixpanelService {
   String _generateUserId() {
     try {
       // Use a combination of username and hostname for anonymized tracking
-      final username = Platform.environment['USER'] ??
+      final username =
+          Platform.environment['USER'] ??
           Platform.environment['USERNAME'] ??
           'unknown';
       final hostname = Platform.localHostname;
@@ -108,9 +108,7 @@ class MixpanelService {
   /// Try ipinfo.io service (free tier available)
   Future<Map<String, dynamic>> _tryIpInfoService() async {
     final response = await _httpClient
-        .get(
-          Uri.parse('https://ipinfo.io/json'),
-        )
+        .get(Uri.parse('https://ipinfo.io/json'))
         .timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
@@ -133,9 +131,7 @@ class MixpanelService {
   /// Try ip-geolocation.io service (free tier available)
   Future<Map<String, dynamic>> _tryIpGeolocationService() async {
     final response = await _httpClient
-        .get(
-          Uri.parse('https://ipapi.co/json/'),
-        )
+        .get(Uri.parse('https://ipapi.co/json/'))
         .timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
@@ -248,10 +244,7 @@ class MixpanelService {
   }
 
   /// Track CLI startup with geolocation
-  Future<void> trackCliStartup({
-    String? version,
-    List<String>? args,
-  }) async {
+  Future<void> trackCliStartup({String? version, List<String>? args}) async {
     await trackEvent(
       'cli_startup',
       properties: {
